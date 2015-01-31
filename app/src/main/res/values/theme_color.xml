@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+
+    <!-- ############################-->
+    <!--        Theme               -->
+    <!-- ############################-->
+    <!-- Base application theme. -->
+    <style name="AppTheme_Color" parent="AppTheme">
+
+        <!-- ****************** -->
+        <!--     Color          -->
+        <!-- ****************** -->
+        <item name="color_application_bg">@color/very_light_gray</item>
+
+        <!-- Couleur principale des composant -->
+        <item name="color_composant_main">@color/vivid_blue</item>
+        <item name="color_composant_main_highlighted">@color/vivid_cyan</item>
+        <item name="color_composant_main_text">@color/white</item>
+
+        <!-- menu -->
+        <item name="color_menu">@color/dark_cyan</item>
+        <item name="color_menu_text">@color/white</item>
+        <item name="color_menu_text_highlighted">@color/vivid_blue</item>
+        <item name="color_menu_separator">@color/dark_cyan_light</item>
+
+        <!-- text -->
+        <item name="color_text_main">@color/very_dark_desaturated_cyan</item>
+        <item name="color_text_second">@color/vivid_blue</item>
+        <item name="color_text_third">@color/mostly_desaturated_dark_blue</item>
+
+        <item name="color_disable">@color/dark_gray</item>
+
+        <!-- List -->
+        <item name="color_list_row_bg">@color/white</item>
+        <item name="color_list_row_bg_highlighted">@color/light_grayish_blue</item>
+
+        <!-- Ripple color -->
+        <item name="color_ripple_color">@color/mostly_desaturated_dark_blue</item>
+
+        <!-- ****************** -->
+        <!-- Pop up color    -->
+        <!-- ****************** -->
+        <item name="color_popup_error_text">@color/bright_orange</item>
+
+
+        <!-- ****************** -->
+        <!--   Main fragment    -->
+        <!-- ****************** -->
+        <!-- La barre de titre -->
+        <item name="color_header">@color/strong_blue</item>
+        <item name="color_header_text">@color/white</item>
+
+        <item name="color_mf_device_connecte_color">@color/pure_cyan</item>
+        <item name="color_mf_device_noninitialise_color">@color/vivid_orange</item>
+        <item name="color_mf_device_deconnecte_color">@color/very_dark_grayish_blue</item>
+
+        <item name="color_mf_posmate_more_bg">@color/dark_cyan</item>
+
+        <item name="color_mf_error_bg">@color/red</item>
+
+
+        <!-- ****************** -->
+        <!--   Paiement fragment    -->
+        <!-- ****************** -->
+        <!-- clavier -->
+        <item name="color_clavier_bg">@color/very_light_gray2</item>
+        <item name="color_clavier_text">@color/dark_grayish_blue</item>
+        <item name="color_clavier_separation">@color/very_light_gray3</item>
+
+        <!-- ****************** -->
+        <!--   Gestion Boitier    -->
+        <!-- ****************** -->
+        <item name="color_gb_boitier_row_bg">@color/white</item>
+        <item name="color_gb_boitier_row_selected_bg">@color/light_grayish_blue</item>
+
+        <!-- ****************** -->
+        <!--  LOGIN    -->
+        <!-- ****************** -->
+        <item name="color_login_et_separator">@color/grayish_cyan</item>
+
+
+    </style>
+
+    <!--<style name="LauncherTheme_blue" parent="AppTheme_Blue">-->
+    <!--<item name="android:windowBackground">@drawable/splashscreen_blue</item>-->
+    <!--</style>-->
+
+
+</resources>

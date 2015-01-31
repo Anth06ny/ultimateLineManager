@@ -24,3 +24,16 @@ proguard/
 
 # Log Files
 *.log
+
+.idea
+app/build
+app/app.iml
+app/proguard-rules.pro
+build
+FormationUtils/FormationUtils.iml
+FormationUtils/proguard-rules.pro
+FormationUtils/build
+gradle
+ultimateLineManager.iml
+gradlew
+gradlew.bat

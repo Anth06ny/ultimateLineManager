@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <!-- ****************** -->
+    <!-- Main color    -->
+    <!-- ****************** -->
+    <attr name="color_application_bg" format="color"/>
+
+
+    <!-- Couleur principale des composant -->
+    <attr name="color_composant_main" format="color"/>
+    <attr name="color_composant_main_highlighted" format="color"/>
+    <attr name="color_composant_main_text" format="reference"/>
+
+    <!-- menu -->
+    <attr name="color_menu" format="color"/>
+    <attr name="color_menu_text" format="color"/>
+    <attr name="color_menu_text_highlighted" format="color"/>
+    <attr name="color_menu_separator" format="color"/>
+
+    <!-- text -->
+    <attr name="color_text_main" format="color"/>
+    <attr name="color_text_second" format="color"/>
+    <attr name="color_text_third" format="color"/>
+
+    <attr name="color_disable" format="color"/>
+
+    <!-- List -->
+    <attr name="color_list_row_bg" format="color"/>
+    <attr name="color_list_row_bg_highlighted" format="color"/>
+
+    <!-- Ripple color -->
+    <attr name="color_ripple_color" format="color"/>
+
+    <!-- ****************** -->
+    <!-- Pop up color    -->
+    <!-- ****************** -->
+    <attr name="color_popup_error_text" format="color"/>
+
+
+    <!-- ****************** -->
+    <!--   Main fragment    -->
+    <!-- ****************** -->
+    <!-- La barre de titre -->
+    <attr name="color_header" format="color"/>
+    <attr name="color_header_text" format="color"/>
+
+    <attr name="color_mf_device_connecte_color" format="color"/>
+    <attr name="color_mf_device_noninitialise_color" format="color"/>
+    <attr name="color_mf_device_deconnecte_color" format="color"/>
+
+    <attr name="color_mf_posmate_more_bg" format="color"/>
+
+    <attr name="color_mf_error_bg" format="color"/>
+
+
+    <!-- ****************** -->
+    <!--   Paiement fragment    -->
+    <!-- ****************** -->
+    <!-- clavier -->
+    <attr name="color_clavier_bg" format="color"/>
+    <attr name="color_clavier_text" format="color"/>
+    <attr name="color_clavier_separation" format="color"/>
+
+    <!-- ****************** -->
+    <!--   Gestion Boitier    -->
+    <!-- ****************** -->
+    <attr name="color_gb_boitier_row_bg" format="color"/>
+    <attr name="color_gb_boitier_row_selected_bg" format="color"/>
+
+    <!-- ****************** -->
+    <!--  LOGIN    -->
+    <!-- ****************** -->
+    <attr name="color_login_et_separator" format="color"/>
+
+</resources>

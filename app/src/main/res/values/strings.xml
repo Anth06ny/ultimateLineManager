@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">UltimateLineManager</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- ****************** -->
+    <!--  MainActivity      -->
+    <!-- ****************** -->
+    <string name="ma_bt_new">New Game</string>
+    <string name="ma_bt_old">Old Game</string>
+    <string name="ma_bt_player">Manage Player</string>
+
+    <!-- ****************** -->
+    <!--  CreateTeaamActivity      -->
+    <!-- ****************** -->
+    <string name="ct_et_hint">Select player</string>
+
+</resources>
