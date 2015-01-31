@@ -4,17 +4,15 @@ android {
     compileSdkVersion Integer.parseInt(project.COMPILE_SDK_VERSION)
     buildToolsVersion project.BUILD_TOOLS_VERSION
 
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
+
     defaultConfig {
         applicationId "com.ultimatelinemanager"
         minSdkVersion Integer.parseInt(project.MIN_SDK_VERSION)
         targetSdkVersion Integer.parseInt(project.TARGET_SDK_VERSION)
         versionCode Integer.parseInt(project.VERSION_CODE)
         versionName project.VERSION_NAME
-    }
-
-    defaultConfig {
-        applicationId "com.formation.utils"
-
     }
 
 
@@ -27,6 +25,7 @@ android {
 }
 
 dependencies {
-    compile project(':FormationUtils')
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':FormationUtils')
+    compile 'com.android.support:appcompat-v7:21.+'
 }

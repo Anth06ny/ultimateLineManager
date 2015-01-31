@@ -6,15 +6,16 @@
     <string name="action_settings">Settings</string>
 
     <!-- ****************** -->
-    <!--  MainActivity      -->
+    <!-- MainActivity -->
     <!-- ****************** -->
     <string name="ma_bt_new">New Game</string>
     <string name="ma_bt_old">Old Game</string>
     <string name="ma_bt_player">Manage Player</string>
 
     <!-- ****************** -->
-    <!--  CreateTeaamActivity      -->
+    <!-- CreateTeaamActivity -->
     <!-- ****************** -->
     <string name="ct_et_hint">Select player</string>
+    <string name="title_activity_main">Equipes</string>
 
 </resources>
