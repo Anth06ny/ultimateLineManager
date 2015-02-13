@@ -19,10 +19,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme_Color"
-            >
+            android:name=".activity.SelectTeamActivity"
+            android:label="@string/title_activity_select_team"
+            android:parentActivityName=".StartActivity"
+            android:theme="@style/AppTheme_Color">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ultimatelinemanager.StartActivity"/>
         </activity>
     </application>
 

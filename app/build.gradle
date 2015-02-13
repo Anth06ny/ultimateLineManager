@@ -28,4 +28,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':FormationUtils')
     compile 'com.android.support:appcompat-v7:21.+'
+    //Recycleview
+    compile 'com.android.support:recyclerview-v7:21.0.+'
 }

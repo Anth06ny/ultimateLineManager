@@ -18,15 +18,20 @@
     <dimen name="font_40">60sp</dimen>
     <dimen name="font_50">75sp</dimen>
 
-    <!-- Margin *2 -->
-    <dimen name="margin_5">10dp</dimen>
-    <dimen name="margin_10">20dp</dimen>
-    <dimen name="margin_15">30dp</dimen>
-    <dimen name="margin_20">40dp</dimen>
-    <dimen name="margin_30">60dp</dimen>
-    <dimen name="margin_25">50dp</dimen>
-    <dimen name="margin_50">100dp</dimen>
-    <dimen name="margin_80">160dp</dimen>
+    <!-- Margin *1.5 -->
+    <dimen name="margin_1">1dp</dimen>
+    <dimen name="margin_2">2dp</dimen>
+    <dimen name="margin_5">8dp</dimen>
+    <dimen name="margin_8">12dp</dimen>
+    <dimen name="margin_10">15dp</dimen>
+    <dimen name="margin_13">19dp</dimen>
+    <dimen name="margin_15">22dp</dimen>
+    <dimen name="margin_20">30dp</dimen>
+    <dimen name="margin_25">37dp</dimen>
+    <dimen name="margin_30">45dp</dimen>
+    <dimen name="margin_40">60dp</dimen>
+    <dimen name="margin_50">75dp</dimen>
+    <dimen name="margin_80">120dp</dimen>
 
     <!-- Standart height -->
     <dimen name="standard_height">64dp</dimen>

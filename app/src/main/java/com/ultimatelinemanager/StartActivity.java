@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.ultimatelinemanager.activity.SelectTeamActivity;
+
 public class StartActivity extends Activity implements View.OnClickListener {
 
     private Button maBtNew;
@@ -39,9 +41,8 @@ public class StartActivity extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v == maBtNew) {
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, SelectTeamActivity.class);
             startActivity(intent);
-            finish();
         }
         else if (v == maBtOld) {
             // Handle clicks for maBtOld

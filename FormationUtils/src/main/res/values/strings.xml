@@ -3,10 +3,15 @@
 
     <string name="app_name">HandlerExemple</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+
     <string name="loading">Veuillez patientez&#8230;</string>
     <string name="ok">OK</string>
     <string name="valider">Valider</string>
     <string name="annuler">Annuler</string>
+
+    <!-- ################ -->
+    <!-- Select team -->
+    <!-- ################ -->
+    <string name="st_menu_add">Créer une équipe</string>
 
 </resources>

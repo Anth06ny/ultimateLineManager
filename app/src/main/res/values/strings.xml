@@ -17,5 +17,6 @@
     <!-- ****************** -->
     <string name="ct_et_hint">Select player</string>
     <string name="title_activity_main">Equipes</string>
+    <string name="title_activity_select_team">Choisir une équipe</string>
 
 </resources>
