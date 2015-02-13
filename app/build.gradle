@@ -15,6 +15,12 @@ android {
         versionName project.VERSION_NAME
     }
 
+    sourceSets {
+        main {
+            java.srcDirs = ['src/main/java', 'src/main/java-gen']
+        }
+    }
+
 
     buildTypes {
         release {
@@ -30,4 +36,10 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.+'
     //Recycleview
     compile 'com.android.support:recyclerview-v7:21.0.+'
+
+    //greenDao https://github.com/greenrobot/greenDAO
+    compile 'de.greenrobot:greendao:1.3.+'
+
+    //dialog https://github.com/afollestad/material-dialogs
+    compile 'com.afollestad:material-dialogs:0.6.2.4'
 }

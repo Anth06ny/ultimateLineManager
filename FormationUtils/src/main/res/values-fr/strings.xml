@@ -10,9 +10,8 @@
     <string name="annuler">Annuler</string>
 
     <!-- Date format -->
-    <string name="date_ddMMyyyy">yyyy/MM/dd</string>
-    <string name="date_ddMMyyyy_HHmm">yyyy/MM/dd HH:mm</string>
+    <string name="date_ddMMyyyy">dd/MM/yyyy</string>
+    <string name="date_ddMMyyyy_HHmm">dd/MM/yyyy HH:mm</string>
     <string name="date_HHmm">HH:mm</string>
-
 
 </resources>

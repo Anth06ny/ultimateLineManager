@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources
-    xmlns:tools="http://schemas.android.com/tools">
+    >
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:actionBarStyle">@style/MyActionBar</item>
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
         <item name="actionBarStyle">@style/MyActionBar</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="AppThemeStart" parent="AppTheme_Color">
@@ -13,9 +13,14 @@
     </style>
 
     <!-- Action Bar -->
-    <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+    <style name="MyActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
         <item name="android:background">?attr/color_menu</item>
         <item name="background">?attr/color_menu</item>
+        <item name="titleTextStyle">@style/TitleBarTextColor</item>
+    </style>
+
+    <style name="TitleBarTextColor" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/white</item>
     </style>
 
 
