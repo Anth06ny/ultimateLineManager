@@ -16,6 +16,7 @@ import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.adapter.SelectTeamAdapter;
 import com.ultimatelinemanager.dao.TeamDaoManager;
 import com.ultimatelinemanager.metier.DialogUtils;
+import com.ultimatelinemanager.metier.IntentHelper;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,7 +25,7 @@ import java.util.Date;
 
 import greendao.TeamBean;
 
-public class SelectTeamActivity extends ActionBarActivity {
+public class SelectTeamActivity extends ActionBarActivity implements SelectTeamAdapter.SelectTeamAdapterI {
 
     //Composants graphiques
     private RecyclerView st_rv;
@@ -52,7 +53,8 @@ public class SelectTeamActivity extends ActionBarActivity {
         st_rv.setLayoutManager(new LinearLayoutManager(this));
         st_rv.setItemAnimator(new DefaultItemAnimator());
 
-        adapter = new SelectTeamAdapter(this, teamBeanList = new ArrayList<>());
+        adapter = new SelectTeamAdapter(this, teamBeanList = new ArrayList<>(), this);
+
         st_rv.setAdapter(adapter);
 
     }
@@ -79,6 +81,14 @@ public class SelectTeamActivity extends ActionBarActivity {
     }
 
     /* ---------------------------------
+    // Callback List
+    // -------------------------------- */
+    @Override
+    public void selectTeamAdapter_onClick(TeamBean teamBean) {
+        IntentHelper.goToTeamActivity(this, teamBean);
+    }
+
+    /* ---------------------------------
     // Menu
     // -------------------------------- */
 
@@ -99,11 +109,11 @@ public class SelectTeamActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.menu_add) {
-            dialog = DialogUtils.getPromptDialog(this, R.drawable.ic_action_add_group, R.string.st_ask_team_name, R.string.add,
+            dialog = DialogUtils.getPromptDialog(this, R.drawable.ic_action_add_group, R.string.st_ask_team_name, R.string.add, "",
                     new DialogUtils.PromptDialogCB() {
                         @Override
                         public void promptDialogCB_onPositiveClick(String promptText) {
-                            //On ajoute l'equi
+                            //On ajoute l'equipe
                             addTeam(promptText);
                         }
                     });

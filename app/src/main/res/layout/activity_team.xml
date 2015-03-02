@@ -1,0 +1,64 @@
+<RelativeLayout
+    android:id="@+id/root"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ultimatelinemanager.activity.TeamActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_20"
+        >
+
+
+        <ImageView
+            android:id="@+id/ta_logo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:src="@drawable/ic_launcher"/>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/mt_bt_players"
+                android:layout_width="@dimen/main_activity_bt_width"
+                android:layout_height="@dimen/main_activity_bt_height"
+                android:layout_gravity="center"
+                android:text="@string/ta_bt_players"
+                android:textColor="?attr/color_composant_main_text"
+                />
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/margin_5"
+                />
+
+            <Button
+                android:id="@+id/ta_bt_games"
+                android:layout_width="@dimen/main_activity_bt_width"
+                android:layout_height="@dimen/main_activity_bt_height"
+                android:layout_gravity="center"
+                android:text="@string/ta_bt_games"
+                android:textColor="?attr/color_composant_main_text"
+                />
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/margin_5"
+                />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

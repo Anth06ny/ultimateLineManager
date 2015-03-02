@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.ultimatelinemanager.activity.TeamActivity">
+
+    <item
+        android:id="@+id/menu_rename"
+        android:icon="@drawable/ic_action_edit"
+        android:orderInCategory="100"
+        android:title="@string/ta_bt_rename"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/menu_delete"
+        android:icon="@drawable/ic_action_delete"
+        android:orderInCategory="100"
+        android:title="@string/ta_bt_delete"
+        app:showAsAction="ifRoom"/>
+
+
+</menu>

@@ -13,6 +13,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.formation.utils.Utils;
 import com.ultimatelinemanager.R;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Created by amonteiro on 13/02/2015.
  */
@@ -27,7 +29,8 @@ public class DialogUtils {
      * @param callBack
      * @return
      */
-    public static MaterialDialog getPromptDialog(Context context, int iconId, int titleId, int positiveTextId, final PromptDialogCB callBack) {
+    public static MaterialDialog getPromptDialog(Context context, int iconId, int titleId, int positiveTextId, String editTextValue,
+            final PromptDialogCB callBack) {
 
         EditText dp_et;
         final View positiveAction;
@@ -68,6 +71,10 @@ public class DialogUtils {
             public void afterTextChanged(Editable s) {
             }
         });
+
+        if (StringUtils.isNotBlank(editTextValue)) {
+            dp_et.setText(editTextValue);
+        }
 
         return dialog;
     }

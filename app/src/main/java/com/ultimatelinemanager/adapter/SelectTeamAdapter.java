@@ -21,9 +21,11 @@ public class SelectTeamAdapter extends RecyclerView.Adapter<SelectTeamAdapter.Vi
 
     private List<TeamBean> teamDaoList;
     private String dateFormat;
+    private SelectTeamAdapterI selectTeamAdapterI;
 
-    public SelectTeamAdapter(Context context, List<TeamBean> teamDaoList) {
+    public SelectTeamAdapter(Context context, List<TeamBean> teamDaoList, SelectTeamAdapterI selectTeamAdapterI) {
         this.teamDaoList = teamDaoList;
+        this.selectTeamAdapterI = selectTeamAdapterI;
 
         dateFormat = DateUtils.getFormat(context, DateUtils.DATE_FORMAT.ddMMyyyy);
     }
@@ -35,7 +37,7 @@ public class SelectTeamAdapter extends RecyclerView.Adapter<SelectTeamAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_select_team, parent, false);
-        return new ViewHolder(v);
+        return new ViewHolder(v, selectTeamAdapterI);
     }
 
     @Override
@@ -43,6 +45,7 @@ public class SelectTeamAdapter extends RecyclerView.Adapter<SelectTeamAdapter.Vi
         TeamBean teamBean = teamDaoList.get(0);
         holder.st_row_tv1.setText(teamBean.getName());
         holder.st_row_tv2.setText(DateUtils.dateToString(teamBean.getCreation(), dateFormat));
+        holder.teamBean = teamBean;
 
     }
 
@@ -55,16 +58,34 @@ public class SelectTeamAdapter extends RecyclerView.Adapter<SelectTeamAdapter.Vi
     // View Holder
     // -------------------------------- */
 
-    protected static class ViewHolder extends RecyclerView.ViewHolder {
+    protected static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final TextView st_row_tv1;
         public final TextView st_row_tv2;
+        public TeamBean teamBean;
+        private SelectTeamAdapterI selectTeamAdapterI;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, SelectTeamAdapterI selectTeamAdapterI) {
             super(itemView);
             st_row_tv1 = (TextView) itemView.findViewById(R.id.st_row_tv1);
             st_row_tv2 = (TextView) itemView.findViewById(R.id.st_row_tv2);
+            itemView.setOnClickListener(this);
+            this.selectTeamAdapterI = selectTeamAdapterI;
         }
 
+        @Override
+        public void onClick(View v) {
+            if (selectTeamAdapterI != null) {
+                selectTeamAdapterI.selectTeamAdapter_onClick(teamBean);
+            }
+        }
+    }
+
+    /* ---------------------------------
+    // Interface
+    // -------------------------------- */
+
+    public interface SelectTeamAdapterI {
+        public void selectTeamAdapter_onClick(TeamBean teamBean);
     }
 
 }
