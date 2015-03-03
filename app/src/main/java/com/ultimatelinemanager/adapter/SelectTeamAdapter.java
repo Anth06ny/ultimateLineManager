@@ -59,23 +59,35 @@ public class SelectTeamAdapter extends RecyclerView.Adapter<SelectTeamAdapter.Vi
     // -------------------------------- */
 
     protected static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        //Composant graphique
         public final TextView st_row_tv1;
         public final TextView st_row_tv2;
+        public View root; //Pour le onclick
+        //Data
         public TeamBean teamBean;
-        private SelectTeamAdapterI selectTeamAdapterI;
+        private SelectTeamAdapterI callBack;
 
-        public ViewHolder(View itemView, SelectTeamAdapterI selectTeamAdapterI) {
+        public ViewHolder(View itemView, SelectTeamAdapterI callBack) {
             super(itemView);
             st_row_tv1 = (TextView) itemView.findViewById(R.id.st_row_tv1);
             st_row_tv2 = (TextView) itemView.findViewById(R.id.st_row_tv2);
-            itemView.setOnClickListener(this);
-            this.selectTeamAdapterI = selectTeamAdapterI;
+            root = itemView.findViewById(R.id.root);
+
+            root.setOnClickListener(this);
+
+            this.callBack = callBack;
         }
 
         @Override
         public void onClick(View v) {
-            if (selectTeamAdapterI != null) {
-                selectTeamAdapterI.selectTeamAdapter_onClick(teamBean);
+            if (callBack != null) {
+                //le postDelay permet de laisser finir l'effet du material design
+                v.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        callBack.selectTeamAdapter_onClick(teamBean);
+                    }
+                }, 200);
             }
         }
     }

@@ -13,6 +13,8 @@ import com.ultimatelinemanager.dao.TeamDaoManager;
 import com.ultimatelinemanager.metier.DialogUtils;
 import com.ultimatelinemanager.metier.IntentHelper;
 
+import org.apache.commons.lang3.StringUtils;
+
 import greendao.TeamBean;
 
 public class TeamActivity extends ActionBarActivity implements View.OnClickListener {
@@ -45,7 +47,7 @@ public class TeamActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     private void refreshTitle() {
-        getActionBar().setTitle(teamBean.getName());
+        setTitle(StringUtils.capitalize(teamBean.getName()));
     }
 
     /* ---------------------------------
@@ -84,6 +86,17 @@ public class TeamActivity extends ActionBarActivity implements View.OnClickListe
             return true;
         }
         else if (id == R.id.menu_delete) {
+            dialog = DialogUtils.getConfirmDialog(this, R.drawable.ic_action_delete, R.string.delete, getString(R.string.ta_delete_confirmation),
+                    new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            super.onPositive(dialog);
+                            deleteTeam();
+                        }
+                    });
+
+            dialog.show();
+
             return true;
         }
 
@@ -97,5 +110,14 @@ public class TeamActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
 
+    }
+
+    /* ---------------------------------
+    // private
+    // -------------------------------- */
+
+    private void deleteTeam() {
+        TeamDaoManager.getTeamDAO().delete(teamBean);
+        finish();
     }
 }

@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- ############################-->
+    <!--        Material               -->
+    <!-- ############################-->
+    <attr name="ripple_background_rounded" format="reference"/>
+
+    <!-- permet de faire une reaction differente pour les boutons style material design si on est sous lollipop ou non -->
+    <attr name="material_bt_bg" format="reference"/>
+    <attr name="material_bt_text_color" format="reference"/>
+    <!-- Pour le login ou les couleurs ne sont pas les même -->
+    <attr name="material_bt_text_color_white" format="reference"/>
+
+    <!-- ############################-->
+    <!--        Drawable               -->
+    <!-- ############################-->
+    <attr name="text_second_selected" format="reference"/>
+    <attr name="text_white_second_selected" format="reference"/>
+
 
     <!-- ****************** -->
     <!-- Main color    -->

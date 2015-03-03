@@ -114,12 +114,13 @@ public class SelectTeamActivity extends ActionBarActivity implements SelectTeamA
                         @Override
                         public void promptDialogCB_onPositiveClick(String promptText) {
                             //On ajoute l'equipe
-                            addTeam(promptText);
+                            addTeam(StringUtils.capitalize(promptText));
                         }
                     });
             dialog.show();
             return true;
         }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -161,5 +162,7 @@ public class SelectTeamActivity extends ActionBarActivity implements SelectTeamA
         }
 
     }
+
+
 
 }

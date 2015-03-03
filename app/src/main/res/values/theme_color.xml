@@ -6,6 +6,14 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <item name="actionBarStyle">@style/MyActionBar</item>
         <item name="android:windowNoTitle">true</item>
+
+        <item name="colorPrimary">?color_header</item>
+        <item name="colorPrimaryDark">?color_menu</item>
+        <item name="colorAccent">?color_composant_main</item>
+        <item name="colorControlNormal">?color_composant_main</item>
+        <item name="colorControlActivated">?color_composant_main_highlighted</item>
+        <item name="colorControlHighlight">?color_composant_main_highlighted</item>
+
     </style>
 
     <style name="AppThemeStart" parent="AppTheme_Color">
@@ -23,12 +31,25 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+    <!-- Base application theme. -->
+    <style name="MaterialTheme" parent="AppTheme">
+        <item name="ripple_background_rounded">?android:attr/selectableItemBackground</item>
+        <item name="material_bt_text_color">?text_second_selected</item>
+        <item name="material_bt_bg">@null</item>
+        <item name="material_bt_text_color_white">?text_white_second_selected</item>
+    </style>
 
     <!-- ############################-->
     <!--        Theme               -->
     <!-- ############################-->
     <!-- Base application theme. -->
-    <style name="AppTheme_Color" parent="AppTheme">
+    <style name="AppTheme_Color" parent="MaterialTheme">
+
+        <!-- ############################-->
+        <!--        Drawable               -->
+        <!-- ############################-->
+        <item name="text_second_selected">@drawable/blue_text_second_selected</item>
+        <item name="text_white_second_selected">@drawable/blue_text_white_second_selected</item>
 
         <!-- ****************** -->
         <!--     Color          -->

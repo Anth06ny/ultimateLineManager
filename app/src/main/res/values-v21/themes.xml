@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="MaterialTheme" parent="AppTheme">
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+        <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
+        <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
+
+        <!-- Pour avoir l'effet arrondu du ripple sur les textview et imageview en lollipop -->
+        <item name="ripple_background_rounded">?android:attr/selectableItemBackgroundBorderless</item>
+        <item name="material_bt_text_color">?color_text_second</item>
+        <item name="material_bt_text_color_white">@color/white</item>
+        <item name="material_bt_bg">?android:attr/selectableItemBackground</item>
+    </style>
+
+
+</resources>

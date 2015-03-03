@@ -53,6 +53,7 @@ public class DialogUtils {
                     }
                 }).build();
 
+        //On desactive le button tant que la valeur entrée est vide
         positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
         positiveAction.setEnabled(false);
 
@@ -77,6 +78,25 @@ public class DialogUtils {
         }
 
         return dialog;
+    }
+
+    public static MaterialDialog getConfirmDialog(Context context, int iconId, int titleId, String content,
+                                                MaterialDialog.ButtonCallback callback) {
+        Drawable d = context.getResources().getDrawable(iconId);
+        d.setColorFilter(Utils.getColorFromTheme(context, com.formation.utils.R.attr.color_composant_main), PorterDuff.Mode.MULTIPLY);
+
+        return new MaterialDialog.Builder(context).title(titleId).icon(d).positiveText(R.string.delete).negativeText(android.R.string.cancel)
+                .content(content).callback(callback).build();
+
+    }
+
+    public static MaterialDialog getOkDialog(Context context, int iconId, int titleId, String content) {
+
+        Drawable d = context.getResources().getDrawable(iconId);
+        d.setColorFilter(Utils.getColorFromTheme(context, com.formation.utils.R.attr.color_composant_main), PorterDuff.Mode.MULTIPLY);
+
+        return new MaterialDialog.Builder(context).title(titleId).icon(d).positiveText(com.formation.utils.R.string.ok).content(content).build();
+
     }
 
     public interface PromptDialogCB {

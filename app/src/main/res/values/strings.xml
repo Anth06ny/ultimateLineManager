@@ -3,6 +3,7 @@
 
     <string name="app_name">UltimateLineManager</string>
     <string name="add">Add</string>
+    <string name="delete">Delete</string>
 
     <!-- ################ -->
     <!-- Select team -->
@@ -12,6 +13,7 @@
     <string name="st_ask_team_name">Team Name : </string>
     <string name="st_team_not_add">Team hasn\'t been added</string>
     <string name="st_no_team">No team registered</string>
+
 
     <!-- ****************** -->
     <!-- MainActivity -->
@@ -37,6 +39,7 @@
     <string name="ta_bt_games">Games</string>
     <string name="ta_bt_rename">Rename</string>
     <string name="ta_bt_delete">Delete</string>
+    <string name="ta_delete_confirmation">Are you sure you want to delete this team?</string>
 
 
 </resources>
