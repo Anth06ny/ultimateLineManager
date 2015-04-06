@@ -25,10 +25,8 @@ public class PlayerBeanDao extends AbstractDao<PlayerBean, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Name = new Property(1, String.class, "name", false, "NAME");
-        public final static Property Firstname = new Property(2, String.class, "firstname", false, "FIRSTNAME");
-        public final static Property Surname = new Property(3, String.class, "surname", false, "SURNAME");
-        public final static Property Role = new Property(4, int.class, "role", false, "ROLE");
-        public final static Property Sexe = new Property(5, boolean.class, "sexe", false, "SEXE");
+        public final static Property Role = new Property(2, String.class, "role", false, "ROLE");
+        public final static Property Sexe = new Property(3, boolean.class, "sexe", false, "SEXE");
     };
 
 
@@ -46,10 +44,8 @@ public class PlayerBeanDao extends AbstractDao<PlayerBean, Long> {
         db.execSQL("CREATE TABLE " + constraint + "'PLAYER_BEAN' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
                 "'NAME' TEXT NOT NULL ," + // 1: name
-                "'FIRSTNAME' TEXT," + // 2: firstname
-                "'SURNAME' TEXT," + // 3: surname
-                "'ROLE' INTEGER NOT NULL ," + // 4: role
-                "'SEXE' INTEGER NOT NULL );"); // 5: sexe
+                "'ROLE' TEXT NOT NULL ," + // 2: role
+                "'SEXE' INTEGER NOT NULL );"); // 3: sexe
     }
 
     /** Drops the underlying database table. */
@@ -68,18 +64,8 @@ public class PlayerBeanDao extends AbstractDao<PlayerBean, Long> {
             stmt.bindLong(1, id);
         }
         stmt.bindString(2, entity.getName());
- 
-        String firstname = entity.getFirstname();
-        if (firstname != null) {
-            stmt.bindString(3, firstname);
-        }
- 
-        String surname = entity.getSurname();
-        if (surname != null) {
-            stmt.bindString(4, surname);
-        }
-        stmt.bindLong(5, entity.getRole());
-        stmt.bindLong(6, entity.getSexe() ? 1l: 0l);
+        stmt.bindString(3, entity.getRole());
+        stmt.bindLong(4, entity.getSexe() ? 1l: 0l);
     }
 
     /** @inheritdoc */
@@ -94,10 +80,8 @@ public class PlayerBeanDao extends AbstractDao<PlayerBean, Long> {
         PlayerBean entity = new PlayerBean( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.getString(offset + 1), // name
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // firstname
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // surname
-            cursor.getInt(offset + 4), // role
-            cursor.getShort(offset + 5) != 0 // sexe
+            cursor.getString(offset + 2), // role
+            cursor.getShort(offset + 3) != 0 // sexe
         );
         return entity;
     }
@@ -107,10 +91,8 @@ public class PlayerBeanDao extends AbstractDao<PlayerBean, Long> {
     public void readEntity(Cursor cursor, PlayerBean entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setName(cursor.getString(offset + 1));
-        entity.setFirstname(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setSurname(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setRole(cursor.getInt(offset + 4));
-        entity.setSexe(cursor.getShort(offset + 5) != 0);
+        entity.setRole(cursor.getString(offset + 2));
+        entity.setSexe(cursor.getShort(offset + 3) != 0);
      }
     
     /** @inheritdoc */

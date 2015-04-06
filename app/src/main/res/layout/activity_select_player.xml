@@ -1,0 +1,44 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?color_application_bg"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                tools:context="com.ultimatelinemanager.activity.SelectTeamActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/st_info"
+        android:textSize="@dimen/font_14"
+        android:textColor="?attr/color_text_main"
+        android:layout_marginBottom="@dimen/margin_10"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/st_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?color_application_bg"
+
+        tools:listitem="@layout/row_select_team"
+        android:layout_below="@+id/st_info"/>
+
+    <TextView
+        android:id="@+id/st_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?color_application_bg"
+        android:gravity="center"
+        android:text="@string/lpt_no_player"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="@dimen/font_20"
+        android:visibility="invisible"
+        android:layout_below="@+id/st_info"/>
+
+
+</RelativeLayout>

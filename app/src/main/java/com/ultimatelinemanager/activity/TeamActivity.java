@@ -109,7 +109,9 @@ public class TeamActivity extends ActionBarActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-
+        if(v == mt_bt_players) {
+            IntentHelper.goToListPlayerActivity(this, teamBean);
+        }
     }
 
     /* ---------------------------------

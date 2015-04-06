@@ -29,9 +29,7 @@ public class MyDaoGenerator {
         player.addIdProperty().getProperty();
         player.implementsSerializable();
         player.addStringProperty("name").notNull();
-        player.addStringProperty("firstname");
-        player.addStringProperty("surname");
-        player.addIntProperty("role").notNull();
+        player.addStringProperty("role").notNull();
         player.addBooleanProperty("sexe").notNull();
 
         /* ---------------------------------

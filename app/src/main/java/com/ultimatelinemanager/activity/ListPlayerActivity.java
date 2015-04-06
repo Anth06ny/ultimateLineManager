@@ -11,30 +11,30 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.formation.utils.ToastUtils;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.adapter.SelectAdapter;
+import com.ultimatelinemanager.dao.PlayerDaoManager;
 import com.ultimatelinemanager.dao.TeamDaoManager;
 import com.ultimatelinemanager.metier.DialogUtils;
 import com.ultimatelinemanager.metier.IntentHelper;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.ArrayList;
-import java.util.Date;
 
+import greendao.PlayerBean;
 import greendao.TeamBean;
 
-public class SelectTeamActivity extends ActionBarActivity implements SelectAdapter.SelectAdapterI<TeamBean> {
+public class ListPlayerActivity extends ActionBarActivity implements SelectAdapter.SelectAdapterI<PlayerBean> {
 
     //Composants graphiques
     private RecyclerView st_rv;
     private MaterialDialog dialog;
     private TextView st_empty;
+    private TextView st_info;
 
     //Autre
     private SelectAdapter adapter;
-    private ArrayList<TeamBean> teamBeanList;
+    private TeamBean teamBean;
+    private ArrayList<PlayerBean> playerBeanList;
 
     /* ---------------------------------
     // View
@@ -44,18 +44,28 @@ public class SelectTeamActivity extends ActionBarActivity implements SelectAdapt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_select_team);
+        setContentView(R.layout.activity_select_player);
+
+        //En fonction de si on a une equipe ou non l'ecran sera different
+        teamBean = (TeamBean) getIntent().getSerializableExtra(IntentHelper.TEAM_EXTRA);
 
         //RecylceView
         st_empty = (TextView) findViewById(R.id.st_empty);
         st_rv = (RecyclerView) findViewById(R.id.st_rv);
+        st_info = (TextView) findViewById(R.id.st_info);
         st_rv.setHasFixedSize(false);
         st_rv.setLayoutManager(new LinearLayoutManager(this));
         st_rv.setItemAnimator(new DefaultItemAnimator());
 
-        adapter = new SelectAdapter(this, teamBeanList = new ArrayList<>(), SelectAdapter.TYPE.TEAM, this);
+        adapter = new SelectAdapter(this, playerBeanList = new ArrayList<>(), SelectAdapter.TYPE.PLAYER, this);
 
         st_rv.setAdapter(adapter);
+
+        //Titre en fonction
+        setTitle(teamBean != null ? R.string.lpt_title : R.string.lpt_no_team_title);
+
+        //Info
+        st_info.setText(teamBean != null ? R.string.lpt_info : R.string.lpt_no_team_info);
 
     }
 
@@ -63,8 +73,8 @@ public class SelectTeamActivity extends ActionBarActivity implements SelectAdapt
     protected void onStart() {
         super.onStart();
         //On met à jour la liste
-        teamBeanList.clear();
-        teamBeanList.addAll(TeamDaoManager.getLast50Team());
+        playerBeanList.clear();
+        playerBeanList.addAll(TeamDaoManager.getPlayers(teamBean));
 
         adapter.notifyDataSetChanged();
 
@@ -84,8 +94,9 @@ public class SelectTeamActivity extends ActionBarActivity implements SelectAdapt
     // Callback List
     // -------------------------------- */
     @Override
-    public void selectAdapter_onClick(TeamBean teamBean) {
-        IntentHelper.goToTeamActivity(this, teamBean);
+    public void selectAdapter_onClick(PlayerBean bean) {
+        //IntentHelper.goToTeamActivity(this, teamBean);
+
     }
 
     /* ---------------------------------
@@ -95,7 +106,7 @@ public class SelectTeamActivity extends ActionBarActivity implements SelectAdapt
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_select_team, menu);
+        getMenuInflater().inflate(R.menu.menu_player_team, menu);
 
         return true;
     }
@@ -109,15 +120,21 @@ public class SelectTeamActivity extends ActionBarActivity implements SelectAdapt
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.menu_add) {
-            dialog = DialogUtils.getPromptDialog(this, R.drawable.ic_action_add_group, R.string.st_ask_team_name, R.string.add, "",
-                    new DialogUtils.PromptDialogCB() {
-                        @Override
-                        public void promptDialogCB_onPositiveClick(String promptText) {
-                            //On ajoute l'equipe
-                            addTeam(StringUtils.capitalize(promptText));
-                        }
-                    });
-            dialog.show();
+            //On affiche la page de séléction des joueurs enregistré dans le téléphone
+            if (teamBean != null) {
+                IntentHelper.goToListPlayerActivity(this, null);
+            }
+            else {
+                DialogUtils.getNewPlayerDialog(this, R.string.lpt_bt_new, R.string.add, new DialogUtils.NewPlayerPromptDialogCB() {
+                    @Override
+                    public void newPlayerpromptDialogCB_onPositiveClick(PlayerBean playerBean) {
+                        //on ajoute le nouveau joueur
+                        PlayerDaoManager.getPlayerDAO().insert(playerBean);
+                        refreshView();
+                    }
+                }).show();
+            }
+
             return true;
         }
 
@@ -129,7 +146,7 @@ public class SelectTeamActivity extends ActionBarActivity implements SelectAdapt
     // -------------------------------- */
 
     private void refreshView() {
-        if (teamBeanList.size() > 0) {
+        if (playerBeanList.size() > 0) {
             st_empty.setVisibility(View.INVISIBLE);
             st_rv.setVisibility(View.VISIBLE);
         }
@@ -138,28 +155,4 @@ public class SelectTeamActivity extends ActionBarActivity implements SelectAdapt
             st_rv.setVisibility(View.INVISIBLE);
         }
     }
-
-    private void addTeam(String teamName) {
-        if (StringUtils.isBlank(teamName)) {
-            return;
-        }
-
-        TeamBean teamBean = new TeamBean();
-        teamBean.setCreation(new Date());
-        teamBean.setName(teamName);
-
-        teamBean.setId(TeamDaoManager.getTeamDAO().insert(teamBean));
-
-        if (teamBean.getId() > 0) {
-            //On met à jour la liste
-            teamBeanList.add(0, teamBean);
-            adapter.notifyItemInserted(0);
-            refreshView();
-        }
-        else {
-            ToastUtils.showToastOnUIThread(this, R.string.st_team_not_add);
-        }
-
-    }
-
 }

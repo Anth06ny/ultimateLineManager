@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+
+    <!-- ################ -->
+    <!-- Common-->
+    <!-- ################ -->
     <string name="app_name">UltimateLineManager</string>
     <string name="add">Add</string>
     <string name="delete">Delete</string>
+    <string name="handler">Handler</string>
+    <string name="middle">Middle</string>
+    <string name="sexe">Sexe</string>
+    <string name="name">Name</string>
+    <string name="boy">Boy</string>
+    <string name="girl">Girl</string>
+
 
     <!-- ################ -->
     <!-- Select team -->
@@ -18,8 +29,8 @@
     <!-- ****************** -->
     <!-- MainActivity -->
     <!-- ****************** -->
-    <string name="ma_bt_new">New Game</string>
-    <string name="ma_bt_old">Old Game</string>
+    <string name="ma_bt_new">Team</string>
+    <string name="ma_bt_old">Last Game</string>
     <string name="ma_bt_player">Manage Player</string>
 
     <!-- ****************** -->
@@ -40,6 +51,18 @@
     <string name="ta_bt_rename">Rename</string>
     <string name="ta_bt_delete">Delete</string>
     <string name="ta_delete_confirmation">Are you sure you want to delete this team?</string>
+
+    <!-- ****************** -->
+    <!-- ListPlayerTeam -->
+    <!-- ****************** -->
+    <string name="lpt_title">Players</string>
+    <string name="lpt_no_team_title">Add Player</string>
+    <string name="lpt_no_team_info">Add a player of the database or create a new one.</string>
+    <string name="lpt_info">Players of your team.</string>
+    <string name="lpt_bt_new">New Player</string>
+    <string name="lpt_no_player">No player registered</string>
+    <string name="lpt_post">Post</string>
+    <string name="lpt_player_exist">Player already exist</string>
 
 
 </resources>

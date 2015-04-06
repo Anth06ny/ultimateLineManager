@@ -9,9 +9,8 @@ public class PlayerBean implements java.io.Serializable {
     private Long id;
     /** Not-null value. */
     private String name;
-    private String firstname;
-    private String surname;
-    private int role;
+    /** Not-null value. */
+    private String role;
     private boolean sexe;
 
     public PlayerBean() {
@@ -21,11 +20,9 @@ public class PlayerBean implements java.io.Serializable {
         this.id = id;
     }
 
-    public PlayerBean(Long id, String name, String firstname, String surname, int role, boolean sexe) {
+    public PlayerBean(Long id, String name, String role, boolean sexe) {
         this.id = id;
         this.name = name;
-        this.firstname = firstname;
-        this.surname = surname;
         this.role = role;
         this.sexe = sexe;
     }
@@ -48,27 +45,13 @@ public class PlayerBean implements java.io.Serializable {
         this.name = name;
     }
 
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public int getRole() {
+    /** Not-null value. */
+    public String getRole() {
         return role;
     }
 
-    public void setRole(int role) {
+    /** Not-null value; ensure this value is available before it is saved to the database. */
+    public void setRole(String role) {
         this.role = role;
     }
 
