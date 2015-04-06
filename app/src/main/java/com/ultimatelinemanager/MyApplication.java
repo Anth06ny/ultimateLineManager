@@ -13,6 +13,8 @@ import greendao.DaoSession;
  */
 public class MyApplication extends Application {
 
+    //TODO Tester l'ajout de joueur et faire les script de bdd
+
     private static MyApplication instance;
     private DaoSession daoSession;
 
