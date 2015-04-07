@@ -6,18 +6,16 @@ import android.content.Intent;
 import com.ultimatelinemanager.activity.ListPlayerActivity;
 import com.ultimatelinemanager.activity.TeamActivity;
 
-import greendao.TeamBean;
-
 /**
  * Created by Anthony on 02/03/2015.
  */
 public class IntentHelper {
 
-    public static String TEAM_EXTRA = "TEAM_EXTRA";
+    public static String TEAM_EXTRA_ID = "TEAM_EXTRA_ID";
 
-    public static void goToTeamActivity(Activity activity, TeamBean teamBean) {
+    public static void goToTeamActivity(Activity activity, Long teamBeanId) {
         Intent intent = new Intent(activity, TeamActivity.class);
-        intent.putExtra(TEAM_EXTRA, teamBean);
+        intent.putExtra(TEAM_EXTRA_ID, teamBeanId);
         activity.startActivity(intent);
     }
 
@@ -26,9 +24,9 @@ public class IntentHelper {
      * @param activity
      * @param teamBean
      */
-    public static void goToListPlayerActivity(Activity activity, TeamBean teamBean) {
+    public static void goToListPlayerActivity(Activity activity, Long teamBeanId) {
         Intent intent = new Intent(activity, ListPlayerActivity.class);
-        intent.putExtra(TEAM_EXTRA, teamBean);
+        intent.putExtra(TEAM_EXTRA_ID, teamBeanId);
         activity.startActivity(intent);
     }
 }

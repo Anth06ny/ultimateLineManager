@@ -47,7 +47,7 @@ public class ListPlayerActivity extends ActionBarActivity implements SelectAdapt
         setContentView(R.layout.activity_select_player);
 
         //En fonction de si on a une equipe ou non l'ecran sera different
-        teamBean = (TeamBean) getIntent().getSerializableExtra(IntentHelper.TEAM_EXTRA);
+        teamBean = TeamDaoManager.getTeamDAO().load(getIntent().getLongExtra(IntentHelper.TEAM_EXTRA_ID, -1));
 
         //RecylceView
         st_empty = (TextView) findViewById(R.id.st_empty);
@@ -62,7 +62,12 @@ public class ListPlayerActivity extends ActionBarActivity implements SelectAdapt
         st_rv.setAdapter(adapter);
 
         //Titre en fonction
-        setTitle(teamBean != null ? R.string.lpt_title : R.string.lpt_no_team_title);
+        if (teamBean != null) {
+            setTitle(getString(R.string.lpt_title, teamBean.getName()));
+        }
+        else {
+            setTitle(R.string.lpt_no_team_title);
+        }
 
         //Info
         st_info.setText(teamBean != null ? R.string.lpt_info : R.string.lpt_no_team_info);
@@ -72,11 +77,6 @@ public class ListPlayerActivity extends ActionBarActivity implements SelectAdapt
     @Override
     protected void onStart() {
         super.onStart();
-        //On met à jour la liste
-        playerBeanList.clear();
-        playerBeanList.addAll(TeamDaoManager.getPlayers(teamBean));
-
-        adapter.notifyDataSetChanged();
 
         refreshView();
 
@@ -106,36 +106,36 @@ public class ListPlayerActivity extends ActionBarActivity implements SelectAdapt
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_player_team, menu);
+        getMenuInflater().inflate(R.menu.menu_list_player, menu);
 
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        switch (item.getItemId()) {
+            case R.id.menu_add:
+                //On affiche la page de séléction des joueurs enregistré dans le téléphone
+                if (teamBean != null) {
+                    IntentHelper.goToListPlayerActivity(this, null);
+                }
+                else {
+                    DialogUtils.getNewPlayerDialog(this, R.string.lpt_bt_new, R.string.add, new DialogUtils.NewPlayerPromptDialogCB() {
+                        @Override
+                        public void newPlayerpromptDialogCB_onPositiveClick(PlayerBean playerBean) {
+                            //on ajoute le nouveau joueur
+                            PlayerDaoManager.getPlayerDAO().insert(playerBean);
+                            refreshView();
+                        }
+                    }).show();
+                }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.menu_add) {
-            //On affiche la page de séléction des joueurs enregistré dans le téléphone
-            if (teamBean != null) {
-                IntentHelper.goToListPlayerActivity(this, null);
-            }
-            else {
-                DialogUtils.getNewPlayerDialog(this, R.string.lpt_bt_new, R.string.add, new DialogUtils.NewPlayerPromptDialogCB() {
-                    @Override
-                    public void newPlayerpromptDialogCB_onPositiveClick(PlayerBean playerBean) {
-                        //on ajoute le nouveau joueur
-                        PlayerDaoManager.getPlayerDAO().insert(playerBean);
-                        refreshView();
-                    }
-                }).show();
-            }
+                return true;
 
-            return true;
+                //bouton fleche retour
+            case android.R.id.home:
+                finish();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -146,13 +146,24 @@ public class ListPlayerActivity extends ActionBarActivity implements SelectAdapt
     // -------------------------------- */
 
     private void refreshView() {
-        if (playerBeanList.size() > 0) {
-            st_empty.setVisibility(View.INVISIBLE);
-            st_rv.setVisibility(View.VISIBLE);
-        }
-        else {
-            st_empty.setVisibility(View.VISIBLE);
-            st_rv.setVisibility(View.INVISIBLE);
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //On met à jour la liste
+                playerBeanList.clear();
+                playerBeanList.addAll(TeamDaoManager.getPlayers(teamBean));
+
+                adapter.notifyDataSetChanged();
+
+                if (playerBeanList.size() > 0) {
+                    st_empty.setVisibility(View.INVISIBLE);
+                    st_rv.setVisibility(View.VISIBLE);
+                }
+                else {
+                    st_empty.setVisibility(View.VISIBLE);
+                    st_rv.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
     }
 }

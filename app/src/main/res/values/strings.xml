@@ -14,6 +14,7 @@
     <string name="name">Name</string>
     <string name="boy">Boy</string>
     <string name="girl">Girl</string>
+    <string name="erreur_generique">An technical error has occurred</string>
 
 
     <!-- ################ -->
@@ -55,8 +56,8 @@
     <!-- ****************** -->
     <!-- ListPlayerTeam -->
     <!-- ****************** -->
-    <string name="lpt_title">Players</string>
-    <string name="lpt_no_team_title">Add Player</string>
+    <string name="lpt_title">Players of %1$s</string>
+    <string name="lpt_no_team_title">Existing Players</string>
     <string name="lpt_no_team_info">Add a player of the database or create a new one.</string>
     <string name="lpt_info">Players of your team.</string>
     <string name="lpt_bt_new">New Player</string>

@@ -7,17 +7,17 @@ import de.greenrobot.dao.DaoException;
 /**
  * Entity mapped to table TEAM_PLAYER.
  */
-public class team_player {
+public class TeamPlayer {
 
     private Long id;
-    private Long teamId;
-    private Long playerId;
+    private long teamId;
+    private long playerId;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
 
     /** Used for active entity operations. */
-    private transient team_playerDao myDao;
+    private transient TeamPlayerDao myDao;
 
     private TeamBean teamBean;
     private Long teamBean__resolvedKey;
@@ -26,14 +26,14 @@ public class team_player {
     private Long playerBean__resolvedKey;
 
 
-    public team_player() {
+    public TeamPlayer() {
     }
 
-    public team_player(Long id) {
+    public TeamPlayer(Long id) {
         this.id = id;
     }
 
-    public team_player(Long id, Long teamId, Long playerId) {
+    public TeamPlayer(Long id, long teamId, long playerId) {
         this.id = id;
         this.teamId = teamId;
         this.playerId = playerId;
@@ -42,7 +42,7 @@ public class team_player {
     /** called by internal mechanisms, do not call yourself. */
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getTeam_playerDao() : null;
+        myDao = daoSession != null ? daoSession.getTeamPlayerDao() : null;
     }
 
     public Long getId() {
@@ -53,25 +53,25 @@ public class team_player {
         this.id = id;
     }
 
-    public Long getTeamId() {
+    public long getTeamId() {
         return teamId;
     }
 
-    public void setTeamId(Long teamId) {
+    public void setTeamId(long teamId) {
         this.teamId = teamId;
     }
 
-    public Long getPlayerId() {
+    public long getPlayerId() {
         return playerId;
     }
 
-    public void setPlayerId(Long playerId) {
+    public void setPlayerId(long playerId) {
         this.playerId = playerId;
     }
 
     /** To-one relationship, resolved on first access. */
     public TeamBean getTeamBean() {
-        Long __key = this.teamId;
+        long __key = this.teamId;
         if (teamBean__resolvedKey == null || !teamBean__resolvedKey.equals(__key)) {
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -87,16 +87,19 @@ public class team_player {
     }
 
     public void setTeamBean(TeamBean teamBean) {
+        if (teamBean == null) {
+            throw new DaoException("To-one property 'teamId' has not-null constraint; cannot set to-one to null");
+        }
         synchronized (this) {
             this.teamBean = teamBean;
-            teamId = teamBean == null ? null : teamBean.getId();
+            teamId = teamBean.getId();
             teamBean__resolvedKey = teamId;
         }
     }
 
     /** To-one relationship, resolved on first access. */
     public PlayerBean getPlayerBean() {
-        Long __key = this.playerId;
+        long __key = this.playerId;
         if (playerBean__resolvedKey == null || !playerBean__resolvedKey.equals(__key)) {
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -112,9 +115,12 @@ public class team_player {
     }
 
     public void setPlayerBean(PlayerBean playerBean) {
+        if (playerBean == null) {
+            throw new DaoException("To-one property 'playerId' has not-null constraint; cannot set to-one to null");
+        }
         synchronized (this) {
             this.playerBean = playerBean;
-            playerId = playerBean == null ? null : playerBean.getId();
+            playerId = playerBean.getId();
             playerBean__resolvedKey = playerId;
         }
     }

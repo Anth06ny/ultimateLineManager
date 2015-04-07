@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.formation.utils.LogUtils;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.dao.TeamDaoManager;
 import com.ultimatelinemanager.metier.DialogUtils;
@@ -18,6 +19,8 @@ import org.apache.commons.lang3.StringUtils;
 import greendao.TeamBean;
 
 public class TeamActivity extends ActionBarActivity implements View.OnClickListener {
+
+    private static final String TAG = LogUtils.getLogTag(TeamActivity.class);
 
     //Composant graphique
     private MaterialDialog dialog;
@@ -37,10 +40,13 @@ public class TeamActivity extends ActionBarActivity implements View.OnClickListe
         mt_bt_players.setOnClickListener(this);
         ta_bt_games.setOnClickListener(this);
 
-        teamBean = (TeamBean) getIntent().getSerializableExtra(IntentHelper.TEAM_EXTRA);
+        long teamId = getIntent().getLongExtra(IntentHelper.TEAM_EXTRA_ID, -1);
+        teamBean = TeamDaoManager.getTeamDAO().load(teamId);
 
         if (teamBean == null) {
+            LogUtils.logMessage(TAG, "teamBean à nulle, teamId=" + teamId);
             finish();
+            return;
         }
         refreshTitle();
 
@@ -109,8 +115,8 @@ public class TeamActivity extends ActionBarActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if(v == mt_bt_players) {
-            IntentHelper.goToListPlayerActivity(this, teamBean);
+        if (v == mt_bt_players) {
+            IntentHelper.goToListPlayerActivity(this, teamBean.getId());
         }
     }
 

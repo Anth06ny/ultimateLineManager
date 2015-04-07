@@ -9,38 +9,45 @@ public class MyDaoGenerator {
 
     public static void main(String args[]) throws Exception {
 
-        final int DAO_VERSION = 1;
+        final int DAO_VERSION = 2;
 
         Schema schema = new Schema(DAO_VERSION, "greendao");
 
         /* ---------------------------------
         // Table Equipe
         // -------------------------------- */
-        Entity team = schema.addEntity("TeamBean");
-        team.addIdProperty().getProperty();
-        team.implementsSerializable();
-        team.addStringProperty("name").notNull();
-        team.addDateProperty("creation").notNull();
+        Entity teamBean = schema.addEntity("TeamBean");
+        teamBean.addIdProperty().getProperty();
+        teamBean.implementsSerializable();
+        teamBean.addStringProperty("name").notNull();
+        teamBean.addDateProperty("creation").notNull();
 
         /* ---------------------------------
         // Table Joueur
         // -------------------------------- */
-        Entity player = schema.addEntity("PlayerBean");
-        player.addIdProperty().getProperty();
-        player.implementsSerializable();
-        player.addStringProperty("name").notNull();
-        player.addStringProperty("role").notNull();
-        player.addBooleanProperty("sexe").notNull();
+        Entity playerBean = schema.addEntity("PlayerBean");
+        playerBean.addIdProperty().getProperty();
+        playerBean.implementsSerializable();
+        playerBean.addStringProperty("name").notNull();
+        playerBean.addStringProperty("role").notNull();
+        playerBean.addBooleanProperty("sexe").notNull();
 
         /* ---------------------------------
         // Table Equipe - Joueur
         // -------------------------------- */
-        Entity teamPlayer = schema.addEntity("team_player");
-        teamPlayer.addIdProperty();
-        Property teamId = teamPlayer.addLongProperty("teamId").getProperty();
-        teamPlayer.addToOne(team, teamId);
-        Property playerId = teamPlayer.addLongProperty("playerId").getProperty();
-        teamPlayer.addToOne(player, playerId);
+        //On ne peut pas mettre des primaryKey sur plusieurs valeurs
+        Entity teamPlayer = schema.addEntity("TeamPlayer");
+        teamPlayer.addIdProperty().getProperty();
+        //Relation : Team* teamPlayer
+        Property teamId = teamPlayer.addLongProperty("teamId").notNull().getProperty();
+        teamBean.addToMany(teamPlayer, teamId);
+        //Relation : TeamPlayer 1 TeamBean
+        teamPlayer.addToOne(teamBean, teamId);
+        //Relation : Player * teamPlayer
+        Property playerId = teamPlayer.addLongProperty("playerId").notNull().getProperty();
+        playerBean.addToMany(teamPlayer, playerId);
+        //Relation : TeamPlayer 1 Player
+        teamPlayer.addToOne(playerBean, playerId);
 
         new DaoGenerator().generateAll(schema, args[0]);
     }

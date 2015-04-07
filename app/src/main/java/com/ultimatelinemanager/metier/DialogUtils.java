@@ -14,6 +14,7 @@ import android.widget.RadioGroup;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.formation.utils.LogUtils;
 import com.formation.utils.ToastUtils;
 import com.formation.utils.Utils;
 import com.ultimatelinemanager.R;
@@ -135,14 +136,8 @@ public class DialogUtils {
                         if (callBack != null) {
                             PlayerBean playerBean = new PlayerBean();
 
-                            EditText editText = (EditText) dialog.getCustomView().findViewById(R.id.dp_et);
-                            //Si le nom existe déjà.
-                            if (PlayerDaoManager.existPlayer(playerBean.getName())) {
-                                ToastUtils.showToastOnUIThread(context, R.string.lpt_player_exist);
-                                return;
-                            }
-
-                            playerBean.setName(editText.getText().toString());
+                            EditText np_name = (EditText) dialog.getCustomView().findViewById(R.id.np_name);
+                            playerBean.setName(np_name.getText().toString());
 
                             final CheckBox np_cb_handler = (CheckBox) dialog.getCustomView().findViewById(R.id.np_cb_handler);
                             final CheckBox np_cb_middle = (CheckBox) dialog.getCustomView().findViewById(R.id.np_cb_middle);
@@ -159,9 +154,22 @@ public class DialogUtils {
 
                             playerBean.setSexe(((RadioButton) dialog.getCustomView().findViewById(R.id.np_rb_boy)).isChecked());
 
-                            callBack.newPlayerpromptDialogCB_onPositiveClick(playerBean);
+                            try {
 
-                            dialog.dismiss();
+                                if (!PlayerDaoManager.existPlayer(playerBean.getName())) {
+                                    callBack.newPlayerpromptDialogCB_onPositiveClick(playerBean);
+                                    dialog.dismiss();
+                                }
+                                else {
+                                    //Si le nom existe déjà.
+                                    ToastUtils.showToastOnUIThread(context, R.string.lpt_player_exist);
+                                }
+                            }
+                            catch (Throwable e) {
+                                LogUtils.logException(getClass(), e, true);
+                                ToastUtils.showToastOnUIThread(context, R.string.erreur_generique);
+                                return;
+                            }
                         }
                     }
 
@@ -175,20 +183,20 @@ public class DialogUtils {
         final View positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
         positiveAction.setEnabled(false);
 
-        final EditText dp_et = (EditText) dialog.getCustomView().findViewById(R.id.np_name);
+        final EditText np_name = (EditText) dialog.getCustomView().findViewById(R.id.np_name);
         final CheckBox np_cb_handler = (CheckBox) dialog.getCustomView().findViewById(R.id.np_cb_handler);
         final CheckBox np_cb_middle = (CheckBox) dialog.getCustomView().findViewById(R.id.np_cb_middle);
         final RadioGroup np_rg_sexe = (RadioGroup) dialog.getCustomView().findViewById(R.id.np_rg_sexe);
 
         //l'edit text
-        dp_et.addTextChangedListener(new TextWatcher() {
+        np_name.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                showPositiveButton(dp_et, np_cb_handler, np_cb_middle, np_rg_sexe, positiveAction);
+                showPositiveButton(np_name, np_cb_handler, np_cb_middle, np_rg_sexe, positiveAction);
             }
 
             @Override
@@ -200,7 +208,7 @@ public class DialogUtils {
         CompoundButton.OnCheckedChangeListener listener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                showPositiveButton(dp_et, np_cb_handler, np_cb_middle, np_rg_sexe, positiveAction);
+                showPositiveButton(np_name, np_cb_handler, np_cb_middle, np_rg_sexe, positiveAction);
             }
         };
         np_cb_handler.setOnCheckedChangeListener(listener);
@@ -208,7 +216,7 @@ public class DialogUtils {
         np_rg_sexe.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                showPositiveButton(dp_et, np_cb_handler, np_cb_middle, np_rg_sexe, positiveAction);
+                showPositiveButton(np_name, np_cb_handler, np_cb_middle, np_rg_sexe, positiveAction);
             }
         });
 

@@ -8,6 +8,7 @@ import java.util.List;
 import greendao.PlayerBean;
 import greendao.TeamBean;
 import greendao.TeamBeanDao;
+import greendao.TeamPlayer;
 
 /**
  * Created by amonteiro on 13/02/2015.
@@ -33,7 +34,19 @@ public class TeamDaoManager {
      */
     public static List<PlayerBean> getPlayers(TeamBean teamBean) {
 
-        return new ArrayList<>();
+        //On recupere l'ensemble des teamPlayer ascocié à l'equipe
+        if (teamBean != null) {
+            ArrayList<PlayerBean> playerBeanArrayList = new ArrayList<>();
+            teamBean.refresh();
+            for (TeamPlayer teamPlayer : teamBean.getTeamPlayerList()) {
+                playerBeanArrayList.add(teamPlayer.getPlayerBean());
+            }
+            return playerBeanArrayList;
+        }
+        else {
+            //Sinon on retourne l'ensemble des joueur
+            return PlayerDaoManager.getAllPlayer();
+        }
     }
 
 }

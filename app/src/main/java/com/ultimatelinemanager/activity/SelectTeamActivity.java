@@ -85,7 +85,7 @@ public class SelectTeamActivity extends ActionBarActivity implements SelectAdapt
     // -------------------------------- */
     @Override
     public void selectAdapter_onClick(TeamBean teamBean) {
-        IntentHelper.goToTeamActivity(this, teamBean);
+        IntentHelper.goToTeamActivity(this, teamBean.getId());
     }
 
     /* ---------------------------------

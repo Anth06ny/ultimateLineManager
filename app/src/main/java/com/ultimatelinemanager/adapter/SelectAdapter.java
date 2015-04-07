@@ -13,6 +13,7 @@ import com.ultimatelinemanager.R;
 
 import java.util.List;
 
+import greendao.PlayerBean;
 import greendao.TeamBean;
 
 /**
@@ -64,12 +65,16 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
         switch (type) {
 
             case TEAM:
-                TeamBean teamBean = (TeamBean) daoList.get(0);
+                TeamBean teamBean = (TeamBean) daoList.get(position);
                 holder.row_tv1.setText(teamBean.getName());
                 holder.row_tv2.setText(DateUtils.dateToString(teamBean.getCreation(), dateFormat));
                 holder.bean = teamBean;
                 break;
             case PLAYER:
+                PlayerBean playerBean = (PlayerBean) daoList.get(position);
+                holder.row_tv1.setText(playerBean.getName());
+                holder.row_tv2.setText(playerBean.getRole());
+                holder.bean = playerBean;
                 break;
         }
 

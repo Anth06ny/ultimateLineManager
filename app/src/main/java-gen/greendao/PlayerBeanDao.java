@@ -29,6 +29,8 @@ public class PlayerBeanDao extends AbstractDao<PlayerBean, Long> {
         public final static Property Sexe = new Property(3, boolean.class, "sexe", false, "SEXE");
     };
 
+    private DaoSession daoSession;
+
 
     public PlayerBeanDao(DaoConfig config) {
         super(config);
@@ -36,6 +38,7 @@ public class PlayerBeanDao extends AbstractDao<PlayerBean, Long> {
     
     public PlayerBeanDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
+        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -66,6 +69,12 @@ public class PlayerBeanDao extends AbstractDao<PlayerBean, Long> {
         stmt.bindString(2, entity.getName());
         stmt.bindString(3, entity.getRole());
         stmt.bindLong(4, entity.getSexe() ? 1l: 0l);
+    }
+
+    @Override
+    protected void attachEntity(PlayerBean entity) {
+        super.attachEntity(entity);
+        entity.__setDaoSession(daoSession);
     }
 
     /** @inheritdoc */

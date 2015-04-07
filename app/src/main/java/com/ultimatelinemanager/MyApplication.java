@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.ultimatelinemanager.dao.MyOpenHelper;
 
+import de.greenrobot.dao.query.QueryBuilder;
 import greendao.DaoMaster;
 import greendao.DaoSession;
 
@@ -36,6 +37,8 @@ public class MyApplication extends Application {
     private void initDatabase() {
 
         MyOpenHelper helper = new MyOpenHelper(this, Constante.DB_TABLE_NAME, null);
+        QueryBuilder.LOG_SQL = true;
+        QueryBuilder.LOG_VALUES = true;
         SQLiteDatabase db = helper.getWritableDatabase();
         DaoMaster daoMaster = new DaoMaster(db);
         daoSession = daoMaster.newSession();

@@ -28,6 +28,8 @@ public class TeamBeanDao extends AbstractDao<TeamBean, Long> {
         public final static Property Creation = new Property(2, java.util.Date.class, "creation", false, "CREATION");
     };
 
+    private DaoSession daoSession;
+
 
     public TeamBeanDao(DaoConfig config) {
         super(config);
@@ -35,6 +37,7 @@ public class TeamBeanDao extends AbstractDao<TeamBean, Long> {
     
     public TeamBeanDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
+        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -63,6 +66,12 @@ public class TeamBeanDao extends AbstractDao<TeamBean, Long> {
         }
         stmt.bindString(2, entity.getName());
         stmt.bindLong(3, entity.getCreation().getTime());
+    }
+
+    @Override
+    protected void attachEntity(TeamBean entity) {
+        super.attachEntity(entity);
+        entity.__setDaoSession(daoSession);
     }
 
     /** @inheritdoc */

@@ -56,9 +56,15 @@ public class LogUtils {
         Log.w(SET_DEBUG_LOGTAG, log);
     }
 
-    public static void logException(final String TAG, final Throwable e) {
+    public static void logException(final String TAG, final Throwable e, boolean crashLytics) {
         if (BuildConfig.DEBUG) {
             Log.e(TAG, Log.getStackTraceString(e));
+        }
+    }
+
+    public static void logException(final Class<?> clazz, final Throwable e, boolean crashLytics) {
+        if (BuildConfig.DEBUG) {
+            logException(getLogTag(clazz), e, crashLytics);
         }
     }
 
