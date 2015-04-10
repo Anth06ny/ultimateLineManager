@@ -43,4 +43,6 @@ dependencies {
 
     //dialog https://github.com/afollestad/material-dialogs
     compile 'com.afollestad:material-dialogs:0.6.2.4'
+
+
 }

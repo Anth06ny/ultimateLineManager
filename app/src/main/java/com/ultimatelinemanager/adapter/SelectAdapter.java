@@ -30,12 +30,17 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
     private SelectAdapterI selectAdapterI;
     private TYPE type;
 
+    //config
+    private int girlColor, boyColor;
+
     public SelectAdapter(Context context, List<?> daoList, TYPE type, SelectAdapterI selectAdapterI) {
         this.daoList = daoList;
         this.selectAdapterI = selectAdapterI;
         this.type = type;
 
         dateFormat = DateUtils.getFormat(context, DateUtils.DATE_FORMAT.ddMMyyyy);
+        girlColor = context.getResources().getColor(R.color.girl_color);
+        boyColor = context.getResources().getColor(R.color.boy_color);
     }
 
     /* ---------------------------------
@@ -74,6 +79,15 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
                 PlayerBean playerBean = (PlayerBean) daoList.get(position);
                 holder.row_tv1.setText(playerBean.getName());
                 holder.row_tv2.setText(playerBean.getRole());
+
+                //Couleur de l'image
+                if (playerBean.getSexe()) {
+                    holder.iv_main.setColorFilter(boyColor);
+                }
+                else {
+                    holder.iv_main.setColorFilter(girlColor);
+                }
+
                 holder.bean = playerBean;
                 break;
         }

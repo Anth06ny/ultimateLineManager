@@ -29,4 +29,14 @@ public class IntentHelper {
         intent.putExtra(TEAM_EXTRA_ID, teamBeanId);
         activity.startActivity(intent);
     }
+
+    /**
+     * La page de picker de joueur
+     * @param activity
+     * @param requestCode
+     */
+    public static void goToPickPlayer(Activity activity, int requestCode) {
+        Intent intent = new Intent(activity, ListPlayerActivity.class);
+        activity.startActivityForResult(intent, requestCode);
+    }
 }

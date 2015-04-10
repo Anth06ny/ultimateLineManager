@@ -14,7 +14,7 @@ import greendao.DaoSession;
  */
 public class MyApplication extends Application {
 
-    //TODO Tester l'ajout de joueur et faire les script de bdd
+    //TODO terminer le picker de joueur pour revenir sur la liste d'equipe et l'ajouter à l'equipe
 
     private static MyApplication instance;
     private DaoSession daoSession;

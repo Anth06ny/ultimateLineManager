@@ -1,5 +1,7 @@
 package com.ultimatelinemanager.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -24,6 +26,8 @@ import greendao.PlayerBean;
 import greendao.TeamBean;
 
 public class ListPlayerActivity extends ActionBarActivity implements SelectAdapter.SelectAdapterI<PlayerBean> {
+
+    private static final int PICK_PLAYER_REQ_CODE = 1;
 
     //Composants graphiques
     private RecyclerView st_rv;
@@ -57,6 +61,7 @@ public class ListPlayerActivity extends ActionBarActivity implements SelectAdapt
         st_rv.setLayoutManager(new LinearLayoutManager(this));
         st_rv.setItemAnimator(new DefaultItemAnimator());
 
+        //Utils.getColorFromTheme(this, R.attr.color_application_bg)
         adapter = new SelectAdapter(this, playerBeanList = new ArrayList<>(), SelectAdapter.TYPE.PLAYER, this);
 
         st_rv.setAdapter(adapter);
@@ -72,6 +77,14 @@ public class ListPlayerActivity extends ActionBarActivity implements SelectAdapt
         //Info
         st_info.setText(teamBean != null ? R.string.lpt_info : R.string.lpt_no_team_info);
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == PICK_PLAYER_REQ_CODE && resultCode == Activity.RESULT_OK) {
+            //On recupere notre jouer
+        }
     }
 
     @Override
@@ -95,8 +108,11 @@ public class ListPlayerActivity extends ActionBarActivity implements SelectAdapt
     // -------------------------------- */
     @Override
     public void selectAdapter_onClick(PlayerBean bean) {
-        //IntentHelper.goToTeamActivity(this, teamBean);
+        if (teamBean == null) {
+            //IntentHelper.goToTeamActivity(this, teamBean);
+        }
 
+        //On ajoute le nouveau joueur à la base
     }
 
     /* ---------------------------------
@@ -117,7 +133,7 @@ public class ListPlayerActivity extends ActionBarActivity implements SelectAdapt
             case R.id.menu_add:
                 //On affiche la page de séléction des joueurs enregistré dans le téléphone
                 if (teamBean != null) {
-                    IntentHelper.goToListPlayerActivity(this, null);
+                    IntentHelper.goToPickPlayer(this, PICK_PLAYER_REQ_CODE);
                 }
                 else {
                     DialogUtils.getNewPlayerDialog(this, R.string.lpt_bt_new, R.string.add, new DialogUtils.NewPlayerPromptDialogCB() {

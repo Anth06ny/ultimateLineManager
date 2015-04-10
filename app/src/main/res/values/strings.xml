@@ -58,7 +58,7 @@
     <!-- ****************** -->
     <string name="lpt_title">Players of %1$s</string>
     <string name="lpt_no_team_title">Existing Players</string>
-    <string name="lpt_no_team_info">Add a player of the database or create a new one.</string>
+    <string name="lpt_no_team_info">Add players of the database or create a new one.</string>
     <string name="lpt_info">Players of your team.</string>
     <string name="lpt_bt_new">New Player</string>
     <string name="lpt_no_player">No player registered</string>
