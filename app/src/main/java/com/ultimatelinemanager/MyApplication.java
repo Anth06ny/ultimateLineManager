@@ -14,7 +14,7 @@ import greendao.DaoSession;
  */
 public class MyApplication extends Application {
 
-    //TODO terminer le picker de joueur pour revenir sur la liste d'equipe et l'ajouter à l'equipe
+    //TODO Créer écran adversaire, écran match, ecran point , ecran selection joueur pour un point
 
     private static MyApplication instance;
     private DaoSession daoSession;
