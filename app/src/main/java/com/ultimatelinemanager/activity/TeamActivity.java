@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.formation.utils.LogUtils;
+import com.ultimatelinemanager.Constante;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.dao.TeamDaoManager;
 import com.ultimatelinemanager.metier.DialogUtils;
@@ -40,7 +41,7 @@ public class TeamActivity extends ActionBarActivity implements View.OnClickListe
         mt_bt_players.setOnClickListener(this);
         ta_bt_games.setOnClickListener(this);
 
-        long teamId = getIntent().getLongExtra(IntentHelper.TEAM_EXTRA_ID, -1);
+        long teamId = getIntent().getLongExtra(Constante.TEAM_EXTRA_ID, -1);
         teamBean = TeamDaoManager.getTeamDAO().load(teamId);
 
         if (teamBean == null) {
@@ -116,7 +117,7 @@ public class TeamActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if (v == mt_bt_players) {
-            IntentHelper.goToListPlayerActivity(this, teamBean.getId());
+            IntentHelper.goToListPlayerTeamActivity(this, teamBean.getId());
         }
     }
 

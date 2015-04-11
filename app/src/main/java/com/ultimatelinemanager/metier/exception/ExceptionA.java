@@ -1,11 +1,10 @@
-package com.formation.utils.exceptions;
+package com.ultimatelinemanager.metier.exception;
 
 /**
  * Created by amonteiro on 17/09/2014.
  */
 public class ExceptionA extends Exception {
 
-    private String exceptionName;
     private String messageUtilisateur, messageTechnique;
     private int codeErreur;
 
@@ -17,11 +16,10 @@ public class ExceptionA extends Exception {
      * @param messageUtilisateur message que recevra l'utilisateur
      * @param messageTechnique   message pour les logs
      */
-    public ExceptionA(String exceptionName, String messageUtilisateur, String messageTechnique) {
+    public ExceptionA(String messageUtilisateur, String messageTechnique) {
         super();
         this.messageUtilisateur = messageUtilisateur;
         this.messageTechnique = messageTechnique;
-        this.exceptionName = exceptionName;
     }
 
     /**
@@ -29,11 +27,10 @@ public class ExceptionA extends Exception {
      * @param messageTechnique   message pour les logs
      * @param throwable
      */
-    public ExceptionA(String exceptionName, String messageUtilisateur, String messageTechnique, Throwable throwable) {
+    public ExceptionA(String messageUtilisateur, String messageTechnique, Throwable throwable) {
         super(throwable);
         this.messageUtilisateur = messageUtilisateur;
         this.messageTechnique = messageTechnique;
-        this.exceptionName = exceptionName;
     }
 
     @Override
@@ -54,15 +51,4 @@ public class ExceptionA extends Exception {
         return messageTechnique;
     }
 
-    public String getExceptionName() {
-        return exceptionName;
-    }
-
-    public int getCodeErreur() {
-        return codeErreur;
-    }
-
-    public void setCodeErreur(int codeErreur) {
-        this.codeErreur = codeErreur;
-    }
 }

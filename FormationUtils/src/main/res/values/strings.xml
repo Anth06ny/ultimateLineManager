@@ -6,6 +6,7 @@
     <string name="ok">OK</string>
     <string name="valider">Valider</string>
     <string name="annuler">Annuler</string>
+    <string name="not_implemented">Not yet implemented</string>
 
     <!-- Date format -->
     <string name="date_ddMMyyyy">yyyy/MM/dd</string>

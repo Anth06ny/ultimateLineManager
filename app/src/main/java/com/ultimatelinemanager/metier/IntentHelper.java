@@ -3,30 +3,30 @@ package com.ultimatelinemanager.metier;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.ultimatelinemanager.activity.ListPlayerActivity;
+import com.formation.utils.ToastUtils;
+import com.ultimatelinemanager.Constante;
 import com.ultimatelinemanager.activity.TeamActivity;
+import com.ultimatelinemanager.activity.list_players.PickerPlayerActivity;
+import com.ultimatelinemanager.activity.list_players.TeamPlayerActivity;
 
 /**
  * Created by Anthony on 02/03/2015.
  */
 public class IntentHelper {
 
-    public static String TEAM_EXTRA_ID = "TEAM_EXTRA_ID";
-
     public static void goToTeamActivity(Activity activity, Long teamBeanId) {
         Intent intent = new Intent(activity, TeamActivity.class);
-        intent.putExtra(TEAM_EXTRA_ID, teamBeanId);
+        intent.putExtra(Constante.TEAM_EXTRA_ID, teamBeanId);
         activity.startActivity(intent);
     }
 
     /**
      * Page de liste player
      * @param activity
-     * @param teamBean
      */
-    public static void goToListPlayerActivity(Activity activity, Long teamBeanId) {
-        Intent intent = new Intent(activity, ListPlayerActivity.class);
-        intent.putExtra(TEAM_EXTRA_ID, teamBeanId);
+    public static void goToListPlayerTeamActivity(Activity activity, Long teamBeanId) {
+        Intent intent = new Intent(activity, TeamPlayerActivity.class);
+        intent.putExtra(Constante.TEAM_EXTRA_ID, teamBeanId);
         activity.startActivity(intent);
     }
 
@@ -35,8 +35,14 @@ public class IntentHelper {
      * @param activity
      * @param requestCode
      */
-    public static void goToPickPlayer(Activity activity, int requestCode) {
-        Intent intent = new Intent(activity, ListPlayerActivity.class);
+    public static void goToPickPlayer(Activity activity, long teamPlayerId, int requestCode) {
+        Intent intent = new Intent(activity, PickerPlayerActivity.class);
+        intent.putExtra(Constante.TEAM_EXTRA_ID, teamPlayerId);
         activity.startActivityForResult(intent, requestCode);
+    }
+
+    public static void goToPlayerPage(Activity activity, long playerId) {
+        //TODO faire la page
+        ToastUtils.showNotImplementedToast(activity);
     }
 }

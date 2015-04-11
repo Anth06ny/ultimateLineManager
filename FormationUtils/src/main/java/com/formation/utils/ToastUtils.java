@@ -17,7 +17,6 @@ public class ToastUtils {
     public static Toast toast;
     public static int lastToastTaskId;
 
-
     /**
      * Envoie sur lUIThread s'il y a un UIThread
      * @param context
@@ -39,10 +38,9 @@ public class ToastUtils {
             showToast(context, message, length);
         }
 
-
     }
 
-    public static void showToast(final Context context, final String message, final int length){
+    public static void showToast(final Context context, final String message, final int length) {
         //on efface l'ancien pour eviter d'en avoir 50 en attente
         if (toast != null) {
             toast.cancel();
@@ -63,4 +61,7 @@ public class ToastUtils {
         showToastOnUIThread(context, context.getResources().getString(messageId), length);
     }
 
+    public static void showNotImplementedToast(final Context context) {
+        showToastOnUIThread(context, context.getResources().getString(R.string.not_implemented), Toast.LENGTH_SHORT);
+    }
 }

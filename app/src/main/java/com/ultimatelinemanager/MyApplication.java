@@ -31,6 +31,9 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        //On declare les constantes static
+        new Constante();
+
         initDatabase();
     }
 

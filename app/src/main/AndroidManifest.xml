@@ -32,14 +32,21 @@
             android:label="@string/title_activity_team"
             android:launchMode="singleTop">
         </activity>
-        <!-- On ne met pas l'activité en single top car on peut avoir plusieurs instence-->
+        <!-- On met l'activité en single top pour garder la team, mais une seul instance possible -->
         <activity
-            android:name=".activity.ListPlayerActivity"
+            android:name=".activity.list_players.TeamPlayerActivity"
             android:label="@string/lpt_title"
+            android:launchMode="singleTop"
             android:parentActivityName=".activity.TeamActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ultimatelinemanager.activity.TeamActivity"/>
+
+        </activity>
+
+        <activity
+            android:name=".activity.list_players.PickerPlayerActivity"
+            android:label="@string/lpt_title">
 
         </activity>
     </application>

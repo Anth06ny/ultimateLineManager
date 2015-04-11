@@ -1,4 +1,6 @@
-package com.formation.utils.exceptions;
+package com.ultimatelinemanager.metier.exception;
+
+import com.ultimatelinemanager.Constante;
 
 /**
  * Exception du à une erreur technique du code, ne doit pas se produire sinon c'est notre faute.
@@ -6,15 +8,13 @@ package com.formation.utils.exceptions;
  */
 public class TechnicalException extends ExceptionA {
 
-    private static final String exceptionName = TechnicalException.class.getName();
-
     /**
      * On affichera un message par defaut pour l'utilisateur
      *
      * @param messageTechnique
      */
     public TechnicalException(String messageTechnique) {
-        super(exceptionName, "Une erreur technique est intervenue", messageTechnique);
+        super(Constante.ERREUR_GENERIQUE, messageTechnique);
     }
 
     /**
@@ -23,7 +23,7 @@ public class TechnicalException extends ExceptionA {
      * @param messageTechnique
      */
     public TechnicalException(String messageTechnique, Throwable throwable) {
-        super(exceptionName, "Une erreur technique est intervenue", messageTechnique, throwable);
+        super(Constante.ERREUR_GENERIQUE, messageTechnique, throwable);
     }
 
 }
