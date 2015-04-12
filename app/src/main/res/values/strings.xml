@@ -67,8 +67,8 @@
     <!-- MatchActivity -->
     <!-- ****************** -->
     <string name="ma_title">Games of %1$s</string>
-    <string name="ma_info">List of team's matches</string>
-    <string name="ma_list_statut"><![CDATA[Statut : <font color='%1$s'>%2$s</font>]]></string>
+    <string name="ma_info">List of team\'s matches</string>
+    <string name="ma_list_statut"><![CDATA[Statut : <font color=\'%1$s\'>%2$s</font>]]></string>
     <string name="ma_list_statut_not_start">Not started</string>
     <string name="ma_list_statut_in_progress">In progress</string>
     <string name="ma_list_statut_finish">Finished</string>

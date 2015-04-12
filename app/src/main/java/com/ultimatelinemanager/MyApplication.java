@@ -15,6 +15,7 @@ import greendao.DaoSession;
 public class MyApplication extends Application {
 
     //TODO Tester l'ecran match, et faire l'ajout d'un nouveau match
+    //TODO corriger selection joueur
     //TODO Créer écran adversaire,  ecran point , ecran selection joueur pour un point
 
     private static MyApplication instance;
