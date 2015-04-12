@@ -1,4 +1,4 @@
-package com.ultimatelinemanager.activity.list_players;
+package com.ultimatelinemanager.activity.match;
 
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -9,37 +9,44 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.ultimatelinemanager.Constante;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.activity.GeneriqueActivity;
 import com.ultimatelinemanager.adapter.SelectAdapter;
+import com.ultimatelinemanager.dao.TeamDaoManager;
+import com.ultimatelinemanager.metier.IntentHelper;
+import com.ultimatelinemanager.metier.exception.TechnicalException;
 
 import java.util.ArrayList;
 
-import greendao.PlayerBean;
+import greendao.MatchBean;
+import greendao.TeamBean;
 
-/**
- * Classe permetant d'afficher une liste de joueur
- */
-public abstract class ListPlayerActivity extends GeneriqueActivity implements SelectAdapter.SelectAdapterI<PlayerBean> {
+public class TeamMatchActivity extends GeneriqueActivity implements SelectAdapter.SelectAdapterI<MatchBean> {
 
-    //Composants graphiques
     private RecyclerView st_rv;
     private TextView st_empty;
     protected TextView st_info;
 
     //Autre
     private SelectAdapter adapter;
-    protected ArrayList<PlayerBean> playerBeanList;
-
-    /* ---------------------------------
-    // View
-    // -------------------------------- */
+    protected ArrayList<MatchBean> matchBeansList;
+    private TeamBean teamBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.list_activity_layout);
+
+        teamBean = TeamDaoManager.getTeamDAO().load(getIntent().getLongExtra(Constante.TEAM_EXTRA_ID, -1));
+
+        //erreur
+        if (teamBean == null) {
+            showError(new TechnicalException("Aucune équipe transmise"), true);
+            finish();
+            return;
+        }
 
         //RecylceView
         st_empty = (TextView) findViewById(R.id.st_empty);
@@ -49,13 +56,14 @@ public abstract class ListPlayerActivity extends GeneriqueActivity implements Se
         st_rv.setLayoutManager(new LinearLayoutManager(this));
         st_rv.setItemAnimator(new DefaultItemAnimator());
 
-        //Utils.getColorFromTheme(this, R.attr.color_application_bg)
-        adapter = new SelectAdapter(this, playerBeanList = new ArrayList<>(), SelectAdapter.TYPE.PLAYER, this);
+        adapter = new SelectAdapter(this, matchBeansList = new ArrayList<>(), SelectAdapter.TYPE.MATCH, this);
 
         st_rv.setAdapter(adapter);
 
-        refreshList();
+        setTitle(getString(R.string.ma_title, teamBean.getName()));
+        st_info.setText(R.string.ma_info);
 
+        refreshList();
     }
 
     @Override
@@ -64,8 +72,6 @@ public abstract class ListPlayerActivity extends GeneriqueActivity implements Se
         refreshView();
     }
 
-    protected abstract void refreshList();
-
     /* ---------------------------------
     // Menu
     // -------------------------------- */
@@ -73,16 +79,20 @@ public abstract class ListPlayerActivity extends GeneriqueActivity implements Se
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_list_player, menu);
+        getMenuInflater().inflate(R.menu.menu_team_match, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
-            //bouton fleche retour
+        //bouton fleche retour
             case android.R.id.home:
                 finish();
+                return true;
+            case R.id.menu_add:
+                //TODO remplir la dialogue de demande de nom d'equipe
                 return true;
         }
 
@@ -90,7 +100,16 @@ public abstract class ListPlayerActivity extends GeneriqueActivity implements Se
     }
 
     /* ---------------------------------
-    // Autre
+    // Callback Click
+    // -------------------------------- */
+
+    @Override
+    public void selectAdapter_onClick(MatchBean matchBean) {
+        IntentHelper.goToMatch(this, matchBean.getId());
+    }
+
+    /* ---------------------------------
+    // private
     // -------------------------------- */
 
     protected void refreshView() {
@@ -99,7 +118,7 @@ public abstract class ListPlayerActivity extends GeneriqueActivity implements Se
             public void run() {
                 adapter.notifyDataSetChanged();
 
-                if (playerBeanList.size() > 0) {
+                if (matchBeansList.size() > 0) {
                     st_empty.setVisibility(View.INVISIBLE);
                     st_rv.setVisibility(View.VISIBLE);
                 }
@@ -110,4 +129,11 @@ public abstract class ListPlayerActivity extends GeneriqueActivity implements Se
             }
         });
     }
+
+    protected void refreshList() {
+        matchBeansList.clear();
+        teamBean.resetMatchBeanList();
+        matchBeansList.addAll(teamBean.getMatchBeanList());
+    }
+
 }

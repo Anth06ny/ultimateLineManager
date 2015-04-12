@@ -8,6 +8,7 @@ import com.ultimatelinemanager.Constante;
 import com.ultimatelinemanager.activity.TeamActivity;
 import com.ultimatelinemanager.activity.list_players.PickerPlayerActivity;
 import com.ultimatelinemanager.activity.list_players.TeamPlayerActivity;
+import com.ultimatelinemanager.activity.match.TeamMatchActivity;
 
 /**
  * Created by Anthony on 02/03/2015.
@@ -42,6 +43,17 @@ public class IntentHelper {
     }
 
     public static void goToPlayerPage(Activity activity, long playerId) {
+        //TODO faire la page
+        ToastUtils.showNotImplementedToast(activity);
+    }
+
+    public static void goToTeamMatch(Activity activity, long teamId) {
+        Intent intent = new Intent(activity, TeamMatchActivity.class);
+        intent.putExtra(Constante.TEAM_EXTRA_ID, teamId);
+        activity.startActivity(intent);
+    }
+
+    public static void goToMatch(Activity activity, long matchId) {
         //TODO faire la page
         ToastUtils.showNotImplementedToast(activity);
     }

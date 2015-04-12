@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/margin_2"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context=".CreateTeamActivity">
+
+
+    <LinearLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/margin_5"
+        android:paddingLeft="@dimen/margin_10"
+        android:paddingRight="@dimen/margin_10"
+
+        android:paddingTop="@dimen/margin_5"
+        >
+
+        <TextView
+            android:id="@+id/row_tv1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="France"
+            android:textColor="?attr/color_text_second"
+            android:textSize="@dimen/font_25"
+            />
+
+        <TextView
+            android:id="@+id/row_tv2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="12/07/15 18h25"
+            android:textColor="?color_text_third"
+            android:textSize="@dimen/font_13"/>
+
+        <TextView
+            android:id="@+id/row_tv3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Statut : En cours"
+            android:textColor="?color_text_third"
+            android:textSize="@dimen/font_13"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_1"
+        android:background="?attr/color_application_bg">
+
+    </View>
+
+
+</android.support.v7.widget.CardView>

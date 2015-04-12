@@ -23,6 +23,7 @@ public class TeamBean implements java.io.Serializable {
     private transient TeamBeanDao myDao;
 
     private List<TeamPlayer> teamPlayerList;
+    private List<MatchBean> matchBeanList;
 
     public TeamBean() {
     }
@@ -91,6 +92,28 @@ public class TeamBean implements java.io.Serializable {
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     public synchronized void resetTeamPlayerList() {
         teamPlayerList = null;
+    }
+
+    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
+    public List<MatchBean> getMatchBeanList() {
+        if (matchBeanList == null) {
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            MatchBeanDao targetDao = daoSession.getMatchBeanDao();
+            List<MatchBean> matchBeanListNew = targetDao._queryTeamBean_MatchBeanList(id);
+            synchronized (this) {
+                if(matchBeanList == null) {
+                    matchBeanList = matchBeanListNew;
+                }
+            }
+        }
+        return matchBeanList;
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    public synchronized void resetMatchBeanList() {
+        matchBeanList = null;
     }
 
     /** Convenient call for {@link AbstractDao#delete(Object)}. Entity must attached to an entity context. */

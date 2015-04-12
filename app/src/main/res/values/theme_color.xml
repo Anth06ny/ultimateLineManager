@@ -130,6 +130,8 @@
     <color name="boy_color">@color/strong_blue</color>
 
 
+
+
     <!--<style name="LauncherTheme_blue" parent="AppTheme_Blue">-->
     <!--<item name="android:windowBackground">@drawable/splashscreen_blue</item>-->
     <!--</style>-->

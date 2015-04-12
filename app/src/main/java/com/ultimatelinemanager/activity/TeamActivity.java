@@ -119,6 +119,9 @@ public class TeamActivity extends ActionBarActivity implements View.OnClickListe
         if (v == mt_bt_players) {
             IntentHelper.goToListPlayerTeamActivity(this, teamBean.getId());
         }
+        else if (v == ta_bt_games) {
+            IntentHelper.goToTeamMatch(this, teamBean.getId());
+        }
     }
 
     /* ---------------------------------

@@ -28,9 +28,9 @@ public class DateUtils {
             case ddMMyyyy:
                 return context.getString(R.string.date_ddMMyyyy);
             case ddMMyyyy_HHmm:
-                return context.getString(R.string.date_ddMMyyyy);
+                return context.getString(R.string.date_ddMMyyyy_HHmm);
             case HHmm:
-                return context.getString(R.string.date_ddMMyyyy);
+                return context.getString(R.string.date_HHmm);
             default:
                 return context.getString(R.string.date_ddMMyyyy);
         }

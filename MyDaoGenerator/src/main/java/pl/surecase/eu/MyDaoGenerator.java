@@ -49,6 +49,71 @@ public class MyDaoGenerator {
         //Relation : TeamPlayer 1 Player
         teamPlayer.addToOne(playerBean, playerId);
 
+        /* ---------------------------------
+        // Table Match
+        // -------------------------------- */
+        Entity matchBean = schema.addEntity("MatchBean");
+        matchBean.addIdProperty().getProperty();
+        matchBean.addStringProperty("name").notNull();
+        matchBean.addDateProperty("start");
+        matchBean.addDateProperty("end");
+
+        //Relation : Team * Match
+        teamId = matchBean.addLongProperty("teamId").notNull().getProperty();
+        teamBean.addToMany(matchBean, teamId);
+        //Relation : Match 1 Team
+        matchBean.addToOne(teamBean, teamId);
+
+        /* ---------------------------------
+        // Point
+        // -------------------------------- */
+        Entity pointBean = schema.addEntity("PointBean");
+        pointBean.addIdProperty().getProperty();
+        pointBean.addDateProperty("start");
+        pointBean.addLongProperty("length").notNull();
+
+        //Relation Match * Point
+        Property matchId = pointBean.addLongProperty("matchId").notNull().getProperty();
+        matchBean.addToMany(pointBean, matchId);
+        //Relation Point  1  Match
+        pointBean.addToOne(matchBean, matchId);
+
+        /* ---------------------------------
+        // PlayerPoint
+        // -------------------------------- */
+        Entity playerPoint = schema.addEntity("PlayerPoint");
+        playerPoint.addIdProperty().getProperty();
+
+        //Relation Player * PlayerPoint  :  inutile car cela recuperera tous les points de tous les match
+        playerId = playerPoint.addLongProperty("playerId").notNull().getProperty();
+        //Relation PlayerPoint 1 Player
+        playerPoint.addToOne(playerBean, playerId);
+        //Relation Point * PlayerPoint
+        Property pointId = playerPoint.addLongProperty("pointId").notNull().getProperty();
+        pointBean.addToMany(playerPoint, pointId);
+        //Relation PlayerPoint 1 Point
+        playerPoint.addToOne(pointBean, pointId);
+
+        /* ---------------------------------
+        // State Player
+        // -------------------------------- */
+        Entity statePlayerBean = schema.addEntity("StatePlayerBean");
+        statePlayerBean.addIdProperty().getProperty();
+        statePlayerBean.addLongProperty("PlayingTime");
+        statePlayerBean.addLongProperty("RestTime");
+        statePlayerBean.addIntProperty("StateIndicator");
+
+        //Relation Match * StatePlayer
+        matchId = statePlayerBean.addLongProperty("matchId").notNull().getProperty();
+        matchBean.addToMany(statePlayerBean, matchId);
+        //Relation : StatePlayer 1 Match
+        statePlayerBean.addToOne(matchBean, matchId);
+
+        //Relation Player * StatePlayer : inutile
+        playerId = statePlayerBean.addLongProperty("playerId").notNull().getProperty();
+        //Relation StatePlayer 1 Player
+        statePlayerBean.addToOne(playerBean, playerId);
+
         new DaoGenerator().generateAll(schema, args[0]);
     }
 
