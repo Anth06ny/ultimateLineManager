@@ -1,5 +1,6 @@
 package com.ultimatelinemanager.activity.match;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -204,6 +205,8 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
                         //On supprime le match de la base et on termine l'activité
                         MatchDaoManager.getMatchBeanDao().delete(matchBean);
                         ToastUtils.showToastOnUIThread(MatchActivity.this, R.string.ma_delete_game_confirmation, Toast.LENGTH_LONG);
+                        //Pour prévenir qu'il faut rafraichir
+                        setResult(Activity.RESULT_OK);
                         finish();
                     }
                 }).show();
@@ -219,6 +222,8 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
                     public void promptDialogCB_onPositiveClick(String promptText) {
                         matchBean.setName(promptText);
                         MatchDaoManager.getMatchBeanDao().update(matchBean);
+                        //Pour prévenir qu'il faudra rafraichir
+                        setResult(Activity.RESULT_OK);
                         refreshView();
                     }
                 }).show();

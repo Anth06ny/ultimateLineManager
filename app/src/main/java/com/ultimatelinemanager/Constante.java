@@ -10,6 +10,7 @@ public class Constante {
 
     //Request Code
     public static final int PICK_PLAYER_REQ_CODE = 1;
+    public static final int MATCH_REQ_CODE = 2;
 
     //EXTRA
     public final static String TEAM_EXTRA_ID = "TEAM_EXTRA_ID";

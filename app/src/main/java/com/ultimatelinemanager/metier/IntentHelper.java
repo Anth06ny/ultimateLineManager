@@ -58,10 +58,15 @@ public class IntentHelper {
     // Match
     // -------------------------------- */
 
-    public static void goToMatch(Activity activity, long matchId) {
+    public static void goToMatch(Activity activity, long matchId, boolean startActivityForResult) {
         Intent intent = new Intent(activity, MatchActivity.class);
         intent.putExtra(Constante.MATCH_EXTRA_ID, matchId);
-        activity.startActivity(intent);
+        if (startActivityForResult) {
+            activity.startActivityForResult(intent, Constante.MATCH_REQ_CODE);
+        }
+        else {
+            activity.startActivity(intent);
+        }
     }
 
     public static void goToMatchStatePlayer(Activity activity, long matchId) {

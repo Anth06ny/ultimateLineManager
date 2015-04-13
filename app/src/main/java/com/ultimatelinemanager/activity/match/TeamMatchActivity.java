@@ -1,5 +1,7 @@
 package com.ultimatelinemanager.activity.match;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -75,6 +77,16 @@ public class TeamMatchActivity extends GeneriqueActivity implements SelectAdapte
         refreshView();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == Constante.MATCH_REQ_CODE && resultCode == Activity.RESULT_OK) {
+            //On rafraichit la liste
+            refreshList();
+        }
+    }
+
     /* ---------------------------------
     // Menu
     // -------------------------------- */
@@ -111,7 +123,7 @@ public class TeamMatchActivity extends GeneriqueActivity implements SelectAdapte
 
     @Override
     public void selectAdapter_onClick(MatchBean matchBean) {
-        IntentHelper.goToMatch(this, matchBean.getId());
+        IntentHelper.goToMatch(this, matchBean.getId(), true);
     }
 
     /* ---------------------------------
