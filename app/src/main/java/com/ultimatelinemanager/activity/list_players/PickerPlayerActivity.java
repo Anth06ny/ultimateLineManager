@@ -53,9 +53,11 @@ public class PickerPlayerActivity extends ListPlayerActivity {
                     }
                 }).show();
                 return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
 
-        return super.onOptionsItemSelected(item);
     }
 
     /* ---------------------------------

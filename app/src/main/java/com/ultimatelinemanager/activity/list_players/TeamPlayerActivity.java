@@ -86,10 +86,11 @@ public class TeamPlayerActivity extends ListPlayerActivity {
             case R.id.menu_add:
                 IntentHelper.goToPickPlayer(this, teamBean.getId(), Constante.PICK_PLAYER_REQ_CODE);
                 return true;
-        }
 
-        //Sinon  traiter au dessus
-        return super.onOptionsItemSelected(item);
+            default:
+                //Sinon  traiter au dessus
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /* ---------------------------------

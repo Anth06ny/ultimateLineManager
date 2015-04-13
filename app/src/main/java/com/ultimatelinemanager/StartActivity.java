@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.formation.utils.ToastUtils;
 import com.ultimatelinemanager.activity.SelectTeamActivity;
 
 public class StartActivity extends Activity implements View.OnClickListener {
@@ -45,10 +46,10 @@ public class StartActivity extends Activity implements View.OnClickListener {
             startActivity(intent);
         }
         else if (v == maBtOld) {
-            // Handle clicks for maBtOld
+            ToastUtils.showNotImplementedToast(this);
         }
         else if (v == maBtManage) {
-            // Handle clicks for maBtManage
+            ToastUtils.showNotImplementedToast(this);
         }
     }
 

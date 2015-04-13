@@ -7,6 +7,7 @@
     <string name="app_name">UltimateLineManager</string>
     <string name="add">Add</string>
     <string name="delete">Delete</string>
+    <string name="rename">Rename</string>
     <string name="handler">Handler</string>
     <string name="middle">Middle</string>
     <string name="sexe">Sexe</string>
@@ -15,6 +16,9 @@
     <string name="girl">Girl</string>
     <string name="erreur_generique">An technical error has occurred</string>
     <string name="not_implemented">Not yet implemented</string>
+    <string name="point">Point</string>
+    <string name="points">Points</string>
+    <string name="stat">Statistics</string>
 
     <!-- ################ -->
     <!-- Select team -->
@@ -46,7 +50,7 @@
     <!-- TeamActvity -->
     <!-- ****************** -->
     <string name="ta_bt_players">Players</string>
-    <string name="ta_bt_games">Games</string>
+    <string name="ta_bt_games">Matches</string>
     <string name="ta_bt_rename">Rename</string>
     <string name="ta_bt_delete">Delete</string>
     <string name="ta_delete_confirmation">Are you sure you want to delete this team?</string>
@@ -64,21 +68,41 @@
     <string name="lpt_player_exist">Player already exist</string>
 
     <!-- ****************** -->
+    <!-- TeamMatchActivity -->
+    <!-- ****************** -->
+    <string name="tm_title">Matches of %1$s</string>
+    <string name="tm_info">Team matches</string>
+    <string name="tm_no_match">No match registered</string>
+    <string name="tm_list_statut"><![CDATA[Statut : <font color=\'%1$s\'>%2$s</font>]]></string>
+    <string name="tm_list_statut_not_start">Not started</string>
+    <string name="tm_list_statut_in_progress">In progress</string>
+    <string name="tm_list_statut_finish">Finished</string>
+    <string name="tm_menu_add">New match</string>
+    <string name="tm_pop_up_new_match_title">Opponent\'s team name</string>
+
+    <!-- ****************** -->
     <!-- MatchActivity -->
     <!-- ****************** -->
-    <string name="ma_title">Matches of %1$s</string>
-    <string name="ma_info">List of team\'s matches</string>
-    <string name="ma_no_match">No match registered</string>
-    <string name="ma_list_statut"><![CDATA[Statut : <font color=\'%1$s\'>%2$s</font>]]></string>
-    <string name="ma_list_statut_not_start">Not started</string>
-    <string name="ma_list_statut_in_progress">In progress</string>
-    <string name="ma_list_statut_finish">Finished</string>
-    <string name="ma_menu_add">New match</string>
-    <string name="ma_pop_up_new_match_title">Opponent\'s team name</string>
+    <string name="ma_title">%1$s vs %2$s</string>
+    <string name="ma_statut">Statut : </string>
+    <string name="ma_date">Date : </string>
+    <string name="ma_playing_time">Playing time : </string>
+    <string name="ma_reel_playing_time">Reel playing time : </string>
+    <string name="ma_score">Score : </string>
+    <string name="ma_menu_point">Points</string>
+    <string name="ma_menu_state_player">State players</string>
+    <string name="ma_menu_rename_opponent">Rename opponent</string>
+    <string name="ma_menu_delete_match">Delete game</string>
+    <string name="ma_menu_end_match">Finish game</string>
+    <string name="ma_bloc_title">Summary</string>
+    <string name="ma_delete_game_question">Do you really want to delete this game ?</string>
+    <string name="ma_delete_game_confirmation">The match has been deleted</string>
+
 
     <!-- ****************** -->
     <!-- Exception -->
     <!-- ****************** -->
     <string name="player_alreay_add">Player already added</string>
+    <string name="title_activity_match">MatchActivity</string>
 
 </resources>

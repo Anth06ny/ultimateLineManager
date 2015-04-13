@@ -13,4 +13,5 @@ public class MatchDaoManager {
         return MyApplication.getInstance().getDaoSession().getMatchBeanDao();
     }
 
+
 }

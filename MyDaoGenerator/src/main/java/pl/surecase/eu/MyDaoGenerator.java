@@ -70,7 +70,10 @@ public class MyDaoGenerator {
         Entity pointBean = schema.addEntity("PointBean");
         pointBean.addIdProperty().getProperty();
         pointBean.addDateProperty("start");
-        pointBean.addLongProperty("length").notNull();
+        pointBean.addLongProperty("length");//durée
+        pointBean.addBooleanProperty("teamOffense"); //attaque ou défense
+        pointBean.addBooleanProperty("teamGoal");//but pour ou contre
+
 
         //Relation Match * Point
         Property matchId = pointBean.addLongProperty("matchId").notNull().getProperty();

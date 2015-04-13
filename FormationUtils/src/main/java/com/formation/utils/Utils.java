@@ -67,4 +67,14 @@ public class Utils {
             Toast.makeText(context, "Erreur lors de la copie", Toast.LENGTH_LONG).show();
         }
     }
+
+    public static String timeToHHMM(long time) {
+
+        long minute = time / (1000 * 60);
+        long hour = minute / 60;
+        minute = minute % 60;
+
+        return hour + "h" + (minute < 10 ? ("0" + minute) : ("" + minute));
+    }
+
 }

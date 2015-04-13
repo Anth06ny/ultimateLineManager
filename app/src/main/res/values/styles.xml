@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ############################-->
+    <!--        GEnerique        -->
+    <!-- ############################-->
+
+    <!-- Le titre du bloc -->
+    <style name="bloc_title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/margin_30</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">?color_text_second</item>
+        <item name="android:textSize">@dimen/font_16</item>
+    </style>
+
+    <style name="button_textview_material_design">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/standard_height</item>
+        <item name="android:paddingLeft">@dimen/margin_5</item>
+        <item name="android:paddingRight">@dimen/margin_5</item>
+        <item name="android:textColor">?attr/material_bt_text_color</item>
+        <item name="android:textSize">@dimen/font_13</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:layout_gravity">right</item>
+        <item name="android:background">?attr/material_bt_bg</item>
+        <item name="android:clickable">true</item>
+
+    </style>
+
+    <!-- ############################-->
+    <!--        MatchActivity        -->
+    <!-- ############################-->
+
+    <style name="ma_tv_title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/margin_30</item>
+        <item name="android:paddingLeft">@dimen/margin_10</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">?attr/color_text_main</item>
+        <item name="android:textSize">@dimen/font_14</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ma_tv_value">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/margin_30</item>
+        <item name="android:textColor">?attr/color_text_main</item>
+        <item name="android:textSize">@dimen/font_12</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+</resources>

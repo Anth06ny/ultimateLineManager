@@ -102,26 +102,23 @@ public class SelectTeamActivity extends ActionBarActivity implements SelectAdapt
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.menu_add) {
-            dialog = DialogUtils.getPromptDialog(this, R.drawable.ic_action_add_group, R.string.st_ask_team_name, R.string.add, "",
-                    new DialogUtils.PromptDialogCB() {
-                        @Override
-                        public void promptDialogCB_onPositiveClick(String promptText) {
-                            //On ajoute l'equipe
-                            addTeam(StringUtils.capitalize(promptText));
-                        }
-                    });
-            dialog.show();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.menu_add:
+                dialog = DialogUtils.getPromptDialog(this, R.drawable.ic_action_add_group, R.string.st_ask_team_name, R.string.add, "",
+                        new DialogUtils.PromptDialogCB() {
+                            @Override
+                            public void promptDialogCB_onPositiveClick(String promptText) {
+                                //On ajoute l'equipe
+                                addTeam(StringUtils.capitalize(promptText));
+                            }
+                        });
+                dialog.show();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     /* ---------------------------------

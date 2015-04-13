@@ -12,7 +12,9 @@ public class PointBean {
 
     private Long id;
     private java.util.Date start;
-    private long length;
+    private Long length;
+    private Boolean teamOffense;
+    private Boolean teamGoal;
     private long matchId;
 
     /** Used to resolve relations */
@@ -33,10 +35,12 @@ public class PointBean {
         this.id = id;
     }
 
-    public PointBean(Long id, java.util.Date start, long length, long matchId) {
+    public PointBean(Long id, java.util.Date start, Long length, Boolean teamOffense, Boolean teamGoal, long matchId) {
         this.id = id;
         this.start = start;
         this.length = length;
+        this.teamOffense = teamOffense;
+        this.teamGoal = teamGoal;
         this.matchId = matchId;
     }
 
@@ -62,12 +66,28 @@ public class PointBean {
         this.start = start;
     }
 
-    public long getLength() {
+    public Long getLength() {
         return length;
     }
 
-    public void setLength(long length) {
+    public void setLength(Long length) {
         this.length = length;
+    }
+
+    public Boolean getTeamOffense() {
+        return teamOffense;
+    }
+
+    public void setTeamOffense(Boolean teamOffense) {
+        this.teamOffense = teamOffense;
+    }
+
+    public Boolean getTeamGoal() {
+        return teamGoal;
+    }
+
+    public void setTeamGoal(Boolean teamGoal) {
+        this.teamGoal = teamGoal;
     }
 
     public long getMatchId() {

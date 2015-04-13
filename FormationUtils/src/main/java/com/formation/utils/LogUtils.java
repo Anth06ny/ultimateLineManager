@@ -36,15 +36,13 @@ public class LogUtils {
     }
 
     public static void logMessage(String TAG, String message) {
-        if (BuildConfig.DEBUG) {
-            if (SET_BLUETOOTH_INFORMATION.equals(TAG)) {
-                Log.w(TAG, message);
-            }
-            else {
-                Log.d(TAG, message);
-            }
-
+        if (SET_BLUETOOTH_INFORMATION.equals(TAG)) {
+            Log.w(TAG, message);
         }
+        else {
+            Log.d(TAG, message);
+        }
+
     }
 
     /**
@@ -57,15 +55,11 @@ public class LogUtils {
     }
 
     public static void logException(final String TAG, final Throwable e, boolean crashLytics) {
-        if (BuildConfig.DEBUG) {
-            Log.e(TAG, Log.getStackTraceString(e));
-        }
+        Log.e(TAG, Log.getStackTraceString(e));
     }
 
     public static void logException(final Class<?> clazz, final Throwable e, boolean crashLytics) {
-        if (BuildConfig.DEBUG) {
-            logException(getLogTag(clazz), e, crashLytics);
-        }
+        logException(getLogTag(clazz), e, crashLytics);
     }
 
     /**
@@ -74,9 +68,7 @@ public class LogUtils {
      * @param message
      */
     public static void logMessageException(String message) {
-        if (BuildConfig.DEBUG) {
-            Log.w(SET_EXCEPTION_MESSAGE, message);
-        }
+        Log.w(SET_EXCEPTION_MESSAGE, message);
     }
 
 }

@@ -5,7 +5,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -54,8 +53,6 @@ public abstract class ListPlayerActivity extends GeneriqueActivity implements Se
 
         st_rv.setAdapter(adapter);
 
-
-
     }
 
     @Override
@@ -63,7 +60,6 @@ public abstract class ListPlayerActivity extends GeneriqueActivity implements Se
         super.onStart();
         refreshView();
     }
-
 
     /* ---------------------------------
     // Menu
@@ -74,18 +70,6 @@ public abstract class ListPlayerActivity extends GeneriqueActivity implements Se
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_list_player, menu);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            //bouton fleche retour
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     /* ---------------------------------

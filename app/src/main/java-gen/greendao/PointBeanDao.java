@@ -30,8 +30,10 @@ public class PointBeanDao extends AbstractDao<PointBean, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Start = new Property(1, java.util.Date.class, "start", false, "START");
-        public final static Property Length = new Property(2, long.class, "length", false, "LENGTH");
-        public final static Property MatchId = new Property(3, long.class, "matchId", false, "MATCH_ID");
+        public final static Property Length = new Property(2, Long.class, "length", false, "LENGTH");
+        public final static Property TeamOffense = new Property(3, Boolean.class, "teamOffense", false, "TEAM_OFFENSE");
+        public final static Property TeamGoal = new Property(4, Boolean.class, "teamGoal", false, "TEAM_GOAL");
+        public final static Property MatchId = new Property(5, long.class, "matchId", false, "MATCH_ID");
     };
 
     private DaoSession daoSession;
@@ -53,8 +55,10 @@ public class PointBeanDao extends AbstractDao<PointBean, Long> {
         db.execSQL("CREATE TABLE " + constraint + "'POINT_BEAN' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
                 "'START' INTEGER," + // 1: start
-                "'LENGTH' INTEGER NOT NULL ," + // 2: length
-                "'MATCH_ID' INTEGER NOT NULL );"); // 3: matchId
+                "'LENGTH' INTEGER," + // 2: length
+                "'TEAM_OFFENSE' INTEGER," + // 3: teamOffense
+                "'TEAM_GOAL' INTEGER," + // 4: teamGoal
+                "'MATCH_ID' INTEGER NOT NULL );"); // 5: matchId
     }
 
     /** Drops the underlying database table. */
@@ -77,8 +81,22 @@ public class PointBeanDao extends AbstractDao<PointBean, Long> {
         if (start != null) {
             stmt.bindLong(2, start.getTime());
         }
-        stmt.bindLong(3, entity.getLength());
-        stmt.bindLong(4, entity.getMatchId());
+ 
+        Long length = entity.getLength();
+        if (length != null) {
+            stmt.bindLong(3, length);
+        }
+ 
+        Boolean teamOffense = entity.getTeamOffense();
+        if (teamOffense != null) {
+            stmt.bindLong(4, teamOffense ? 1l: 0l);
+        }
+ 
+        Boolean teamGoal = entity.getTeamGoal();
+        if (teamGoal != null) {
+            stmt.bindLong(5, teamGoal ? 1l: 0l);
+        }
+        stmt.bindLong(6, entity.getMatchId());
     }
 
     @Override
@@ -99,8 +117,10 @@ public class PointBeanDao extends AbstractDao<PointBean, Long> {
         PointBean entity = new PointBean( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : new java.util.Date(cursor.getLong(offset + 1)), // start
-            cursor.getLong(offset + 2), // length
-            cursor.getLong(offset + 3) // matchId
+            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // length
+            cursor.isNull(offset + 3) ? null : cursor.getShort(offset + 3) != 0, // teamOffense
+            cursor.isNull(offset + 4) ? null : cursor.getShort(offset + 4) != 0, // teamGoal
+            cursor.getLong(offset + 5) // matchId
         );
         return entity;
     }
@@ -110,8 +130,10 @@ public class PointBeanDao extends AbstractDao<PointBean, Long> {
     public void readEntity(Cursor cursor, PointBean entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setStart(cursor.isNull(offset + 1) ? null : new java.util.Date(cursor.getLong(offset + 1)));
-        entity.setLength(cursor.getLong(offset + 2));
-        entity.setMatchId(cursor.getLong(offset + 3));
+        entity.setLength(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
+        entity.setTeamOffense(cursor.isNull(offset + 3) ? null : cursor.getShort(offset + 3) != 0);
+        entity.setTeamGoal(cursor.isNull(offset + 4) ? null : cursor.getShort(offset + 4) != 0);
+        entity.setMatchId(cursor.getLong(offset + 5));
      }
     
     /** @inheritdoc */

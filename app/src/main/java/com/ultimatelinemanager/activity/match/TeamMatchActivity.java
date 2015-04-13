@@ -62,9 +62,9 @@ public class TeamMatchActivity extends GeneriqueActivity implements SelectAdapte
 
         st_rv.setAdapter(adapter);
 
-        setTitle(getString(R.string.ma_title, teamBean.getName()));
-        st_info.setText(R.string.ma_info);
-        st_empty.setText(R.string.ma_no_match);
+        setTitle(getString(R.string.tm_title, teamBean.getName()));
+        st_info.setText(R.string.tm_info);
+        st_empty.setText(R.string.tm_no_match);
 
         refreshList();
     }
@@ -90,23 +90,19 @@ public class TeamMatchActivity extends GeneriqueActivity implements SelectAdapte
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-        //bouton fleche retour
-            case android.R.id.home:
-                finish();
-                return true;
             case R.id.menu_add:
-                DialogUtils.getPromptDialog(this, R.drawable.ic_playlist_add_white_48dp, R.string.ma_pop_up_new_match_title, R.string.add, "",
+                DialogUtils.getPromptDialog(this, R.drawable.ic_action_add_group, R.string.tm_pop_up_new_match_title, R.string.add, "",
                         new DialogUtils.PromptDialogCB() {
                             @Override
                             public void promptDialogCB_onPositiveClick(String promptText) {
                                 addMatch(promptText);
-
                             }
                         }).show();
                 return true;
-        }
 
-        return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /* ---------------------------------

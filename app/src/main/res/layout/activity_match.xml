@@ -1,0 +1,138 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:paddingBottom="@dimen/activity_vertical_margin"
+              android:paddingLeft="@dimen/activity_horizontal_margin"
+              android:paddingRight="@dimen/activity_horizontal_margin"
+              android:paddingTop="@dimen/activity_vertical_margin"
+              tools:context="com.ultimatelinemanager.activity.match.MatchActivity">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_5"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/margin_5">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/bloc_title"
+                    android:text="@string/ma_bloc_title"
+                    />
+
+                <TextView
+                    style="@style/ma_tv_title"
+                    android:text="@string/ma_statut"
+                    />
+
+                <TextView
+                    style="@style/ma_tv_title"
+                    android:text="@string/ma_date"
+                    />
+
+                <TextView
+                    style="@style/ma_tv_title"
+                    android:text="@string/ma_playing_time"
+                    />
+
+                <TextView
+                    style="@style/ma_tv_title"
+                    android:text="@string/ma_reel_playing_time"
+                    />
+
+                <TextView
+                    style="@style/ma_tv_title"
+                    android:text="@string/ma_score"
+                    />
+
+                <TextView
+                    android:id="@+id/ma_tv_finish_stat_title"
+                    style="@style/ma_tv_title"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_5"
+                android:orientation="vertical">
+
+                <ImageView
+                    style="@style/bloc_title"
+                    android:src="@drawable/win"
+                    android:adjustViewBounds="true"
+                    android:layout_gravity="right"
+                    android:id="@+id/ma_iv_win"/>
+
+                <TextView
+                    android:id="@+id/ma_tv_statut"
+                    style="@style/ma_tv_value"
+                    />
+
+                <TextView
+                    android:id="@+id/ma_tv_date"
+                    style="@style/ma_tv_value"
+                    />
+
+                <TextView
+                    android:id="@+id/ma_tv_playing_time"
+                    style="@style/ma_tv_value"/>
+
+                <TextView
+                    android:id="@+id/ma_tv_reel_playing_time"
+                    style="@style/ma_tv_value"
+                    />
+
+                <TextView
+                    android:id="@+id/ma_tv_score"
+                    style="@style/ma_tv_value"
+                    android:textSize="@dimen/font_15"/>
+
+                <TextView
+                    android:id="@+id/ma_tv_finish_stat"
+                    style="@style/button_textview_material_design"
+                    android:text="@string/ma_menu_end_match"
+                    android:visibility="visible"/>
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/ma_bt_point"
+            android:layout_width="@dimen/main_activity_bt_width"
+            android:layout_height="@dimen/main_activity_bt_height"
+            android:layout_gravity="center"
+            android:text="@string/ma_menu_point"
+            android:textColor="?attr/color_composant_main_text"
+            />
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/margin_5"
+            />
+
+
+    </LinearLayout>
+
+</LinearLayout>

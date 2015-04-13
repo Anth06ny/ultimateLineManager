@@ -55,12 +55,8 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
             case MATCH:
                 dateFormat = DateUtils.getFormat(context, DateUtils.DATE_FORMAT.ddMMyyyy_HHmm);
                 inProgressHexaColor = String.format("#%06X", (0xFFFFFF & Utils.getColorFromTheme(context, R.attr.color_text_main)));
-                ;
-
                 finishedHexaColor = String.format("#%06X", (0xFFFFFF & context.getResources().getColor(R.color.vivid_green)));
-                ;
                 notStartHexaColor = String.format("#%06X", (0xFFFFFF & context.getResources().getColor(R.color.red)));
-                ;
                 break;
         }
 
@@ -133,11 +129,11 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
                     //match non terminée
                     if (matchBean.getEnd() == null) {
                         hexColor = inProgressHexaColor;
-                        statut = context.getString(R.string.ma_list_statut_in_progress);
+                        statut = context.getString(R.string.tm_list_statut_in_progress);
                     }
                     else {
                         hexColor = finishedHexaColor;
-                        statut = context.getString(R.string.ma_list_statut_finish);
+                        statut = context.getString(R.string.tm_list_statut_finish);
                     }
 
                 }
@@ -145,10 +141,10 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
                 else {
                     holder.row_tv2.setVisibility(View.GONE);
                     hexColor = notStartHexaColor;
-                    statut = context.getString(R.string.ma_list_statut_not_start);
+                    statut = context.getString(R.string.tm_list_statut_not_start);
                 }
 
-                holder.row_tv3.setText(Html.fromHtml(context.getString(R.string.ma_list_statut, hexColor, statut)));
+                holder.row_tv3.setText(Html.fromHtml(context.getString(R.string.tm_list_statut, hexColor, statut)));
 
                 break;
         }
