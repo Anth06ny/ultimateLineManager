@@ -37,7 +37,7 @@
     <!-- ****************** -->
     <string name="ct_et_hint">Select player</string>
     <string name="title_activity_main">Equipes</string>
-    <string name="title_activity_select_team">Choisir une équipe</string>
+    <string name="title_activity_select_team">Select team</string>
     <string name="title_activity_team">TeamActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -66,12 +66,15 @@
     <!-- ****************** -->
     <!-- MatchActivity -->
     <!-- ****************** -->
-    <string name="ma_title">Games of %1$s</string>
+    <string name="ma_title">Matches of %1$s</string>
     <string name="ma_info">List of team\'s matches</string>
+    <string name="ma_no_match">No match registered</string>
     <string name="ma_list_statut"><![CDATA[Statut : <font color=\'%1$s\'>%2$s</font>]]></string>
     <string name="ma_list_statut_not_start">Not started</string>
     <string name="ma_list_statut_in_progress">In progress</string>
     <string name="ma_list_statut_finish">Finished</string>
+    <string name="ma_menu_add">New match</string>
+    <string name="ma_pop_up_new_match_title">Opponent\'s team name</string>
 
     <!-- ****************** -->
     <!-- Exception -->

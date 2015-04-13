@@ -54,10 +54,13 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
                 break;
             case MATCH:
                 dateFormat = DateUtils.getFormat(context, DateUtils.DATE_FORMAT.ddMMyyyy_HHmm);
-                notStartHexaColor = String.format("#%06X", (0xFFFFFF & context.getResources().getColor(Utils.getColorFromTheme(context,
-                        com.formation.utils.R.attr.color_text_main)))); ;
-                inProgressHexaColor =  String.format("#%06X", (0xFFFFFF & context.getResources().getColor(R.color.vivid_green))); ;
-                finishedHexaColor = String.format("#%06X", (0xFFFFFF & context.getResources().getColor(R.color.red))); ;
+                inProgressHexaColor = String.format("#%06X", (0xFFFFFF & Utils.getColorFromTheme(context, R.attr.color_text_main)));
+                ;
+
+                finishedHexaColor = String.format("#%06X", (0xFFFFFF & context.getResources().getColor(R.color.vivid_green)));
+                ;
+                notStartHexaColor = String.format("#%06X", (0xFFFFFF & context.getResources().getColor(R.color.red)));
+                ;
                 break;
         }
 
@@ -94,13 +97,14 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
 
             case TEAM:
                 TeamBean teamBean = (TeamBean) daoList.get(position);
+                holder.bean = teamBean;
                 holder.row_tv1.setText(teamBean.getName());
                 holder.row_tv2.setText(DateUtils.dateToString(teamBean.getCreation(), dateFormat));
-                holder.bean = teamBean;
                 break;
 
             case PLAYER:
                 PlayerBean playerBean = (PlayerBean) daoList.get(position);
+                holder.bean = playerBean;
                 holder.row_tv1.setText(playerBean.getName());
                 holder.row_tv2.setText(playerBean.getRole());
 
@@ -112,28 +116,36 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
                     holder.iv_main.setColorFilter(girlColor);
                 }
 
-                holder.bean = playerBean;
                 break;
 
             case MATCH:
                 MatchBean matchBean = (MatchBean) daoList.get(position);
+                holder.bean = matchBean;
                 holder.row_tv1.setText(matchBean.getName());
-                holder.row_tv2.setText(DateUtils.dateToString(matchBean.getStart(), dateFormat));
-                //Match non commencé
+
                 String statut;
                 String hexColor;
-                if (matchBean.getStart() == null) {
+                //Match commencé
+                if (matchBean.getStart() != null) {
+                    holder.row_tv2.setText(DateUtils.dateToString(matchBean.getStart(), dateFormat));
+                    holder.row_tv2.setVisibility(View.VISIBLE);
+
+                    //match non terminée
+                    if (matchBean.getEnd() == null) {
+                        hexColor = inProgressHexaColor;
+                        statut = context.getString(R.string.ma_list_statut_in_progress);
+                    }
+                    else {
+                        hexColor = finishedHexaColor;
+                        statut = context.getString(R.string.ma_list_statut_finish);
+                    }
+
+                }
+                //Match non commencé
+                else {
+                    holder.row_tv2.setVisibility(View.GONE);
                     hexColor = notStartHexaColor;
                     statut = context.getString(R.string.ma_list_statut_not_start);
-                }
-                //match non terminée
-                else if (matchBean.getEnd() == null) {
-                    hexColor = inProgressHexaColor;
-                    statut = context.getString(R.string.ma_list_statut_in_progress);
-                }
-                else {
-                    hexColor = finishedHexaColor;
-                    statut = context.getString(R.string.ma_list_statut_finish);
                 }
 
                 holder.row_tv3.setText(Html.fromHtml(context.getString(R.string.ma_list_statut, hexColor, statut)));
@@ -176,7 +188,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
                     iv_main = (ImageView) itemView.findViewById(R.id.iv_main);
                     break;
                 case MATCH:
-                    row_tv3 = (TextView) itemView.findViewById(R.id.row_tv2);
+                    row_tv3 = (TextView) itemView.findViewById(R.id.row_tv3);
                     break;
             }
 

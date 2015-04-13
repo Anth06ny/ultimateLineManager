@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:text="France"
             android:textColor="?attr/color_text_second"
-            android:textSize="@dimen/font_25"
+            android:textSize="@dimen/font_16"
             />
 
         <TextView
@@ -39,7 +39,8 @@
             android:layout_height="wrap_content"
             android:text="12/07/15 18h25"
             android:textColor="?color_text_third"
-            android:textSize="@dimen/font_13"/>
+            android:textSize="@dimen/font_13"
+            />
 
         <TextView
             android:id="@+id/row_tv3"

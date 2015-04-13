@@ -14,6 +14,7 @@
         <item name="colorControlActivated">?color_composant_main_highlighted</item>
         <item name="colorControlHighlight">?color_composant_main_highlighted</item>
 
+
     </style>
 
     <style name="AppThemeStart" parent="AppTheme_Color">
@@ -128,8 +129,6 @@
     <!-- Autre couleur -->
     <color name="girl_color">@color/vivid_pink</color>
     <color name="boy_color">@color/strong_blue</color>
-
-
 
 
     <!--<style name="LauncherTheme_blue" parent="AppTheme_Blue">-->

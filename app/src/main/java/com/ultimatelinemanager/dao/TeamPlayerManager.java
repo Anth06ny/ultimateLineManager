@@ -6,6 +6,7 @@ import com.ultimatelinemanager.metier.exception.LogicException;
 
 import java.util.List;
 
+import greendao.PlayerBeanDao;
 import greendao.TeamPlayer;
 import greendao.TeamPlayerDao;
 
@@ -31,9 +32,7 @@ public class TeamPlayerManager {
                 .unique();
     }
 
-    public static List<TeamPlayer> getPlayerNotInteam(long teamId) {
-        return TeamPlayerManager.getTeamPlayerDAO().queryBuilder().where(TeamPlayerDao.Properties.TeamId.notEq(teamId)).list();
-    }
+
 
     /* ---------------------------------
     // Autre

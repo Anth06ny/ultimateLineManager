@@ -31,6 +31,7 @@ public class PickerPlayerActivity extends ListPlayerActivity {
 
         //Pour avoir la fleche de retour
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         refreshList();
     }
 

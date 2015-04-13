@@ -30,7 +30,12 @@
         <activity
             android:name=".activity.TeamActivity"
             android:label="@string/title_activity_team"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:parentActivityName=".activity.SelectTeamActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.SelectTeamActivity"/>
+
         </activity>
         <!-- On met l'activité en single top pour garder la team, mais une seul instance possible -->
         <activity

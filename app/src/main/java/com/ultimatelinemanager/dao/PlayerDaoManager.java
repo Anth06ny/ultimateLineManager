@@ -14,6 +14,7 @@ import greendao.PlayerBean;
 import greendao.PlayerBeanDao;
 import greendao.TeamBean;
 import greendao.TeamPlayer;
+import greendao.TeamPlayerDao;
 
 /**
  * Created by Anthony on 06/04/2015.
@@ -38,7 +39,25 @@ public class PlayerDaoManager {
      * @return
      */
     public static List<PlayerBean> getPlayerNotInTeam(long teamId) {
-        return convertToPlayerBean(TeamPlayerManager.getPlayerNotInteam(teamId));
+
+        //Sous requete contenant l'ensemble des joueurs de l'équipe
+        String allTeamPlayer = "(Select * FROM " + TeamPlayerDao.TABLENAME + " TP WHERE TP." + TeamPlayerDao.Properties.TeamId.columnName + "=? )";
+
+        //Jointure indiquant si les joueurs sont de cette equipe ou non
+        String query = " LEFT JOIN " + allTeamPlayer + " TP ON TP." + TeamPlayerDao.Properties.PlayerId.columnName + " = T."
+                + PlayerBeanDao.Properties.Id.columnName;
+
+        //On ne prend que ceux qui ne le sont pas
+        query += " WHERE TP." + TeamPlayerDao.Properties.PlayerId.columnName + " IS NULL";
+
+        try {
+            return PlayerDaoManager.getPlayerDAO().queryRawCreate(query, teamId).list();
+        }
+        catch (Throwable e) {
+            e.printStackTrace();
+            return new ArrayList<PlayerBean>();
+        }
+
     }
 
     /**

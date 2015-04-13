@@ -54,7 +54,7 @@ public abstract class ListPlayerActivity extends GeneriqueActivity implements Se
 
         st_rv.setAdapter(adapter);
 
-        refreshList();
+
 
     }
 
@@ -64,7 +64,6 @@ public abstract class ListPlayerActivity extends GeneriqueActivity implements Se
         refreshView();
     }
 
-    protected abstract void refreshList();
 
     /* ---------------------------------
     // Menu

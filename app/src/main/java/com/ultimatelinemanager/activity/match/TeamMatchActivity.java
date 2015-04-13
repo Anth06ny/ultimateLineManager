@@ -14,6 +14,8 @@ import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.activity.GeneriqueActivity;
 import com.ultimatelinemanager.adapter.SelectAdapter;
 import com.ultimatelinemanager.dao.TeamDaoManager;
+import com.ultimatelinemanager.dao.match.MatchDaoManager;
+import com.ultimatelinemanager.metier.DialogUtils;
 import com.ultimatelinemanager.metier.IntentHelper;
 import com.ultimatelinemanager.metier.exception.TechnicalException;
 
@@ -62,6 +64,7 @@ public class TeamMatchActivity extends GeneriqueActivity implements SelectAdapte
 
         setTitle(getString(R.string.ma_title, teamBean.getName()));
         st_info.setText(R.string.ma_info);
+        st_empty.setText(R.string.ma_no_match);
 
         refreshList();
     }
@@ -92,7 +95,14 @@ public class TeamMatchActivity extends GeneriqueActivity implements SelectAdapte
                 finish();
                 return true;
             case R.id.menu_add:
-                //TODO remplir la dialogue de demande de nom d'equipe
+                DialogUtils.getPromptDialog(this, R.drawable.ic_playlist_add_white_48dp, R.string.ma_pop_up_new_match_title, R.string.add, "",
+                        new DialogUtils.PromptDialogCB() {
+                            @Override
+                            public void promptDialogCB_onPositiveClick(String promptText) {
+                                addMatch(promptText);
+
+                            }
+                        }).show();
                 return true;
         }
 
@@ -134,6 +144,17 @@ public class TeamMatchActivity extends GeneriqueActivity implements SelectAdapte
         matchBeansList.clear();
         teamBean.resetMatchBeanList();
         matchBeansList.addAll(teamBean.getMatchBeanList());
+    }
+
+    private void addMatch(String oponentName) {
+        MatchBean matchBean = new MatchBean();
+        matchBean.setName(oponentName);
+        matchBean.setTeamBean(teamBean);
+        MatchDaoManager.getMatchBeanDao().insert(matchBean);
+
+        refreshList();
+        refreshView();
+
     }
 
 }

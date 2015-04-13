@@ -45,6 +45,8 @@ public class TeamPlayerActivity extends ListPlayerActivity {
         setTitle(getString(R.string.lpt_title, teamBean.getName()));
         st_info.setText(R.string.lpt_info);
 
+        refreshList();
+
     }
 
     @Override
@@ -82,7 +84,7 @@ public class TeamPlayerActivity extends ListPlayerActivity {
 
         switch (item.getItemId()) {
             case R.id.menu_add:
-                IntentHelper.goToPickPlayer(this,teamBean.getId(), Constante.PICK_PLAYER_REQ_CODE);
+                IntentHelper.goToPickPlayer(this, teamBean.getId(), Constante.PICK_PLAYER_REQ_CODE);
                 return true;
         }
 
