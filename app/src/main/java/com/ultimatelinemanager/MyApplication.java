@@ -14,7 +14,8 @@ import greendao.DaoSession;
  */
 public class MyApplication extends Application {
 
-    //TODO Ecran List point
+    //TODO Ecran PointActivity : Continuer l'activité et intégré la liste.
+
     //TODO ecran point avec selection joueur
     //TODO Ecran controle point en cours
 

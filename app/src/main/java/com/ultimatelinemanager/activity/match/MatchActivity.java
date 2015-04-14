@@ -32,7 +32,6 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
 
     private static final String TAG = LogUtils.getLogTag(MatchActivity.class);
 
-    private final static String empty = "  -  ";
     //Composant graphique
     private TextView ma_tv_statut;
     private TextView ma_tv_playing_time;
@@ -306,16 +305,16 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
             ma_tv_statut.setText(getString(R.string.tm_list_statut_not_start));
             ma_tv_statut.setTextColor(getResources().getColor(R.color.red));
             //date
-            ma_tv_date.setText(empty);
+            ma_tv_date.setText(Constante.EMPTY);
 
             //playing time
-            ma_tv_playing_time.setText(empty);
+            ma_tv_playing_time.setText(Constante.EMPTY);
 
             //reel playing time
-            ma_tv_reel_playing_time.setText(empty);
+            ma_tv_reel_playing_time.setText(Constante.EMPTY);
 
             //Score
-            ma_tv_score.setText(empty);
+            ma_tv_score.setText(Constante.EMPTY);
 
             //Win
             ma_iv_win.setVisibility(View.INVISIBLE);

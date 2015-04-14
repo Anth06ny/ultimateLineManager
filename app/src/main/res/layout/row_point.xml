@@ -25,42 +25,103 @@
 
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageView3"/>
+            android:id="@+id/rp_iv_result"
+            android:layout_width="@dimen/margin_20"
+            android:layout_height="@dimen/margin_20"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/win"/>
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageView2"/>
+            android:id="@+id/rp_iv_offense"
+            android:layout_width="@dimen/margin_20"
+            android:layout_height="@dimen/margin_20"
+            android:layout_alignParentRight="false"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_toLeftOf="@+id/rp_iv_result"
+            android:src="@drawable/offense"/>
+
+        <TextView
+            android:id="@+id/rp_title"
+            style="@style/bloc_title"
+            android:text="@string/lp_blob_tittle"/>
 
         <TableLayout
+            android:id="@+id/rp_tl"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rp_title">
 
             <TableRow
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+                android:layout_height="wrap_content">
 
+                <TextView
+                    style="@style/ma_tv_title"
+                    android:text="@string/ma_statut"
+                    />
+
+                <TextView
+                    android:id="@+id/ma_tv_statut"
+                    style="@style/ma_tv_value"/>
             </TableRow>
 
             <TableRow
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/ma_tv_title"
+                    android:text="@string/ma_playing_time"
+                    />
+
+
+                <TextView
+                    android:id="@+id/ma_tv_playing_time"
+                    style="@style/ma_tv_value"/>
             </TableRow>
         </TableLayout>
 
         <LinearLayout
-            android:orientation="vertical"
+            android:id="@+id/rp_ll_players"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rp_tl"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <TextView
+                style="@style/ma_tv_title"
+                android:text="@string/lp_players"
+                />
+
+            <TextView
+                style="@style/ma_tv_value"
+                android:layout_marginLeft="@dimen/margin_20"
+                android:text="-Jean Alfred"
+                />
+
+
         </LinearLayout>
 
+
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Text"
-            android:id="@+id/textView5"/>
+            android:id="@+id/tv_show_players"
+            style="@style/button_textview_material_design"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/rp_ll_players"
+            android:text="@string/lp_show_players"
+            android:textAllCaps="false"/>
+
+        <TextView
+            android:id="@+id/tv_delete_point"
+            style="@style/button_textview_material_design"
+            android:layout_below="@+id/rp_ll_players"
+            android:layout_marginRight="@dimen/margin_10"
+            android:layout_toLeftOf="@+id/tv_show_players"
+            android:text="@string/lp_delete_point"
+            android:textAllCaps="false"/>
+
+
     </RelativeLayout>
 
 

@@ -7,6 +7,7 @@ public class Constante {
 
     public static final String DB_TABLE_NAME = "ULM-db.sqlite";
     public final static String ERREUR_GENERIQUE = MyApplication.getInstance().getApplicationContext().getString(R.string.erreur_generique);
+    public final static String EMPTY = "  -  ";
 
     //Request Code
     public static final int PICK_PLAYER_REQ_CODE = 1;

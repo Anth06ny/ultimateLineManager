@@ -98,6 +98,16 @@
     <string name="ma_delete_game_question">Do you really want to delete this game ?</string>
     <string name="ma_delete_game_confirmation">The match has been deleted</string>
 
+    <!-- ****************** -->
+    <!-- ListPointActivity -->
+    <!-- ****************** -->
+    <string name="lp_title">%1$s vs %2$s</string>
+    <string name="lp_bloc_tittle">Point %1$s</string>
+    <string name="lp_players">Players : </string>
+    <string name="lp_show_players">Show players</string>
+    <string name="lp_hide_players">Hide players</string>
+    <string name="lp_delete_point">Delete point</string>
+
 
     <!-- ****************** -->
     <!-- Exception -->

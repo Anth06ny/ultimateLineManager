@@ -129,6 +129,7 @@
     <!-- Autre couleur -->
     <color name="girl_color">@color/vivid_pink</color>
     <color name="boy_color">@color/strong_blue</color>
+    <color name="win_color">@color/yellow</color>
 
 
     <!--<style name="LauncherTheme_blue" parent="AppTheme_Blue">-->
