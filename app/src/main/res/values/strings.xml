@@ -104,5 +104,6 @@
     <!-- ****************** -->
     <string name="player_alreay_add">Player already added</string>
     <string name="title_activity_match">MatchActivity</string>
+    <string name="title_activity_list_points">ListPointsActivity</string>
 
 </resources>
