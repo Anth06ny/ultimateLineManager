@@ -62,7 +62,7 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_point, parent, false);
 
-        return new ViewHolder(view, boyColor, winColor, showPlayerListId, pointAdapterCB);
+        return new ViewHolder(view, boyColor, winColor, showPlayerListId, this, daoList, pointAdapterCB);
     }
 
     @Override
@@ -148,7 +148,7 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
     // View Holder
     // -------------------------------- */
 
-    protected static class ViewHolder<T> extends RecyclerView.ViewHolder implements View.OnClickListener {
+    protected static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         //Composant graphique
         public ImageView rp_iv_result;
         public ImageView rp_iv_offense;
@@ -162,10 +162,13 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
 
         //Data
         public PointBean pointBean;
+        public List<PointBean> pointBeanList;
         private PointAdapterCB pointAdapterCB;
         private List<Long> showPlayerListId;
+        private PointAdapter adapter;
 
-        public ViewHolder(View itemView, int offenseColor, int winColor, List<Long> showPlayerListId, PointAdapterCB pointAdapterCB) {
+        public ViewHolder(View itemView, int offenseColor, int winColor, List<Long> showPlayerListId, PointAdapter adapter,
+                List<PointBean> pointBeanList, PointAdapterCB pointAdapterCB) {
             super(itemView);
             rp_iv_result = (ImageView) itemView.findViewById(R.id.rp_iv_result);
             rp_iv_offense = (ImageView) itemView.findViewById(R.id.rp_iv_offense);
@@ -185,6 +188,8 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
 
             this.pointAdapterCB = pointAdapterCB;
             this.showPlayerListId = showPlayerListId;
+            this.adapter = adapter;
+            this.pointBeanList = pointBeanList;
         }
 
         @Override
@@ -202,6 +207,18 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
                 }
                 else {
                     showPlayerListId.add(pointBean.getId());
+                }
+
+                //On previent que l'element à changé
+                int position = 0;
+                for (PointBean pointBean1 : pointBeanList) {
+                    if (pointBean1.getId() == pointBean.getId()) {
+                        adapter.notifyItemChanged(position);
+                        return;
+                    }
+                    else {
+                        position++;
+                    }
                 }
             }
         }

@@ -8,6 +8,7 @@ import com.ultimatelinemanager.Constante;
 import com.ultimatelinemanager.activity.TeamActivity;
 import com.ultimatelinemanager.activity.list_players.PickerPlayerActivity;
 import com.ultimatelinemanager.activity.list_players.TeamPlayerActivity;
+import com.ultimatelinemanager.activity.match.ListPointsActivity;
 import com.ultimatelinemanager.activity.match.MatchActivity;
 import com.ultimatelinemanager.activity.match.TeamMatchActivity;
 
@@ -75,8 +76,9 @@ public class IntentHelper {
     }
 
     public static void goToMatchPoint(Activity activity, long matchId) {
-        //TODO
-        ToastUtils.showNotImplementedToast(activity);
+        Intent intent = new Intent(activity, ListPointsActivity.class);
+        intent.putExtra(Constante.MATCH_EXTRA_ID, matchId);
+        activity.startActivity(intent);
     }
 
     public static void goToMatchStatistic(Activity activity, long matchId) {

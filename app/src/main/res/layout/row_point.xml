@@ -43,7 +43,7 @@
         <TextView
             android:id="@+id/rp_title"
             style="@style/bloc_title"
-            android:text="@string/lp_blob_tittle"/>
+            android:text="@string/lp_bloc_tittle"/>
 
         <TableLayout
             android:id="@+id/rp_tl"
