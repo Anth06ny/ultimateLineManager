@@ -3,18 +3,20 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="com.ultimatelinemanager.activity.match.MatchActivity">
 
+
+    <item
+        android:id="@+id/mm_new_point"
+        android:icon="@drawable/ic_add_white_48dp"
+        android:orderInCategory="100"
+        android:title="@string/lp_menu_new_point"
+        app:showAsAction="ifRoom"/>
+
     <item
         android:id="@+id/mm_state_player"
         android:icon="@drawable/ic_group_white_48dp"
         android:orderInCategory="100"
         android:title="@string/ma_menu_state_player"
-        app:showAsAction="always"/>
-
-    <item
-        android:id="@+id/mm_points"
-        android:orderInCategory="101"
-        android:title="@string/ma_menu_point"
-        app:showAsAction="never"/>
+        app:showAsAction="collapseActionView"/>
 
     <item
         android:id="@+id/mm_end_game"

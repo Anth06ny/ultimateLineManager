@@ -114,7 +114,10 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
         //On affiche les Joueurs
         if (showPlayerListId.contains(pointBean.getId())) {
             holder.rp_ll_players.setVisibility(View.VISIBLE);
+            //on retire tous pour tous remettre sauf la 1er
+            View view = holder.rp_ll_players.findViewById(R.id.tp_tv_players_title);
             holder.rp_ll_players.removeAllViews();
+            holder.rp_ll_players.addView(view);
             for (PlayerPoint playerPoint : pointBean.getPlayerPointList()) {
                 TextView textView = new TextView(context);
                 textView.setText(playerPoint.getPlayerBean().getName());
@@ -143,6 +146,7 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
     public int getItemCount() {
         return daoList.size();
     }
+
 
     /* ---------------------------------
     // View Holder

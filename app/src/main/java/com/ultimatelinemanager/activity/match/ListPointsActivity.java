@@ -1,17 +1,19 @@
 package com.ultimatelinemanager.activity.match;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.formation.utils.LogUtils;
 import com.ultimatelinemanager.Constante;
+import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.R;
+import com.ultimatelinemanager.activity.GeneriqueActivity;
 import com.ultimatelinemanager.adapter.PointAdapter;
 import com.ultimatelinemanager.dao.match.MatchDaoManager;
 import com.ultimatelinemanager.dao.match.PointDaoManager;
@@ -23,16 +25,19 @@ import java.util.Comparator;
 import greendao.MatchBean;
 import greendao.PointBean;
 
-public class ListPointsActivity extends ActionBarActivity implements PointAdapter.PointAdapterCB {
+public class ListPointsActivity extends GeneriqueActivity implements PointAdapter.PointAdapterCB {
 
     private static final String TAG = LogUtils.getLogTag(ListPointsActivity.class);
 
     //Composants graphiques
-    private RecyclerView st_rv;
     private TextView st_empty;
 
-    //Data
+    //RecycleView
+    private RecyclerView st_rv;
+    private LinearLayoutManager lm;
     private PointAdapter adapter;
+
+    //Data
     private ArrayList<PointBean> pointBeanList;
     private MatchBean matchBean;
 
@@ -57,7 +62,7 @@ public class ListPointsActivity extends ActionBarActivity implements PointAdapte
         st_empty = (TextView) findViewById(R.id.st_empty);
         st_rv = (RecyclerView) findViewById(R.id.st_rv);
         st_rv.setHasFixedSize(false);
-        st_rv.setLayoutManager(new LinearLayoutManager(this));
+        st_rv.setLayoutManager(lm = new LinearLayoutManager(this));
         st_rv.setItemAnimator(new DefaultItemAnimator());
 
         pointBeanList = new ArrayList<>();
@@ -65,6 +70,7 @@ public class ListPointsActivity extends ActionBarActivity implements PointAdapte
         sortList();
 
         adapter = new PointAdapter(this, pointBeanList, this);
+        st_rv.setAdapter(adapter);
 
         setTitle(getString(R.string.lp_title, matchBean.getTeamBean().getName(), matchBean.getName()));
 
@@ -73,6 +79,7 @@ public class ListPointsActivity extends ActionBarActivity implements PointAdapte
     @Override
     protected void onStart() {
         super.onStart();
+        refreshView();
     }
 
     /* ---------------------------------
@@ -82,28 +89,13 @@ public class ListPointsActivity extends ActionBarActivity implements PointAdapte
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_list_point, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()) {
-            case R.id.menu_new_point:
-                //on crée un nouveau point qu'on ajoute
-                PointBean pointBean = new PointBean();
-                pointBean.setMatchBean(matchBean);
-                pointBean.setId(PointDaoManager.getPointBeanDao().insert(pointBean));
-                pointBeanList.add(0, pointBean);
-                //On indique une insertion d'item
-                adapter.notifyItemInserted(0);
-
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        return super.onOptionsItemSelected(item);
 
     }
 
@@ -124,6 +116,8 @@ public class ListPointsActivity extends ActionBarActivity implements PointAdapte
 
         //On le retire en base de donnée
         PointDaoManager.getPointBeanDao().delete(bean);
+        //pour bien le supprimer de la session
+        MyApplication.getInstance().getDaoSession().clear();
 
         //on essaye de le retirer en mode optimiser
         if (position >= 0) {
@@ -170,6 +164,24 @@ public class ListPointsActivity extends ActionBarActivity implements PointAdapte
         pointBeanList.addAll(matchBean.getPointBeanList());
         sortList();
         adapter.notifyDataSetChanged();
+    }
+
+    protected void refreshView() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyDataSetChanged();
+
+                if (pointBeanList.size() > 0) {
+                    st_empty.setVisibility(View.INVISIBLE);
+                    st_rv.setVisibility(View.VISIBLE);
+                }
+                else {
+                    st_empty.setVisibility(View.VISIBLE);
+                    st_rv.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
     }
 
 }

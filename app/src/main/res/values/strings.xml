@@ -108,6 +108,7 @@
     <string name="lp_hide_players">Hide players</string>
     <string name="lp_delete_point">Delete point</string>
     <string name="lp_menu_new_point">New Point</string>
+    <string name="lp_no_point">No point registered</string>
 
 
     <!-- ****************** -->

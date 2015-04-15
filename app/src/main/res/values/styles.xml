@@ -35,7 +35,7 @@
 
     <style name="ma_tv_title">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">@dimen/margin_30</item>
+        <item name="android:layout_height">@dimen/margin_20</item>
         <item name="android:paddingLeft">@dimen/margin_10</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:textColor">?attr/color_text_main</item>
@@ -45,7 +45,7 @@
 
     <style name="ma_tv_value">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">@dimen/margin_30</item>
+        <item name="android:layout_height">@dimen/margin_20</item>
         <item name="android:textColor">?attr/color_text_main</item>
         <item name="android:textSize">@dimen/font_12</item>
         <item name="android:gravity">center_vertical</item>

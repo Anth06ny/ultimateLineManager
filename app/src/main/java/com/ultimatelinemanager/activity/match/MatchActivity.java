@@ -2,10 +2,12 @@ package com.ultimatelinemanager.activity.match;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,19 +18,25 @@ import com.formation.utils.LogUtils;
 import com.formation.utils.ToastUtils;
 import com.formation.utils.Utils;
 import com.ultimatelinemanager.Constante;
+import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.activity.GeneriqueActivity;
+import com.ultimatelinemanager.adapter.PointAdapter;
 import com.ultimatelinemanager.dao.match.MatchDaoManager;
+import com.ultimatelinemanager.dao.match.PointDaoManager;
 import com.ultimatelinemanager.metier.DialogUtils;
 import com.ultimatelinemanager.metier.IntentHelper;
 import com.ultimatelinemanager.metier.exception.TechnicalException;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 import greendao.MatchBean;
 import greendao.PointBean;
 
-public class MatchActivity extends GeneriqueActivity implements View.OnClickListener {
+public class MatchActivity extends GeneriqueActivity implements View.OnClickListener, PointAdapter.PointAdapterCB {
 
     private static final String TAG = LogUtils.getLogTag(MatchActivity.class);
 
@@ -40,8 +48,14 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
     private TextView ma_tv_date;
     private TextView ma_tv_finish_stat;
     private TextView ma_tv_finish_stat_title;
-    private Button ma_bt_point;
     private ImageView ma_iv_win;
+    private TextView st_empty;
+
+    //RecycleView
+    private RecyclerView st_rv;
+    private LinearLayoutManager lm;
+    private PointAdapter adapter;
+    private ArrayList<PointBean> pointBeanList;
 
     //Data
     private MatchBean matchBean;
@@ -66,14 +80,25 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
         ma_tv_reel_playing_time = (TextView) findViewById(R.id.ma_tv_reel_playing_time);
         ma_tv_score = (TextView) findViewById(R.id.ma_tv_score);
         ma_tv_finish_stat = (TextView) findViewById(R.id.ma_tv_finish_stat);
-        ma_bt_point = (Button) findViewById(R.id.ma_bt_point);
         ma_iv_win = (ImageView) findViewById(R.id.ma_iv_win);
         ma_tv_finish_stat_title = (TextView) findViewById(R.id.ma_tv_finish_stat_title);
+        st_empty = (TextView) findViewById(R.id.st_empty);
+        st_rv = (RecyclerView) findViewById(R.id.st_rv);
 
-        ma_bt_point.setOnClickListener(this);
         ma_tv_finish_stat.setOnClickListener(this);
 
         ma_iv_win.setColorFilter(getResources().getColor(R.color.yellow));
+
+        //recycleview
+        st_rv.setHasFixedSize(false);
+        st_rv.setLayoutManager(lm = new LinearLayoutManager(this));
+        st_rv.setItemAnimator(new DefaultItemAnimator());
+        pointBeanList = new ArrayList<>();
+        pointBeanList.addAll(matchBean.getPointBeanList());
+        sortList();
+        adapter = new PointAdapter(this, pointBeanList, this);
+        st_rv.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
     }
 
@@ -104,8 +129,8 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
                 statePlayerClick();
                 return true;
 
-            case R.id.mm_points:
-                pointClick();
+            case R.id.mm_new_point:
+                addNewPoint();
                 return true;
 
             case R.id.mm_end_game:
@@ -145,10 +170,7 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        if (v == ma_bt_point) {
-            pointClick();
-        }
-        else if (v == ma_tv_finish_stat) {
+        if (v == ma_tv_finish_stat) {
             //En fonction de l'état du match pas la même action
             if (matchBean.getStart() == null) {
                 showError(new TechnicalException("Click sur terminé alors que le match n'a pas commencé"), true);
@@ -166,6 +188,43 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
     }
 
     /* ---------------------------------
+    // Adapter callback
+    // -------------------------------- */
+
+    @Override
+    public void pointAdapter_deletePoint(PointBean bean) {
+
+        int position = -1;
+        for (int i = 0; i < pointBeanList.size(); i++) {
+            if (pointBeanList.get(i).getId() == bean.getId()) {
+                position = i;
+                break;
+            }
+        }
+
+        //On le retire en base de donnée
+        PointDaoManager.getPointBeanDao().delete(bean);
+        //pour bien le supprimer de la session
+        MyApplication.getInstance().getDaoSession().clear();
+
+        //on essaye de le retirer en mode optimiser
+        if (position >= 0) {
+            pointBeanList.remove(position);
+            adapter.notifyItemRemoved(position);
+        }
+        //Sinon de maniere normal
+        else {
+            pointBeanList.remove(bean);
+            adapter.notifyDataSetChanged();
+        }
+
+        if (pointBeanList.isEmpty()) {
+            refreshView();
+        }
+
+    }
+
+    /* ---------------------------------
     // Click action
     // -------------------------------- */
 
@@ -179,8 +238,23 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
     /**
      * affiche la liste des points du match
      */
-    private void pointClick() {
-        IntentHelper.goToMatchPoint(this, matchBean.getId());
+    private void addNewPoint() {
+        //on crée un nouveau point qu'on ajoute
+        PointBean pointBean = new PointBean();
+        pointBean.setMatchBean(matchBean);
+        pointBean.setId(PointDaoManager.getPointBeanDao().insert(pointBean));
+        pointBeanList.add(0, pointBean);
+
+        if (pointBeanList.size() == 1) {
+            refreshView();
+        }
+
+        //On indique une insertion d'item
+        adapter.notifyItemInserted(0);
+        if (lm.findFirstCompletelyVisibleItemPosition() == 0) {
+            lm.scrollToPosition(0);
+        }
+
     }
 
     /**
@@ -264,10 +338,9 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
             //Playing time
             ma_tv_playing_time.setText(Utils.timeToHHMM(matchBean.getEnd().getTime() - matchBean.getStart().getTime()));
 
-            matchBean.resetPointBeanList();
             long reelTime = 0;
             int team = 0, opponent = 0;
-            for (PointBean pointBean : matchBean.getPointBeanList()) {
+            for (PointBean pointBean : pointBeanList) {
                 if (pointBean.getLength() != null) {
                     reelTime += pointBean.getLength();
 
@@ -328,5 +401,37 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
         //On invalide le menu
         invalidateOptionsMenu();
 
+        //RecycleView
+        if (pointBeanList.size() > 0) {
+            st_empty.setVisibility(View.INVISIBLE);
+            st_rv.setVisibility(View.VISIBLE);
+        }
+        else {
+            st_empty.setVisibility(View.VISIBLE);
+            st_rv.setVisibility(View.INVISIBLE);
+        }
+
+    }
+
+    private void sortList() {
+        Collections.sort(pointBeanList, new Comparator<PointBean>() {
+            @Override
+            public int compare(PointBean p1, PointBean p2) {
+                if (p1.getStart() == null && p2.getStart() == null) {
+                    //Si les 2 sont nulle on garde l'autre des id
+                    return (int) (p1.getId() - p2.getId());
+
+                }
+                else if (p1.getStart() == null) {
+                    return -1;
+                }
+                else if (p2.getStart() == null) {
+                    return 1;
+                }
+                else {
+                    return (int) (p1.getStart().getTime() - p2.getStart().getTime());
+                }
+            }
+        });
     }
 }

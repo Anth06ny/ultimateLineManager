@@ -86,10 +86,12 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/rp_tl"
+            android:animateLayoutChanges="true"
             android:orientation="vertical"
             android:visibility="visible">
 
             <TextView
+                android:id="@+id/tp_tv_players_title"
                 style="@style/ma_tv_title"
                 android:text="@string/lp_players"
                 />

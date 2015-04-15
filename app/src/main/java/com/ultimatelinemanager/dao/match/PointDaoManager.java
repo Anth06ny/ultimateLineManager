@@ -12,4 +12,5 @@ public class PointDaoManager {
     public static PointBeanDao getPointBeanDao() {
         return MyApplication.getInstance().getDaoSession().getPointBeanDao();
     }
+
 }

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.ultimatelinemanager.dao.MyOpenHelper;
+import com.ultimatelinemanager.dao.TeamDaoManager;
 
 import de.greenrobot.dao.query.QueryBuilder;
 import greendao.DaoMaster;
@@ -14,7 +15,8 @@ import greendao.DaoSession;
  */
 public class MyApplication extends Application {
 
-    //TODO listPoint faire empty
+    //TODO MatchActivity faire un tabPan players/match avec les listes
+
     //TODO Ecran PointActivity : Continuer l'activité et intégré la liste.
 
     //TODO ecran point avec selection joueur
@@ -49,6 +51,10 @@ public class MyApplication extends Application {
         SQLiteDatabase db = helper.getWritableDatabase();
         DaoMaster daoMaster = new DaoMaster(db);
         daoSession = daoMaster.newSession();
+
+        if (TeamDaoManager.getLast50Team().isEmpty()) {
+            helper.fillBDD();
+        }
 
     }
 

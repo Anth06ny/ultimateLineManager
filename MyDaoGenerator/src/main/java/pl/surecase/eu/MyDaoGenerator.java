@@ -9,7 +9,7 @@ public class MyDaoGenerator {
 
     public static void main(String args[]) throws Exception {
 
-        final int DAO_VERSION = 2;
+        final int DAO_VERSION = 3;
 
         Schema schema = new Schema(DAO_VERSION, "greendao");
 
@@ -73,7 +73,6 @@ public class MyDaoGenerator {
         pointBean.addLongProperty("length");//durée
         pointBean.addBooleanProperty("teamOffense"); //attaque ou défense
         pointBean.addBooleanProperty("teamGoal");//but pour ou contre
-
 
         //Relation Match * Point
         Property matchId = pointBean.addLongProperty("matchId").notNull().getProperty();
