@@ -1,5 +1,10 @@
 package com.ultimatelinemanager.activity.match;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -27,11 +32,6 @@ import com.ultimatelinemanager.dao.match.PointDaoManager;
 import com.ultimatelinemanager.metier.DialogUtils;
 import com.ultimatelinemanager.metier.IntentHelper;
 import com.ultimatelinemanager.metier.exception.TechnicalException;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 
 import greendao.MatchBean;
 import greendao.PointBean;

@@ -29,12 +29,6 @@
     <string name="st_team_not_add">Team hasn\'t been added</string>
     <string name="st_no_team">No team registered</string>
 
-    <!-- ****************** -->
-    <!-- CreateTeaamActivity -->
-    <!-- ****************** -->
-    <!--<string name="ct_et_hint">Select player</string>-->
-    <!--<string name="title_activity_team">TeamActivity</string>-->
-    <!--<string name="action_settings">Settings</string>-->
 
     <!-- ****************** -->
     <!-- TeamActvity -->
