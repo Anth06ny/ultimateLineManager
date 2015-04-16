@@ -4,9 +4,6 @@ import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.metier.exception.LogicException;
 
-import java.util.List;
-
-import greendao.PlayerBeanDao;
 import greendao.TeamPlayer;
 import greendao.TeamPlayerDao;
 
@@ -31,8 +28,6 @@ public class TeamPlayerManager {
         return getTeamPlayerDAO().queryBuilder().where(TeamPlayerDao.Properties.TeamId.eq(teamId), TeamPlayerDao.Properties.PlayerId.eq(playerId))
                 .unique();
     }
-
-
 
     /* ---------------------------------
     // Autre

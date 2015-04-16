@@ -168,7 +168,6 @@ public class DialogUtils {
                             catch (Throwable e) {
                                 LogUtils.logException(getClass(), e, true);
                                 ToastUtils.showToastOnUIThread(context, R.string.erreur_generique);
-                                return;
                             }
                         }
                     }

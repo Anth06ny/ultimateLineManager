@@ -216,7 +216,7 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
                 //On previent que l'element à changé
                 int position = 0;
                 for (PointBean pointBean1 : pointBeanList) {
-                    if (pointBean1.getId() == pointBean.getId()) {
+                    if (pointBean1.getId().equals(pointBean.getId())) {
                         adapter.notifyItemChanged(position);
                         return;
                     }

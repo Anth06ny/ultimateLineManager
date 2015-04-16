@@ -55,7 +55,7 @@ public class PlayerDaoManager {
         }
         catch (Throwable e) {
             e.printStackTrace();
-            return new ArrayList<PlayerBean>();
+            return new ArrayList<>();
         }
 
     }

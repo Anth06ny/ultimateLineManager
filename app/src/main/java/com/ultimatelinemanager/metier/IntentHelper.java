@@ -7,7 +7,6 @@ import com.formation.utils.ToastUtils;
 import com.ultimatelinemanager.Constante;
 import com.ultimatelinemanager.activity.TeamActivity;
 import com.ultimatelinemanager.activity.list_players.PickerPlayerActivity;
-import com.ultimatelinemanager.activity.list_players.TeamPlayerActivity;
 import com.ultimatelinemanager.activity.match.MatchActivity;
 
 /**
@@ -17,16 +16,6 @@ public class IntentHelper {
 
     public static void goToTeamActivity(Activity activity, Long teamBeanId) {
         Intent intent = new Intent(activity, TeamActivity.class);
-        intent.putExtra(Constante.TEAM_EXTRA_ID, teamBeanId);
-        activity.startActivity(intent);
-    }
-
-    /**
-     * Page de liste player
-     * @param activity
-     */
-    public static void goToListPlayerTeamActivity(Activity activity, Long teamBeanId) {
-        Intent intent = new Intent(activity, TeamPlayerActivity.class);
         intent.putExtra(Constante.TEAM_EXTRA_ID, teamBeanId);
         activity.startActivity(intent);
     }

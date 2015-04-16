@@ -30,21 +30,11 @@
     <string name="st_no_team">No team registered</string>
 
     <!-- ****************** -->
-    <!-- MainActivity -->
-    <!-- ****************** -->
-    <string name="ma_bt_new">Team</string>
-    <string name="ma_bt_old">Last Game</string>
-    <string name="ma_bt_player">Manage Player</string>
-
-    <!-- ****************** -->
     <!-- CreateTeaamActivity -->
     <!-- ****************** -->
-    <string name="ct_et_hint">Select player</string>
-    <string name="title_activity_main">Equipes</string>
-    <string name="title_activity_select_team">Select team</string>
-    <string name="title_activity_team">TeamActivity</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <!--<string name="ct_et_hint">Select player</string>-->
+    <!--<string name="title_activity_team">TeamActivity</string>-->
+    <!--<string name="action_settings">Settings</string>-->
 
     <!-- ****************** -->
     <!-- TeamActvity -->
@@ -62,7 +52,6 @@
     <string name="lpt_title">Players of %1$s</string>
     <string name="lpt_no_team_title">Existing Players</string>
     <string name="lpt_no_team_info">Add players of the database or create a new one.</string>
-    <string name="lpt_info">Players of your team.</string>
     <string name="lpt_bt_new">New Player</string>
     <string name="lpt_no_player">No player registered</string>
     <string name="lpt_post">Post</string>
@@ -71,8 +60,6 @@
     <!-- ****************** -->
     <!-- TeamMatchActivity -->
     <!-- ****************** -->
-    <string name="tm_title">Matches of %1$s</string>
-    <string name="tm_info">Team matches</string>
     <string name="tm_list_statut"><![CDATA[Statut : <font color=\'%1$s\'>%2$s</font>]]></string>
     <string name="tm_list_statut_not_start">Not started</string>
     <string name="tm_list_statut_in_progress">In progress</string>
@@ -89,7 +76,6 @@
     <string name="ma_playing_time">Playing time : </string>
     <string name="ma_reel_playing_time">Reel playing time : </string>
     <string name="ma_score">Score : </string>
-    <string name="ma_menu_point">Points</string>
     <string name="ma_menu_state_player">State players</string>
     <string name="ma_menu_rename_opponent">Rename opponent</string>
     <string name="ma_menu_delete_match">Delete game</string>

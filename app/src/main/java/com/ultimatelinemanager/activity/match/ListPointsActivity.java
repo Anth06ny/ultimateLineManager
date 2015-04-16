@@ -108,7 +108,7 @@ public class ListPointsActivity extends GeneriqueActivity implements PointAdapte
 
         int position = -1;
         for (int i = 0; i < pointBeanList.size(); i++) {
-            if (pointBeanList.get(i).getId() == bean.getId()) {
+            if (pointBeanList.get(i).getId().equals(bean.getId())) {
                 position = i;
                 break;
             }
