@@ -12,8 +12,8 @@
     <string name="middle">Middle</string>
     <string name="sexe">Sexe</string>
     <string name="name">Name</string>
-    <string name="boy">Boy</string>
-    <string name="girl">Girl</string>
+    <string name="boy">Men</string>
+    <string name="girl">Woman</string>
     <string name="erreur_generique">An technical error has occurred</string>
     <string name="not_implemented">Not yet implemented</string>
     <string name="point">Point</string>
@@ -89,6 +89,16 @@
     <string name="lp_delete_point">Delete point</string>
     <string name="lp_menu_new_point">New Point</string>
     <string name="lp_no_point">No point registered</string>
+
+    <!-- ****************** -->
+    <!-- PointActivity -->
+    <!-- ****************** -->
+    <string name="pa_title">Point %1$s</string>
+    <string name="pa_fille">Women : </string>
+    <string name="pa_boy">Mens : </string>
+    <string name="pa_handler">Handler : </string>
+    <string name="pa_middle">Handler : </string>
+    <string name="pa_both">Both : </string>
 
 
     <!-- ****************** -->

@@ -15,8 +15,7 @@ import greendao.DaoSession;
  */
 public class MyApplication extends Application {
 
-    //TODO tabHost mettre l'image
-    //TODO ecran point avec selection joueur
+    //TODO Continuer ecran point
     //TODO Ecran controle point en cours
 
     private static MyApplication instance;
