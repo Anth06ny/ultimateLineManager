@@ -1,30 +1,58 @@
 package com.ultimatelinemanager.activity;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.TabHost;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.formation.utils.LogUtils;
+import com.formation.utils.Utils;
 import com.ultimatelinemanager.Constante;
 import com.ultimatelinemanager.R;
+import com.ultimatelinemanager.adapter.SelectAdapter;
+import com.ultimatelinemanager.dao.PlayerDaoManager;
 import com.ultimatelinemanager.dao.TeamDaoManager;
+import com.ultimatelinemanager.dao.TeamPlayerManager;
+import com.ultimatelinemanager.dao.match.MatchDaoManager;
 import com.ultimatelinemanager.metier.DialogUtils;
 import com.ultimatelinemanager.metier.IntentHelper;
+import com.ultimatelinemanager.metier.exception.ExceptionA;
+import com.ultimatelinemanager.metier.exception.LogicException;
+import com.ultimatelinemanager.metier.exception.TechnicalException;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
+
+import greendao.MatchBean;
+import greendao.PlayerBean;
 import greendao.TeamBean;
 
-public class TeamActivity extends GeneriqueActivity implements View.OnClickListener {
+public class TeamActivity extends GeneriqueActivity implements SelectAdapter.SelectAdapterI, TabHost.OnTabChangeListener {
 
     private static final String TAG = LogUtils.getLogTag(TeamActivity.class);
 
     //Composant graphique
     private MaterialDialog dialog;
-    private Button mt_bt_players, ta_bt_games;
+    private RecyclerView ta_rv_match, ta_rv_players;
+    private TextView ta_empty_match, ta_empty_players;
+
+    //Autre
+    private SelectAdapter adapterMatch, adapterPlayer;
+    private LinearLayoutManager lmMatch, lmPlayers;
+    protected ArrayList<MatchBean> matchBeansList;
+    protected ArrayList<PlayerBean> playerBeanList;
+    private static String TAG_PLAYERS, TAG_MATCH;
 
     //autre
     private TeamBean teamBean;
@@ -43,18 +71,53 @@ public class TeamActivity extends GeneriqueActivity implements View.OnClickListe
             return;
         }
 
-        mt_bt_players = (Button) findViewById(R.id.mt_bt_players);
-        ta_bt_games = (Button) findViewById(R.id.ta_bt_games);
+        ta_empty_match = (TextView) findViewById(R.id.ta_empty_match);
+        ta_empty_players = (TextView) findViewById(R.id.ta_empty_players);
+        ta_rv_match = (RecyclerView) findViewById(R.id.ta_rv_match);
+        ta_rv_players = (RecyclerView) findViewById(R.id.ta_rv_players);
 
-        mt_bt_players.setOnClickListener(this);
-        ta_bt_games.setOnClickListener(this);
+        TAG_MATCH = getString(R.string.ta_bt_games);
+        TAG_PLAYERS = getString(R.string.ta_bt_players);
+
+        initTabHost();
+
+        initRecycleView();
+
+        //List match
+        matchBeansList = new ArrayList<>();
+        matchBeansList.addAll(teamBean.getMatchBeanList());
+        adapterMatch = new SelectAdapter(this, matchBeansList, SelectAdapter.TYPE.MATCH, this);
+
+        playerBeanList = new ArrayList<>();
+        playerBeanList.addAll(PlayerDaoManager.getPlayers(teamBean));
+        adapterPlayer = new SelectAdapter(this, playerBeanList, SelectAdapter.TYPE.PLAYER, this);
+
+        ta_rv_match.setAdapter(adapterMatch);
+        ta_rv_players.setAdapter(adapterPlayer);
 
         refreshTitle();
-
     }
 
-    private void refreshTitle() {
-        setTitle(StringUtils.capitalize(teamBean.getName()));
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constante.PICK_PLAYER_REQ_CODE && resultCode == Activity.RESULT_OK) {
+            //On recupere l'id de notre joueur
+            try {
+                long newPlayer = data.getExtras().getLong(Constante.PLAYER_EXTRA_ID, -1);
+                if (newPlayer != -1) {
+                    addPlayer(newPlayer);
+                }
+                else {
+                    throw new TechnicalException("Le playerId n'a pas été transmit");
+                }
+
+            }
+            catch (ExceptionA e) {
+                showError(e, true);
+            }
+
+        }
     }
 
     /* ---------------------------------
@@ -104,31 +167,156 @@ public class TeamActivity extends GeneriqueActivity implements View.OnClickListe
 
                 return true;
 
+            case R.id.menu_add_team:
+                DialogUtils.getPromptDialog(this, R.drawable.ic_action_add_group, R.string.tm_pop_up_new_match_title, R.string.add, "",
+                        new DialogUtils.PromptDialogCB() {
+                            @Override
+                            public void promptDialogCB_onPositiveClick(String promptText) {
+                                addMatch(promptText);
+                            }
+                        }).show();
+                return true;
+
+            case R.id.menu_add_player:
+                IntentHelper.goToPickPlayer(this, teamBean.getId(), Constante.PICK_PLAYER_REQ_CODE);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
     /* ---------------------------------
-    // Click
+    // Event
     // -------------------------------- */
 
     @Override
-    public void onClick(View v) {
-        if (v == mt_bt_players) {
-            IntentHelper.goToListPlayerTeamActivity(this, teamBean.getId());
+    public void selectAdapter_onClick(Object bean) {
+        if (bean instanceof MatchBean) {
+            //on redirige sur le match
+            IntentHelper.goToMatch(this, ((MatchBean) bean).getId(), true);
         }
-        else if (v == ta_bt_games) {
-            IntentHelper.goToTeamMatch(this, teamBean.getId());
+        else if (bean instanceof PlayerBean) {
+            //On va sur la page d'un joueur , pas encore faite.
+            IntentHelper.goToPlayerPage(this, ((PlayerBean) bean).getId());
         }
+    }
+
+    @Override
+    public void onTabChanged(String tabId) {
+        if (tabId.equals(TAG_MATCH)) {
+
+        }
+        else if (tabId.equals(TAG_PLAYERS)) {
+
+        }
+    }
+
+    /* ---------------------------------
+    // private Graphique
+    // -------------------------------- */
+
+    private void refreshTitle() {
+        setTitle(StringUtils.capitalize(teamBean.getName()));
+    }
+
+    private void initTabHost() {
+        int mainColor = Utils.getColorFromTheme(this, R.attr.color_composant_main);
+
+        //Init du Tabhost
+        TabHost tabs = (TabHost) findViewById(R.id.tabHost);
+        tabs.setup();
+
+        //tabs match
+        TabHost.TabSpec spec = tabs.newTabSpec(TAG_MATCH);//le tag
+        spec.setContent(R.id.ta_rl_match);
+        Drawable drawable = getResources().getDrawable(R.drawable.ic_action_group);
+        drawable.setColorFilter(mainColor, PorterDuff.Mode.MULTIPLY);
+        spec.setIndicator(spec.getTag(), drawable); //le label
+        tabs.addTab(spec);
+
+        //tabs players
+        spec = tabs.newTabSpec(TAG_PLAYERS);//le tag
+        spec.setContent(R.id.ta_rl_players);
+        drawable = getResources().getDrawable(R.drawable.ic_action_user);
+        drawable.setColorFilter(mainColor, PorterDuff.Mode.MULTIPLY);
+        spec.setIndicator(spec.getTag(), drawable); //le label
+        tabs.addTab(spec);
+
+        tabs.setOnTabChangedListener(this);
+    }
+
+    private void initRecycleView() {
+        //preparation recycleview
+        ta_rv_match.setHasFixedSize(false);
+        ta_rv_players.setHasFixedSize(false);
+        ta_rv_match.setLayoutManager(lmMatch = new LinearLayoutManager(this));
+        ta_rv_players.setLayoutManager(lmPlayers = new LinearLayoutManager(this));
+        ta_rv_match.setItemAnimator(new DefaultItemAnimator());
+        ta_rv_players.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    private void refreshView() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                if (playerBeanList.size() > 0) {
+                    ta_empty_players.setVisibility(View.INVISIBLE);
+                    ta_rv_players.setVisibility(View.VISIBLE);
+                }
+                else {
+                    ta_empty_players.setVisibility(View.VISIBLE);
+                    ta_rv_players.setVisibility(View.INVISIBLE);
+                }
+
+                if (matchBeansList.size() > 0) {
+                    ta_empty_match.setVisibility(View.INVISIBLE);
+                    ta_rv_match.setVisibility(View.VISIBLE);
+                }
+                else {
+                    ta_empty_match.setVisibility(View.VISIBLE);
+                    ta_rv_match.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
     }
 
     /* ---------------------------------
     // private
     // -------------------------------- */
+    private void addMatch(String oponentName) {
+        MatchBean matchBean = new MatchBean();
+        matchBean.setName(oponentName);
+        matchBean.setTeamBean(teamBean);
+        MatchDaoManager.getMatchBeanDao().insert(matchBean);
+
+        //On l'ajoute en tete pour ne pas avoir à refaire des appel bdd
+        matchBeansList.add(0, matchBean);
+
+        //insertion d'item
+        adapterMatch.notifyItemInserted(0);
+        if (lmMatch.findFirstCompletelyVisibleItemPosition() == 0) {
+            lmMatch.scrollToPosition(0);
+        }
+
+    }
+
+    private void addPlayer(long newPlayerId) throws LogicException {
+        //On ajoute notre nouveau joueur à l'equipe
+        TeamPlayerManager.addPlayerToTeam(teamBean.getId(), newPlayerId);
+        //ON recharge la liste
+        playerBeanList.clear();
+        playerBeanList.addAll(PlayerDaoManager.getPlayers(teamBean));
+        adapterPlayer.notifyDataSetChanged();
+
+        //On met à jour la liste et la vue
+        refreshView();
+    }
 
     private void deleteTeam() {
         TeamDaoManager.getTeamDAO().delete(teamBean);
         finish();
     }
+
 }

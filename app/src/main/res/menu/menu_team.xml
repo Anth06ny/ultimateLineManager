@@ -3,19 +3,34 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="com.ultimatelinemanager.activity.TeamActivity">
 
+
+    <item
+        android:id="@+id/menu_add_player"
+        android:icon="@drawable/ic_action_user_add"
+        android:orderInCategory="100"
+        android:title="@string/lpt_bt_new"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/menu_add_team"
+        android:icon="@drawable/ic_action_add_group"
+        android:orderInCategory="100"
+        android:title="@string/tm_menu_add"
+        app:showAsAction="ifRoom"/>
+
     <item
         android:id="@+id/menu_rename"
         android:icon="@drawable/ic_action_edit"
         android:orderInCategory="100"
         android:title="@string/ta_bt_rename"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="never"/>
 
     <item
         android:id="@+id/menu_delete"
         android:icon="@drawable/ic_action_delete"
         android:orderInCategory="100"
         android:title="@string/ta_bt_delete"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="never"/>
 
 
 </menu>

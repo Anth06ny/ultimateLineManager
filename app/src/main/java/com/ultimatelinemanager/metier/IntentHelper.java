@@ -9,7 +9,6 @@ import com.ultimatelinemanager.activity.TeamActivity;
 import com.ultimatelinemanager.activity.list_players.PickerPlayerActivity;
 import com.ultimatelinemanager.activity.list_players.TeamPlayerActivity;
 import com.ultimatelinemanager.activity.match.MatchActivity;
-import com.ultimatelinemanager.activity.match.TeamMatchActivity;
 
 /**
  * Created by Anthony on 02/03/2015.
@@ -48,12 +47,6 @@ public class IntentHelper {
         ToastUtils.showNotImplementedToast(activity);
     }
 
-    public static void goToTeamMatch(Activity activity, long teamId) {
-        Intent intent = new Intent(activity, TeamMatchActivity.class);
-        intent.putExtra(Constante.TEAM_EXTRA_ID, teamId);
-        activity.startActivity(intent);
-    }
-
     /* ---------------------------------
     // Match
     // -------------------------------- */
@@ -73,7 +66,6 @@ public class IntentHelper {
         //TODO
         ToastUtils.showNotImplementedToast(activity);
     }
-
 
     public static void goToMatchStatistic(Activity activity, long matchId) {
         //TODO

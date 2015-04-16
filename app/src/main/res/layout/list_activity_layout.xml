@@ -10,34 +10,34 @@
                 tools:context="com.ultimatelinemanager.activity.SelectTeamActivity">
 
     <TextView
+        android:id="@+id/st_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_marginBottom="@dimen/margin_10"
         android:text="Small Text"
-        android:id="@+id/st_info"
-        android:textSize="@dimen/font_14"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="?attr/color_text_main"
-        android:layout_marginBottom="@dimen/margin_10"/>
+        android:textSize="@dimen/font_14"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/st_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/st_info"
         android:background="?color_application_bg"
-        tools:listitem="@layout/row_select_team"
-        android:layout_below="@+id/st_info"/>
+        tools:listitem="@layout/row_select_team"/>
 
     <TextView
         android:id="@+id/st_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/st_info"
         android:background="?color_application_bg"
         android:gravity="center"
         android:text="@string/lpt_no_player"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="@dimen/font_20"
-        android:visibility="invisible"
-        android:layout_below="@+id/st_info"/>
+        android:visibility="invisible"/>
 
 
 </RelativeLayout>

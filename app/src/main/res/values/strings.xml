@@ -51,8 +51,9 @@
     <!-- ****************** -->
     <string name="ta_bt_players">Players</string>
     <string name="ta_bt_games">Matches</string>
-    <string name="ta_bt_rename">Rename</string>
-    <string name="ta_bt_delete">Delete</string>
+    <string name="ta_bt_rename">Rename Team</string>
+    <string name="ta_bt_delete">Delete Team</string>
+    <string name="ta_no_match">No match registered</string>
     <string name="ta_delete_confirmation">Are you sure you want to delete this team?</string>
 
     <!-- ****************** -->
@@ -72,7 +73,6 @@
     <!-- ****************** -->
     <string name="tm_title">Matches of %1$s</string>
     <string name="tm_info">Team matches</string>
-    <string name="tm_no_match">No match registered</string>
     <string name="tm_list_statut"><![CDATA[Statut : <font color=\'%1$s\'>%2$s</font>]]></string>
     <string name="tm_list_statut_not_start">Not started</string>
     <string name="tm_list_statut_in_progress">In progress</string>

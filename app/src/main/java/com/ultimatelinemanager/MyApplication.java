@@ -15,10 +15,7 @@ import greendao.DaoSession;
  */
 public class MyApplication extends Application {
 
-    //TODO MatchActivity faire un tabPan players/match avec les listes
-
-    //TODO Ecran PointActivity : Continuer l'activité et intégré la liste.
-
+    //TODO tabHost mettre l'image
     //TODO ecran point avec selection joueur
     //TODO Ecran controle point en cours
 
