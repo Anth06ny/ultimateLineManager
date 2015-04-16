@@ -2,8 +2,8 @@ package com.ultimatelinemanager.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
@@ -46,6 +47,7 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
     private MaterialDialog dialog;
     private RecyclerView ta_rv_match, ta_rv_players;
     private TextView ta_empty_match, ta_empty_players;
+    private ImageView icon_tab_match, icon_tab_players;
 
     //Autre
     private SelectAdapter adapterMatch, adapterPlayer;
@@ -56,6 +58,7 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
 
     //autre
     private TeamBean teamBean;
+    private int color_composant_main;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +73,8 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
             finish();
             return;
         }
+
+        color_composant_main = Utils.getColorFromTheme(this, R.attr.color_composant_main);
 
         ta_empty_match = (TextView) findViewById(R.id.ta_empty_match);
         ta_empty_players = (TextView) findViewById(R.id.ta_empty_players);
@@ -205,10 +210,13 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
     @Override
     public void onTabChanged(String tabId) {
         if (tabId.equals(TAG_MATCH)) {
-
+            //on change le color filter
+            icon_tab_match.setColorFilter(color_composant_main);
+            icon_tab_players.setColorFilter(Color.BLACK);
         }
         else if (tabId.equals(TAG_PLAYERS)) {
-
+            icon_tab_match.setColorFilter(Color.BLACK);
+            icon_tab_players.setColorFilter(color_composant_main);
         }
     }
 
@@ -221,7 +229,7 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
     }
 
     private void initTabHost() {
-        int mainColor = Utils.getColorFromTheme(this, R.attr.color_composant_main);
+        int dimen = getResources().getDimensionPixelSize(R.dimen.margin_5);
 
         //Init du Tabhost
         TabHost tabs = (TabHost) findViewById(R.id.tabHost);
@@ -230,18 +238,28 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
         //tabs match
         TabHost.TabSpec spec = tabs.newTabSpec(TAG_MATCH);//le tag
         spec.setContent(R.id.ta_rl_match);
-        Drawable drawable = getResources().getDrawable(R.drawable.ic_action_group);
-        drawable.setColorFilter(mainColor, PorterDuff.Mode.MULTIPLY);
-        spec.setIndicator(spec.getTag(), drawable); //le label
+        spec.setIndicator(spec.getTag()); //le label
         tabs.addTab(spec);
+        //on met l'image
+        icon_tab_match = (ImageView) tabs.getTabWidget().getChildTabViewAt(0).findViewById(android.R.id.icon);
+        icon_tab_match.setVisibility(View.VISIBLE);
+        icon_tab_match.setImageResource(R.drawable.ic_action_group);
+        icon_tab_match.setColorFilter(color_composant_main, PorterDuff.Mode.MULTIPLY);
+        icon_tab_match.setAdjustViewBounds(true);
+        icon_tab_match.setPadding(dimen, dimen, dimen, dimen);
 
         //tabs players
         spec = tabs.newTabSpec(TAG_PLAYERS);//le tag
         spec.setContent(R.id.ta_rl_players);
-        drawable = getResources().getDrawable(R.drawable.ic_action_user);
-        drawable.setColorFilter(mainColor, PorterDuff.Mode.MULTIPLY);
-        spec.setIndicator(spec.getTag(), drawable); //le label
+        spec.setIndicator(spec.getTag()); //le label
         tabs.addTab(spec);
+        //on met l'image
+        icon_tab_players = (ImageView) tabs.getTabWidget().getChildTabViewAt(1).findViewById(android.R.id.icon);
+        icon_tab_players.setVisibility(View.VISIBLE);
+        icon_tab_players.setImageResource(R.drawable.ic_action_user);
+        icon_tab_players.setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
+        icon_tab_players.setAdjustViewBounds(true);
+        icon_tab_players.setPadding(dimen, dimen, dimen, dimen);
 
         tabs.setOnTabChangedListener(this);
     }
