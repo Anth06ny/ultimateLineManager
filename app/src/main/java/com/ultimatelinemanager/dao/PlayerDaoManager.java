@@ -1,5 +1,6 @@
 package com.ultimatelinemanager.dao;
 
+import com.formation.utils.LogUtils;
 import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.metier.exception.TechnicalException;
 
@@ -51,10 +52,10 @@ public class PlayerDaoManager {
         query += " WHERE TP." + TeamPlayerDao.Properties.PlayerId.columnName + " IS NULL";
 
         try {
-            return PlayerDaoManager.getPlayerDAO().queryRawCreate(query, teamId).list();
+            return getPlayerDAO().queryRawCreate(query, teamId).list();
         }
         catch (Throwable e) {
-            e.printStackTrace();
+            LogUtils.logException(PlayerBeanDao.class, e, true);
             return new ArrayList<>();
         }
 
@@ -65,15 +66,27 @@ public class PlayerDaoManager {
      * Si la team est nulle renvoit tous les joueur de la base
      */
     public static List<PlayerBean> getPlayers(TeamBean teamBean) {
+        return getPlayers(teamBean.getId());
+    }
 
-        //On recupere l'ensemble des teamPlayer ascocié à l'equipe
-        if (teamBean != null) {
-            teamBean.resetTeamPlayerList();
-            return convertToPlayerBean(teamBean.getTeamPlayerList());
+    /**
+     * Recupere l'ensemble des joueurs de l'équipe à partir d'un matchId
+     * @return
+     */
+    public static List<PlayerBean> getPlayers(long teamId) {
+
+        String innerJoinTeamPlayer = " INNER JOIN " + TeamPlayerDao.TABLENAME + " TP ON TP." + TeamPlayerDao.Properties.PlayerId.columnName + " = T."
+                + PlayerBeanDao.Properties.Id.columnName + "\n";
+        String where = " WHERE TP." + TeamPlayerDao.Properties.TeamId.columnName + " = ?";
+        String orderBy = " ORDER BY T." + PlayerBeanDao.Properties.Name.columnName + " \n";
+        String query = innerJoinTeamPlayer + where + orderBy;
+
+        try {
+            return getPlayerDAO().queryRawCreate(query, teamId).list();
         }
-        else {
-            //Sinon on retourne l'ensemble des joueurs
-            return PlayerDaoManager.getAllPlayer();
+        catch (Throwable e) {
+            LogUtils.logException(PlayerBeanDao.class, e, true);
+            return new ArrayList<>();
         }
     }
 

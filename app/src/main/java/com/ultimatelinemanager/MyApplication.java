@@ -15,6 +15,8 @@ import greendao.DaoSession;
  */
 public class MyApplication extends Application {
 
+    //TODO utiliser les image handler middle both
+    //TODO faire ligne de joueur
     //TODO Continuer ecran point
     //TODO Ecran controle point en cours
 

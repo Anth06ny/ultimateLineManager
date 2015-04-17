@@ -147,7 +147,6 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
         return daoList.size();
     }
 
-
     /* ---------------------------------
     // View Holder
     // -------------------------------- */
@@ -163,6 +162,7 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
         public LinearLayout rp_ll_players;
         public TextView tv_show_players;
         public TextView tv_delete_point;
+        public View root;
 
         //Data
         public PointBean pointBean;
@@ -174,6 +174,7 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
         public ViewHolder(View itemView, int offenseColor, int winColor, List<Long> showPlayerListId, PointAdapter adapter,
                 List<PointBean> pointBeanList, PointAdapterCB pointAdapterCB) {
             super(itemView);
+            root = itemView.findViewById(R.id.root);
             rp_iv_result = (ImageView) itemView.findViewById(R.id.rp_iv_result);
             rp_iv_offense = (ImageView) itemView.findViewById(R.id.rp_iv_offense);
             rp_title = (TextView) itemView.findViewById(R.id.rp_title);
@@ -184,6 +185,7 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
             tv_show_players = (TextView) itemView.findViewById(R.id.tv_show_players);
             tv_delete_point = (TextView) itemView.findViewById(R.id.tv_delete_point);
 
+            root.setOnClickListener(this);
             tv_show_players.setOnClickListener(this);
             tv_delete_point.setOnClickListener(this);
 
@@ -225,6 +227,11 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
                     }
                 }
             }
+            else if (v == root) {
+                if (pointAdapterCB != null) {
+                    pointAdapterCB.pointAdapter_click(pointBean);
+                }
+            }
         }
     }
 
@@ -233,6 +240,8 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
     // -------------------------------- */
 
     public interface PointAdapterCB {
+        public void pointAdapter_click(PointBean bean);
+
         public void pointAdapter_deletePoint(PointBean bean);
     }
 }

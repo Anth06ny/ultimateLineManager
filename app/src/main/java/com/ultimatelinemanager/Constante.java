@@ -17,5 +17,6 @@ public class Constante {
     public final static String TEAM_EXTRA_ID = "TEAM_EXTRA_ID";
     public final static String PLAYER_EXTRA_ID = "PLAYER_EXTRA_ID";
     public final static String MATCH_EXTRA_ID = "MATCH_EXTRA_ID";
+    public final static String POINT_EXTRA_ID = "POINT_EXTRA_ID";
 
 }

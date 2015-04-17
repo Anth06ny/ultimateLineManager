@@ -10,6 +10,8 @@ import de.greenrobot.dao.DaoException;
 public class PlayerPoint {
 
     private Long id;
+    /** Not-null value. */
+    private String role;
     private long playerId;
     private long pointId;
 
@@ -33,8 +35,9 @@ public class PlayerPoint {
         this.id = id;
     }
 
-    public PlayerPoint(Long id, long playerId, long pointId) {
+    public PlayerPoint(Long id, String role, long playerId, long pointId) {
         this.id = id;
+        this.role = role;
         this.playerId = playerId;
         this.pointId = pointId;
     }
@@ -51,6 +54,16 @@ public class PlayerPoint {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /** Not-null value. */
+    public String getRole() {
+        return role;
+    }
+
+    /** Not-null value; ensure this value is available before it is saved to the database. */
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public long getPlayerId() {

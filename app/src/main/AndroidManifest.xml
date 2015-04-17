@@ -42,6 +42,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ultimatelinemanager.activity.TeamActivity"/>
         </activity>
+        <activity
+            android:name=".activity.match.PointActivity"
+            android:parentActivityName=".activity.match.MatchActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ultimatelinemanager.activity.match.MatchActivity"/>
+        </activity>
     </application>
 
 </manifest>

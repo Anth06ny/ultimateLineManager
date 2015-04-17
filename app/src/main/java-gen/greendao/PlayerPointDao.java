@@ -29,8 +29,9 @@ public class PlayerPointDao extends AbstractDao<PlayerPoint, Long> {
     */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property PlayerId = new Property(1, long.class, "playerId", false, "PLAYER_ID");
-        public final static Property PointId = new Property(2, long.class, "pointId", false, "POINT_ID");
+        public final static Property Role = new Property(1, String.class, "role", false, "ROLE");
+        public final static Property PlayerId = new Property(2, long.class, "playerId", false, "PLAYER_ID");
+        public final static Property PointId = new Property(3, long.class, "pointId", false, "POINT_ID");
     };
 
     private DaoSession daoSession;
@@ -51,8 +52,9 @@ public class PlayerPointDao extends AbstractDao<PlayerPoint, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'PLAYER_POINT' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
-                "'PLAYER_ID' INTEGER NOT NULL ," + // 1: playerId
-                "'POINT_ID' INTEGER NOT NULL );"); // 2: pointId
+                "'ROLE' TEXT NOT NULL ," + // 1: role
+                "'PLAYER_ID' INTEGER NOT NULL ," + // 2: playerId
+                "'POINT_ID' INTEGER NOT NULL );"); // 3: pointId
     }
 
     /** Drops the underlying database table. */
@@ -70,8 +72,9 @@ public class PlayerPointDao extends AbstractDao<PlayerPoint, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindLong(2, entity.getPlayerId());
-        stmt.bindLong(3, entity.getPointId());
+        stmt.bindString(2, entity.getRole());
+        stmt.bindLong(3, entity.getPlayerId());
+        stmt.bindLong(4, entity.getPointId());
     }
 
     @Override
@@ -91,8 +94,9 @@ public class PlayerPointDao extends AbstractDao<PlayerPoint, Long> {
     public PlayerPoint readEntity(Cursor cursor, int offset) {
         PlayerPoint entity = new PlayerPoint( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.getLong(offset + 1), // playerId
-            cursor.getLong(offset + 2) // pointId
+            cursor.getString(offset + 1), // role
+            cursor.getLong(offset + 2), // playerId
+            cursor.getLong(offset + 3) // pointId
         );
         return entity;
     }
@@ -101,8 +105,9 @@ public class PlayerPointDao extends AbstractDao<PlayerPoint, Long> {
     @Override
     public void readEntity(Cursor cursor, PlayerPoint entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setPlayerId(cursor.getLong(offset + 1));
-        entity.setPointId(cursor.getLong(offset + 2));
+        entity.setRole(cursor.getString(offset + 1));
+        entity.setPlayerId(cursor.getLong(offset + 2));
+        entity.setPointId(cursor.getLong(offset + 3));
      }
     
     /** @inheritdoc */

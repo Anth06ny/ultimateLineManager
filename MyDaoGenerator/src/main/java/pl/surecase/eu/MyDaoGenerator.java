@@ -9,7 +9,7 @@ public class MyDaoGenerator {
 
     public static void main(String args[]) throws Exception {
 
-        final int DAO_VERSION = 3;
+        final int DAO_VERSION = 4;
 
         Schema schema = new Schema(DAO_VERSION, "greendao");
 
@@ -85,6 +85,7 @@ public class MyDaoGenerator {
         // -------------------------------- */
         Entity playerPoint = schema.addEntity("PlayerPoint");
         playerPoint.addIdProperty().getProperty();
+        playerPoint.addStringProperty("role").notNull();
 
         //Relation Player * PlayerPoint  :  inutile car cela recuperera tous les points de tous les match
         playerId = playerPoint.addLongProperty("playerId").notNull().getProperty();

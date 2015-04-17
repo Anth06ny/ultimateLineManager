@@ -8,6 +8,7 @@ import com.ultimatelinemanager.Constante;
 import com.ultimatelinemanager.activity.TeamActivity;
 import com.ultimatelinemanager.activity.list_players.PickerPlayerActivity;
 import com.ultimatelinemanager.activity.match.MatchActivity;
+import com.ultimatelinemanager.activity.match.PointActivity;
 
 /**
  * Created by Anthony on 02/03/2015.
@@ -61,4 +62,9 @@ public class IntentHelper {
         ToastUtils.showNotImplementedToast(activity);
     }
 
+    public static void goToPointActivity(Activity activity, long pointId) {
+        Intent intent = new Intent(activity, PointActivity.class);
+        intent.putExtra(Constante.POINT_EXTRA_ID, pointId);
+        activity.startActivity(intent);
+    }
 }
