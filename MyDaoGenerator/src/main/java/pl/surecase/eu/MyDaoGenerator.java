@@ -102,9 +102,9 @@ public class MyDaoGenerator {
         // -------------------------------- */
         Entity statePlayerBean = schema.addEntity("StatePlayerBean");
         statePlayerBean.addIdProperty().getProperty();
-        statePlayerBean.addLongProperty("PlayingTime");
-        statePlayerBean.addLongProperty("RestTime");
-        statePlayerBean.addIntProperty("StateIndicator");
+        statePlayerBean.addLongProperty("playingTime");
+        statePlayerBean.addLongProperty("restTime");
+        statePlayerBean.addIntProperty("stateIndicator");
 
         //Relation Match * StatePlayer
         matchId = statePlayerBean.addLongProperty("matchId").notNull().getProperty();

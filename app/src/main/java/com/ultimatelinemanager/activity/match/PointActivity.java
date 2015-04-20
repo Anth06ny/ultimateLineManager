@@ -12,13 +12,13 @@ import com.formation.utils.LogUtils;
 import com.ultimatelinemanager.Constante;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.activity.GeneriqueActivity;
-import com.ultimatelinemanager.adapter.PlayerAdapter;
+import com.ultimatelinemanager.adapter.PlayerPointAdapter;
+import com.ultimatelinemanager.adapter.PlayerPointWithHeaderAdapter;
+import com.ultimatelinemanager.bean.PlayerPointBean;
 import com.ultimatelinemanager.bean.Role;
 import com.ultimatelinemanager.dao.PlayerDaoManager;
 import com.ultimatelinemanager.dao.match.PointDaoManager;
-import com.ultimatelinemanager.metier.exception.TechnicalException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import greendao.PlayerBean;
@@ -28,7 +28,7 @@ import greendao.PointBean;
 /**
  * Created by amonteiro on 17/04/2015.
  */
-public class PointActivity extends GeneriqueActivity implements PlayerAdapter.SelectAdapterI {
+public class PointActivity extends GeneriqueActivity implements PlayerPointAdapter.PlayerPointAdapterI {
 
     private static final String TAG = LogUtils.getLogTag(PointActivity.class);
 
@@ -37,21 +37,16 @@ public class PointActivity extends GeneriqueActivity implements PlayerAdapter.Se
     private SearchView paSearch;
     private TextView paTvBoy;
     private TextView paTvGirl;
-    private TextView paTvHandler;
-    private TextView paTvMiddle;
-    private TextView paTvBoth;
 
     //recycleview
-    private RecyclerView paRvMiddle;
-    private RecyclerView paRvHandler;
+    private RecyclerView pa_rv_playing;
     private RecyclerView paRvAll;
-    private RecyclerView paRvBoth;
-    private LinearLayoutManager lmAll, lmHandler, lmMiddle, lmBoth;
-    private PlayerAdapter allAdapter, handlerAdapter, middleAdapter, bothAdapter;
+    private LinearLayoutManager lmAll, lmPlaying;
+    private PlayerPointAdapter noPlayingAdapter;
+    private PlayerPointWithHeaderAdapter playerInPointAdapter;
 
     //data
     private PointBean pointBean;
-    private List<PlayerBean> noPlayingPlayer, handlerPlayer, middlePlayer, bothPlayer;
 
     /* ---------------------------------
     // View
@@ -76,17 +71,12 @@ public class PointActivity extends GeneriqueActivity implements PlayerAdapter.Se
         paRvAll = (RecyclerView) findViewById(R.id.pa_rv_all);
         paTvBoy = (TextView) findViewById(R.id.pa_tv_boy);
         paTvGirl = (TextView) findViewById(R.id.pa_tv_girl);
-        paTvHandler = (TextView) findViewById(R.id.pa_tv_handler);
-        paRvHandler = (RecyclerView) findViewById(R.id.pa_rv_handler);
-        paTvMiddle = (TextView) findViewById(R.id.pa_tv_middle);
-        paRvMiddle = (RecyclerView) findViewById(R.id.pa_rv_middle);
-        paTvBoth = (TextView) findViewById(R.id.pa_tv_both);
-        paRvBoth = (RecyclerView) findViewById(R.id.pa_rv_both);
+        pa_rv_playing = (RecyclerView) findViewById(R.id.pa_rv_playing);
 
         setTitle(getString(R.string.ma_title, pointBean.getMatchBean().getTeamBean().getName(), pointBean.getMatchBean().getName()));
 
-        initList();
         initRecycleView();
+        initList();
         refreshView();
     }
 
@@ -94,53 +84,20 @@ public class PointActivity extends GeneriqueActivity implements PlayerAdapter.Se
     // callback list
     // -------------------------------- */
     @Override
-    public void selectAdapter_onClick(PlayerBean playerBean, PlayerAdapter.TYPE type) {
-
-        int positionStart;
-        //En cliquant sur une liste on migre le joueur sur l'autre liste et on met à jour l'ibnterface
-        switch (type) {
-
-            case NOT_PLAYING:
-                positionStart = removePlayerFromList(playerBean.getId(), noPlayingPlayer);
-                allAdapter.notifyItemRemoved(positionStart);
-                //On le deplace vers son role
-                switch (Role.getRole(playerBean.getRole())) {
-                    case Handler:
-                        handlerPlayer.add(playerBean);
-                        handlerAdapter.notifyItemInserted(handlerPlayer.size() - 1);
-                        break;
-                    case Middle:
-                        middlePlayer.add(playerBean);
-                        middleAdapter.notifyItemInserted(middlePlayer.size() - 1);
-                        break;
-                    case Both:
-                        bothPlayer.add(playerBean);
-                        bothAdapter.notifyItemInserted(bothPlayer.size() - 1);
-                        break;
-                }
-                break;
-
-            case HANDLER:
-                //On repositionne sur la liste principale
-                positionStart = removePlayerFromList(playerBean.getId(), handlerPlayer);
-                handlerAdapter.notifyItemRemoved(positionStart);
-                allAdapter.notifyItemInserted(insertPlayerInOrder(playerBean));
-                break;
-            case MIDDLE:
-                //On repositionne sur la liste principale
-                positionStart = removePlayerFromList(playerBean.getId(), middlePlayer);
-                middleAdapter.notifyItemRemoved(positionStart);
-                allAdapter.notifyItemInserted(insertPlayerInOrder(playerBean));
-                break;
-            case BOTH:
-                //On repositionne sur la liste principale
-                positionStart = removePlayerFromList(playerBean.getId(), bothPlayer);
-                bothAdapter.notifyItemRemoved(positionStart);
-                allAdapter.notifyItemInserted(insertPlayerInOrder(playerBean));
-                break;
+    public void playerPointAdapter_onClick(PlayerPointBean playerPointBean) {
+        //Le joueur ne joue pas on le passe dans la liste des joueurs qui joue à son role de bas
+        if (playerPointBean.getRoleInPoint() == null) {
+            noPlayingAdapter.removeItem(playerPointBean.getPlayerBean().getId());
+            playerInPointAdapter.addItem(playerPointBean, Role.getRole(playerPointBean.getPlayerBean().getRole()));
+        }
+        else {
+            //Le joueur joue on le replace dans la liste des joueurs qui ne joue pas
+            playerInPointAdapter.removeItem(playerPointBean.getPlayerBean().getId());
+            noPlayingAdapter.addItem(playerPointBean);
         }
 
         refreshView();
+
     }
 
     /* ---------------------------------
@@ -153,24 +110,8 @@ public class PointActivity extends GeneriqueActivity implements PlayerAdapter.Se
             @Override
             public void run() {
                 int nbBoy = 0, nbGirl = 0;
-                for (PlayerBean playerBean : handlerPlayer) {
-                    if (playerBean.getSexe()) {
-                        nbBoy++;
-                    }
-                    else {
-                        nbGirl++;
-                    }
-                }
-                for (PlayerBean playerBean : middlePlayer) {
-                    if (playerBean.getSexe()) {
-                        nbBoy++;
-                    }
-                    else {
-                        nbGirl++;
-                    }
-                }
-                for (PlayerBean playerBean : bothPlayer) {
-                    if (playerBean.getSexe()) {
+                for (PlayerPointBean playerPointBean : playerInPointAdapter.getDaoList()) {
+                    if (playerPointBean.getPlayerBean().getSexe()) {
                         nbBoy++;
                     }
                     else {
@@ -180,9 +121,6 @@ public class PointActivity extends GeneriqueActivity implements PlayerAdapter.Se
 
                 paTvBoy.setText(nbBoy + "");
                 paTvGirl.setText(nbGirl + "");
-                paTvHandler.setText(handlerPlayer.size() + "");
-                paTvMiddle.setText(middlePlayer.size() + "");
-                paTvBoth.setText(bothPlayer.size() + "");
 
             }
         });
@@ -198,10 +136,10 @@ public class PointActivity extends GeneriqueActivity implements PlayerAdapter.Se
      * @param playerId
      * @return
      */
-    private static int removePlayerFromList(long playerId, List<PlayerBean> playerBeanList) {
+    private static int removePlayerFromList(long playerId, List<PlayerPointBean> playerBeanList) {
         int i = 0;
-        for (PlayerBean playerBean : playerBeanList) {
-            if (playerBean.getId().equals(playerId)) {
+        for (PlayerPointBean playerPointBean : playerBeanList) {
+            if (playerPointBean.getPlayerBean().getId().equals(playerId)) {
                 playerBeanList.remove(i);
                 return i;
             }
@@ -212,39 +150,18 @@ public class PointActivity extends GeneriqueActivity implements PlayerAdapter.Se
     }
 
     /**
-     * insert a la correct place par odre aphabetique et retourne la position
-     * @param playerBean
-     * @return
-     */
-    private int insertPlayerInOrder(PlayerBean playerBean) {
-        int size = noPlayingPlayer.size();
-        int value = 0;
-        for (int i = 0; i < size; i++) {
-            if (playerBean.getName().compareTo(noPlayingPlayer.get(i).getName()) < 0) {
-                value = i;
-                break;
-            }
-        }
-        noPlayingPlayer.add(value, playerBean);
-        return value;
-    }
-
-    /**
      * Initialise les liste en plancant chaque joueur a son poste pour le point
      */
     private void initList() {
         //Joueur jouant ce point
         List<PlayerPoint> playerPointList = pointBean.getPlayerPointList();
 
-        noPlayingPlayer = new ArrayList<>();
-        handlerPlayer = new ArrayList<>();
-        middlePlayer = new ArrayList<>();
-        bothPlayer = new ArrayList<>();
-
-        //On ajoute le joueur dans la liste qui lui correspond
+        //L'ensemble des joueur de l'equipe et On l'ajoute la liste qui lui correspond
         PlayerPoint temp;
+        PlayerPointBean playerPointBean;
         for (PlayerBean playerBean : PlayerDaoManager.getPlayers(pointBean.getMatchBean().getTeamId())) {
             temp = null;
+            playerPointBean = new PlayerPointBean(playerBean);
             //On regarde si le joueur joue quelque part
             for (PlayerPoint playerPoint : playerPointList) {
                 if (playerPoint.getId().equals(playerBean.getId())) {
@@ -255,29 +172,21 @@ public class PointActivity extends GeneriqueActivity implements PlayerAdapter.Se
 
             //Il ne joue pas
             if (temp == null) {
-                noPlayingPlayer.add(playerBean);
+                noPlayingAdapter.getDaoList().add(playerPointBean);
             }
             else {
                 //Il joue
-                Role role = Role.valueOf(temp.getRole());
-                if (role == null) {
-                    LogUtils.logException(TAG, new TechnicalException("role non trouvé : role = " + temp.getRole()), true);
-                    role = Role.Both;
-                }
-                switch (role) {
-                    case Handler:
-                        handlerPlayer.add(playerBean);
-                        break;
-                    case Middle:
-                        middlePlayer.add(playerBean);
-                        break;
-                    case Both:
-                        bothPlayer.add(playerBean);
-                        break;
-                }
+                playerPointBean.setRoleInPoint(Role.valueOf(temp.getRole()));
+                playerInPointAdapter.getDaoList().add(playerPointBean);
             }
         }
 
+        //on trie la liste des joueur qui joue par role
+        playerInPointAdapter.sortList();
+        playerInPointAdapter.refreshList();
+
+        noPlayingAdapter.notifyDataSetChanged();
+        playerInPointAdapter.notifyDataSetChanged();
     }
 
     private void initRecycleView() {
@@ -286,27 +195,12 @@ public class PointActivity extends GeneriqueActivity implements PlayerAdapter.Se
         paRvAll.setLayoutManager(lmAll = new LinearLayoutManager(this));
         paRvAll.setItemAnimator(new DefaultItemAnimator());
 
-        paRvHandler.setHasFixedSize(false);
-        paRvHandler.setLayoutManager(lmHandler = new LinearLayoutManager(this));
-        paRvHandler.setItemAnimator(new DefaultItemAnimator());
+        pa_rv_playing.setHasFixedSize(false);
+        pa_rv_playing.setLayoutManager(lmPlaying = new LinearLayoutManager(this));
+        pa_rv_playing.setItemAnimator(new DefaultItemAnimator());
 
-        paRvMiddle.setHasFixedSize(false);
-        paRvMiddle.setLayoutManager(lmMiddle = new LinearLayoutManager(this));
-        paRvMiddle.setItemAnimator(new DefaultItemAnimator());
-
-        paRvBoth.setHasFixedSize(false);
-        paRvBoth.setLayoutManager(lmBoth = new LinearLayoutManager(this));
-        paRvBoth.setItemAnimator(new DefaultItemAnimator());
-
-        paRvAll.setAdapter(allAdapter = new PlayerAdapter(this, noPlayingPlayer, PlayerAdapter.TYPE.NOT_PLAYING, this));
-        paRvHandler.setAdapter(handlerAdapter = new PlayerAdapter(this, handlerPlayer, PlayerAdapter.TYPE.HANDLER, this));
-        paRvMiddle.setAdapter(middleAdapter = new PlayerAdapter(this, middlePlayer, PlayerAdapter.TYPE.MIDDLE, this));
-        paRvBoth.setAdapter(bothAdapter = new PlayerAdapter(this, bothPlayer, PlayerAdapter.TYPE.BOTH, this));
-
-        allAdapter.notifyDataSetChanged();
-        handlerAdapter.notifyDataSetChanged();
-        middleAdapter.notifyDataSetChanged();
-        bothAdapter.notifyDataSetChanged();
+        paRvAll.setAdapter(noPlayingAdapter = new PlayerPointAdapter(this, this));
+        pa_rv_playing.setAdapter(playerInPointAdapter = new PlayerPointWithHeaderAdapter(this, this));
 
     }
 

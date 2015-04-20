@@ -29,9 +29,9 @@ public class StatePlayerBeanDao extends AbstractDao<StatePlayerBean, Long> {
     */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property PlayingTime = new Property(1, Long.class, "PlayingTime", false, "PLAYING_TIME");
-        public final static Property RestTime = new Property(2, Long.class, "RestTime", false, "REST_TIME");
-        public final static Property StateIndicator = new Property(3, Integer.class, "StateIndicator", false, "STATE_INDICATOR");
+        public final static Property PlayingTime = new Property(1, Long.class, "playingTime", false, "PLAYING_TIME");
+        public final static Property RestTime = new Property(2, Long.class, "restTime", false, "REST_TIME");
+        public final static Property StateIndicator = new Property(3, Integer.class, "stateIndicator", false, "STATE_INDICATOR");
         public final static Property MatchId = new Property(4, long.class, "matchId", false, "MATCH_ID");
         public final static Property PlayerId = new Property(5, long.class, "playerId", false, "PLAYER_ID");
     };
@@ -54,9 +54,9 @@ public class StatePlayerBeanDao extends AbstractDao<StatePlayerBean, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'STATE_PLAYER_BEAN' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
-                "'PLAYING_TIME' INTEGER," + // 1: PlayingTime
-                "'REST_TIME' INTEGER," + // 2: RestTime
-                "'STATE_INDICATOR' INTEGER," + // 3: StateIndicator
+                "'PLAYING_TIME' INTEGER," + // 1: playingTime
+                "'REST_TIME' INTEGER," + // 2: restTime
+                "'STATE_INDICATOR' INTEGER," + // 3: stateIndicator
                 "'MATCH_ID' INTEGER NOT NULL ," + // 4: matchId
                 "'PLAYER_ID' INTEGER NOT NULL );"); // 5: playerId
     }
@@ -77,19 +77,19 @@ public class StatePlayerBeanDao extends AbstractDao<StatePlayerBean, Long> {
             stmt.bindLong(1, id);
         }
  
-        Long PlayingTime = entity.getPlayingTime();
-        if (PlayingTime != null) {
-            stmt.bindLong(2, PlayingTime);
+        Long playingTime = entity.getPlayingTime();
+        if (playingTime != null) {
+            stmt.bindLong(2, playingTime);
         }
  
-        Long RestTime = entity.getRestTime();
-        if (RestTime != null) {
-            stmt.bindLong(3, RestTime);
+        Long restTime = entity.getRestTime();
+        if (restTime != null) {
+            stmt.bindLong(3, restTime);
         }
  
-        Integer StateIndicator = entity.getStateIndicator();
-        if (StateIndicator != null) {
-            stmt.bindLong(4, StateIndicator);
+        Integer stateIndicator = entity.getStateIndicator();
+        if (stateIndicator != null) {
+            stmt.bindLong(4, stateIndicator);
         }
         stmt.bindLong(5, entity.getMatchId());
         stmt.bindLong(6, entity.getPlayerId());
@@ -112,9 +112,9 @@ public class StatePlayerBeanDao extends AbstractDao<StatePlayerBean, Long> {
     public StatePlayerBean readEntity(Cursor cursor, int offset) {
         StatePlayerBean entity = new StatePlayerBean( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // PlayingTime
-            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // RestTime
-            cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // StateIndicator
+            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // playingTime
+            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // restTime
+            cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // stateIndicator
             cursor.getLong(offset + 4), // matchId
             cursor.getLong(offset + 5) // playerId
         );

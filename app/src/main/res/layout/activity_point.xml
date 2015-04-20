@@ -104,85 +104,17 @@
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_below="@+id/pa_cv_number"
             android:layout_margin="@dimen/margin_5"
             android:background="@color/white"
             >
 
-            <LinearLayout
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/pa_rv_playing"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/ma_tv_title"
-                        android:text="@string/pa_handler"
-                        />
-
-                    <TextView
-                        android:id="@+id/pa_tv_handler"
-                        style="@style/ma_tv_value"/>
-                </LinearLayout>
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/pa_rv_handler"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="10"
-                    android:background="?color_application_bg"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/ma_tv_title"
-                        android:text="@string/pa_middle"
-                        />
-
-                    <TextView
-                        android:id="@+id/pa_tv_middle"
-                        style="@style/ma_tv_value"/>
-                </LinearLayout>
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/pa_rv_middle"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="10"
-                    android:background="?color_application_bg"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/ma_tv_title"
-                        android:text="@string/pa_both"
-                        />
-
-                    <TextView
-                        android:id="@+id/pa_tv_both"
-                        style="@style/ma_tv_value"/>
-                </LinearLayout>
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/pa_rv_both"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="12"
-                    android:background="?color_application_bg"/>
-
-
-            </LinearLayout>
+                android:background="?color_application_bg"/>
 
         </android.support.v7.widget.CardView>
 

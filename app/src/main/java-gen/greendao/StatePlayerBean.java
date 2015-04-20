@@ -10,9 +10,9 @@ import de.greenrobot.dao.DaoException;
 public class StatePlayerBean {
 
     private Long id;
-    private Long PlayingTime;
-    private Long RestTime;
-    private Integer StateIndicator;
+    private Long playingTime;
+    private Long restTime;
+    private Integer stateIndicator;
     private long matchId;
     private long playerId;
 
@@ -36,11 +36,11 @@ public class StatePlayerBean {
         this.id = id;
     }
 
-    public StatePlayerBean(Long id, Long PlayingTime, Long RestTime, Integer StateIndicator, long matchId, long playerId) {
+    public StatePlayerBean(Long id, Long playingTime, Long restTime, Integer stateIndicator, long matchId, long playerId) {
         this.id = id;
-        this.PlayingTime = PlayingTime;
-        this.RestTime = RestTime;
-        this.StateIndicator = StateIndicator;
+        this.playingTime = playingTime;
+        this.restTime = restTime;
+        this.stateIndicator = stateIndicator;
         this.matchId = matchId;
         this.playerId = playerId;
     }
@@ -60,27 +60,27 @@ public class StatePlayerBean {
     }
 
     public Long getPlayingTime() {
-        return PlayingTime;
+        return playingTime;
     }
 
-    public void setPlayingTime(Long PlayingTime) {
-        this.PlayingTime = PlayingTime;
+    public void setPlayingTime(Long playingTime) {
+        this.playingTime = playingTime;
     }
 
     public Long getRestTime() {
-        return RestTime;
+        return restTime;
     }
 
-    public void setRestTime(Long RestTime) {
-        this.RestTime = RestTime;
+    public void setRestTime(Long restTime) {
+        this.restTime = restTime;
     }
 
     public Integer getStateIndicator() {
-        return StateIndicator;
+        return stateIndicator;
     }
 
-    public void setStateIndicator(Integer StateIndicator) {
-        this.StateIndicator = StateIndicator;
+    public void setStateIndicator(Integer stateIndicator) {
+        this.stateIndicator = stateIndicator;
     }
 
     public long getMatchId() {
