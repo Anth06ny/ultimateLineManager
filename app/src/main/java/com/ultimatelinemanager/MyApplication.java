@@ -15,7 +15,7 @@ import greendao.DaoSession;
  */
 public class MyApplication extends Application {
 
-    //TODO faire filtre et sort
+    //TODO Faire confirmation suppression point
     //TODO Continuer ecran point
     //TODO Ecran controle point en cours
 

@@ -24,6 +24,10 @@ public class PlayerPointWithHeaderAdapter extends PlayerPointAdapter {
 
     private int nbrHandler, nbrMiddle, nbrBoth;
 
+    /**
+     * @param context
+     * @param selectAdapterI
+     */
     public PlayerPointWithHeaderAdapter(Context context, PlayerPointAdapterI selectAdapterI) {
         super(context, selectAdapterI);
 
@@ -87,6 +91,15 @@ public class PlayerPointWithHeaderAdapter extends PlayerPointAdapter {
             header.rpp_tv_title.setText(context.getString(R.string.pa_both));
             header.rpp_tv_value.setText(nbrBoth + "");
         }
+    }
+
+    /**
+     * On utilise pas de filtre pour cette liste
+     * @param position
+     * @return
+     */
+    public PlayerPointBean getItem(int position) {
+        return daoList.get(position);
     }
 
     @Override

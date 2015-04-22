@@ -18,7 +18,6 @@ import com.formation.utils.LogUtils;
 import com.formation.utils.ToastUtils;
 import com.formation.utils.Utils;
 import com.ultimatelinemanager.Constante;
-import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.activity.GeneriqueActivity;
 import com.ultimatelinemanager.adapter.PointAdapter;
@@ -207,10 +206,7 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
             }
         }
 
-        //On le retire en base de donnée
-        PointDaoManager.getPointBeanDao().delete(bean);
-        //pour bien le supprimer de la session
-        MyApplication.getInstance().getDaoSession().clear();
+        PointDaoManager.deletePoint(bean);
 
         //on essaye de le retirer en mode optimiser
         if (position >= 0) {

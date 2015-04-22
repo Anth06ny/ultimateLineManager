@@ -35,6 +35,7 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
     //config
     private int girlColor, boyColor, winColor;
     private int notStartHexaColor, inProgressHexaColor, finishedHexaColor;
+    private int paddingLeftPlayer; //padding a appliquer au textview des joueurs pour qu'ils soient décalés.
 
     public PointAdapter(Context context, List<PointBean> daoList, PointAdapterCB pointAdapterCB) {
         this.context = context;
@@ -48,6 +49,7 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
         inProgressHexaColor = Utils.getColorFromTheme(context, R.attr.color_text_main);
         finishedHexaColor = context.getResources().getColor(R.color.vivid_green);
         notStartHexaColor = context.getResources().getColor(R.color.red);
+        paddingLeftPlayer = context.getResources().getDimensionPixelSize(R.dimen.margin_20);
 
         notifyDataSetChanged();
 
@@ -120,8 +122,9 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
             holder.rp_ll_players.addView(view);
             for (PlayerPoint playerPoint : pointBean.getPlayerPointList()) {
                 TextView textView = new TextView(context);
-                textView.setText(playerPoint.getPlayerBean().getName());
+                textView.setText("-" + playerPoint.getPlayerBean().getName());
                 textView.setTextColor(playerPoint.getPlayerBean().getSexe() ? boyColor : girlColor);
+                textView.setPadding(paddingLeftPlayer, 0, 0, 0);
                 holder.rp_ll_players.addView(textView);
             }
 
@@ -240,8 +243,8 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
     // -------------------------------- */
 
     public interface PointAdapterCB {
-        public void pointAdapter_click(PointBean bean);
+        void pointAdapter_click(PointBean bean);
 
-        public void pointAdapter_deletePoint(PointBean bean);
+        void pointAdapter_deletePoint(PointBean bean);
     }
 }

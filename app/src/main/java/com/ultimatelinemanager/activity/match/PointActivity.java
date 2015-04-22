@@ -105,12 +105,14 @@ public class PointActivity extends GeneriqueActivity implements PlayerPointAdapt
         pa_iv_time.setColorFilter(Color.BLACK);
         pa_iv_sleep.setColorFilter(Color.BLACK);
 
-
         setTitle(getString(R.string.ma_title, pointBean.getMatchBean().getTeamBean().getName(), pointBean.getMatchBean().getName()));
+
+        switchFiltreImageViewColor(pa_iv_alpha, true);
 
         initRecycleView();
         initList();
         refreshView();
+
     }
 
     /* ---------------------------------
@@ -122,7 +124,8 @@ public class PointActivity extends GeneriqueActivity implements PlayerPointAdapt
         if (playerPointBean.getRoleInPoint() == null) {
             noPlayingAdapter.removeItem(playerPointBean.getPlayerBean().getId());
             playerInPointAdapter.addItem(playerPointBean, Role.getRole(playerPointBean.getPlayerBean().getRole()));
-        } else {
+        }
+        else {
             //Le joueur joue on le replace dans la liste des joueurs qui ne joue pas
             playerInPointAdapter.removeItem(playerPointBean.getPlayerBean().getId());
             noPlayingAdapter.addItem(playerPointBean);
@@ -132,53 +135,98 @@ public class PointActivity extends GeneriqueActivity implements PlayerPointAdapt
 
     }
 
-
     @Override
     public void onClick(View v) {
         if (v == pa_iv_handler) {
             switchFiltreImageViewColor(pa_iv_handler, !pa_iv_handler.isSelected());
             switchFiltreImageViewColor(pa_iv_middle, false);
-        } else if (v == pa_iv_middle) {
+            if (pa_iv_handler.isSelected()) {
+                noPlayingAdapter.setFilterRole(Role.Handler);
+            }
+            else {
+                noPlayingAdapter.setFilterRole(Role.Both);
+            }
+            noPlayingAdapter.refreshFilterList();
+        }
+        else if (v == pa_iv_middle) {
             switchFiltreImageViewColor(pa_iv_middle, !pa_iv_middle.isSelected());
             switchFiltreImageViewColor(pa_iv_handler, false);
-        } else if (v == pa_iv_girl) {
+            if (pa_iv_middle.isSelected()) {
+                noPlayingAdapter.setFilterRole(Role.Middle);
+            }
+            else {
+                noPlayingAdapter.setFilterRole(Role.Both);
+            }
+            noPlayingAdapter.refreshFilterList();
+
+        }
+        else if (v == pa_iv_girl) {
             if (pa_iv_girl.isSelected()) {
                 switchFiltreImageViewColor(pa_iv_girl, false);
-            } else {
+                noPlayingAdapter.setFilterSexe(PlayerPointAdapter.FilterSexe.BOTH);
+            }
+            else {
                 pa_iv_girl.setSelected(true);
+                noPlayingAdapter.setFilterSexe(PlayerPointAdapter.FilterSexe.GIRL);
                 pa_iv_girl.setColorFilter(getResources().getColor(R.color.girl_color));
             }
             switchFiltreImageViewColor(pa_iv_boy, false);
-        } else if (v == pa_iv_boy) {
+            noPlayingAdapter.refreshFilterList();
+        }
+        else if (v == pa_iv_boy) {
             if (pa_iv_boy.isSelected()) {
                 switchFiltreImageViewColor(pa_iv_boy, false);
-            } else {
+                noPlayingAdapter.setFilterSexe(PlayerPointAdapter.FilterSexe.BOTH);
+            }
+            else {
                 pa_iv_boy.setSelected(true);
+                noPlayingAdapter.setFilterSexe(PlayerPointAdapter.FilterSexe.BOY);
                 pa_iv_boy.setColorFilter(getResources().getColor(R.color.boy_color));
             }
             switchFiltreImageViewColor(pa_iv_girl, false);
+            noPlayingAdapter.refreshFilterList();
 
-        } else if (v == pa_iv_alpha) {
-            switchFiltreImageViewColor(pa_iv_alpha, !pa_iv_alpha.isSelected());
-            switchFiltreImageViewColor(pa_iv_time, false);
-            switchFiltreImageViewColor(pa_iv_sleep, false);
-
-        } else if (v == pa_iv_time) {
-            switchFiltreImageViewColor(pa_iv_time, !pa_iv_time.isSelected());
-            switchFiltreImageViewColor(pa_iv_alpha, false);
-            switchFiltreImageViewColor(pa_iv_sleep, false);
-
-        } else if (v == pa_iv_sleep) {
-            switchFiltreImageViewColor(pa_iv_sleep, !pa_iv_sleep.isSelected());
-            switchFiltreImageViewColor(pa_iv_time, false);
-            switchFiltreImageViewColor(pa_iv_alpha, false);
         }
+        else if (v == pa_iv_alpha) {
+            if (!pa_iv_alpha.isSelected()) {
+                switchFiltreImageViewColor(pa_iv_alpha, true);
+                switchFiltreImageViewColor(pa_iv_time, false);
+                switchFiltreImageViewColor(pa_iv_sleep, false);
+                noPlayingAdapter.setSortOrder(PlayerPointAdapter.SortOrder.AZ);
+                noPlayingAdapter.refreshFilterList();
+            }
 
+        }
+        else if (v == pa_iv_time) {
+            if (!pa_iv_time.isSelected()) {
+                switchFiltreImageViewColor(pa_iv_time, true);
+                switchFiltreImageViewColor(pa_iv_alpha, false);
+                switchFiltreImageViewColor(pa_iv_sleep, false);
+                noPlayingAdapter.setSortOrder(PlayerPointAdapter.SortOrder.PLAYING_TIME);
+                noPlayingAdapter.refreshFilterList();
+            }
+
+        }
+        else if (v == pa_iv_sleep) {
+            if (!pa_iv_sleep.isSelected()) {
+                switchFiltreImageViewColor(pa_iv_sleep, !pa_iv_sleep.isSelected());
+                switchFiltreImageViewColor(pa_iv_time, false);
+                switchFiltreImageViewColor(pa_iv_alpha, false);
+                noPlayingAdapter.setSortOrder(PlayerPointAdapter.SortOrder.SLEEP_TIME);
+                noPlayingAdapter.refreshFilterList();
+            }
+        }
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
 
+        //On enregistre les modifications en base
+        PointDaoManager.savePlayerPointList(pointBean, playerInPointAdapter.getDaoList());
 
+    }
 
     /* ---------------------------------
     // private graphique
@@ -193,7 +241,8 @@ public class PointActivity extends GeneriqueActivity implements PlayerPointAdapt
                 for (PlayerPointBean playerPointBean : playerInPointAdapter.getDaoList()) {
                     if (playerPointBean.getPlayerBean().getSexe()) {
                         nbBoy++;
-                    } else {
+                    }
+                    else {
                         nbGirl++;
                     }
                 }
@@ -209,25 +258,6 @@ public class PointActivity extends GeneriqueActivity implements PlayerPointAdapt
     /* ---------------------------------
     // private
     // -------------------------------- */
-
-    /**
-     * retire de la liste le joueur et retourne la position de celui ci
-     *
-     * @param playerId
-     * @return
-     */
-    private static int removePlayerFromList(long playerId, List<PlayerPointBean> playerBeanList) {
-        int i = 0;
-        for (PlayerPointBean playerPointBean : playerBeanList) {
-            if (playerPointBean.getPlayerBean().getId().equals(playerId)) {
-                playerBeanList.remove(i);
-                return i;
-            }
-            i++;
-        }
-
-        return -1;
-    }
 
     /**
      * Initialise les liste en plancant chaque joueur a son poste pour le point
@@ -253,7 +283,8 @@ public class PointActivity extends GeneriqueActivity implements PlayerPointAdapt
             //Il ne joue pas
             if (temp == null) {
                 noPlayingAdapter.getDaoList().add(playerPointBean);
-            } else {
+            }
+            else {
                 //Il joue
                 playerPointBean.setRoleInPoint(Role.valueOf(temp.getRole()));
                 playerInPointAdapter.getDaoList().add(playerPointBean);
@@ -264,7 +295,7 @@ public class PointActivity extends GeneriqueActivity implements PlayerPointAdapt
         playerInPointAdapter.sortList();
         playerInPointAdapter.refreshList();
 
-        noPlayingAdapter.notifyDataSetChanged();
+        noPlayingAdapter.refreshFilterList();
         playerInPointAdapter.notifyDataSetChanged();
     }
 
@@ -288,7 +319,8 @@ public class PointActivity extends GeneriqueActivity implements PlayerPointAdapt
         if (selected) {
             iv.setSelected(true);
             iv.setColorFilter(filtreSelectedColor);
-        } else {
+        }
+        else {
             iv.setSelected(false);
             iv.setColorFilter(Color.BLACK);
         }
