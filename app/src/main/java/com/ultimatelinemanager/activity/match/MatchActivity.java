@@ -1,6 +1,7 @@
 package com.ultimatelinemanager.activity.match;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -106,6 +107,25 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
         super.onStart();
 
         refreshView();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //On regarde si le requestCode correspont  à un point pour le rafraichir
+        if (requestCode != 0) {
+            int i = 0;
+            for (PointBean pointBean : pointBeanList) {
+                if (pointBean.getId() == requestCode) {
+                    adapter.notifyItemChanged(i);
+                    break;
+                }
+                i++;
+            }
+
+        }
+
     }
 
     /* ---------------------------------

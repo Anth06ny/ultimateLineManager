@@ -62,9 +62,14 @@ public class IntentHelper {
         ToastUtils.showNotImplementedToast(activity);
     }
 
+    /**
+     * Le pointId sert aussi de requestCode
+     * @param activity
+     * @param pointId
+     */
     public static void goToPointActivity(Activity activity, long pointId) {
         Intent intent = new Intent(activity, PointActivity.class);
         intent.putExtra(Constante.POINT_EXTRA_ID, pointId);
-        activity.startActivity(intent);
+        activity.startActivityForResult(intent, (int) pointId);
     }
 }

@@ -15,9 +15,15 @@ import greendao.DaoSession;
  */
 public class MyApplication extends Application {
 
+    //TODO Faire Activité principale qui inclu le bandeau
+
     //TODO Faire confirmation suppression point
     //TODO Continuer ecran point
     //TODO Ecran controle point en cours
+
+    //TODO Ajouter fleche sur les boutons de tri
+    //TODO selection multiplayer
+    //TODO importer joueur autre equipe
 
     private static MyApplication instance;
     private DaoSession daoSession;

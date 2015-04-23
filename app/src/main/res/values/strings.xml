@@ -100,6 +100,15 @@
     <string name="pa_middle">Middle : </string>
     <string name="pa_both">Both : </string>
 
+    <!-- ****************** -->
+    <!-- LivePoint -->
+    <!-- ****************** -->
+    <string name="lp_offense">Start offense</string>
+    <string name="lp_defense">Start defense</string>
+    <string name="lp_manage_players">Manage players</string>
+    <string name="lp_minimize">Minimize</string>
+    <string name="lp_open">open</string>
+
 
     <!-- ****************** -->
     <!-- Exception -->
