@@ -127,8 +127,8 @@
     </style>
 
     <!-- Autre couleur -->
-    <color name="girl_color">@color/vivid_pink</color>
-    <color name="boy_color">@color/strong_blue</color>
+    <color name="girl_color">#FF358B</color>
+    <color name="boy_color">#01B0F0</color>
     <color name="win_color">@color/yellow</color>
     <color name="ice_color">@color/vivid_cyan</color>
 

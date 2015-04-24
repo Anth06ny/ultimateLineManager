@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.formation.utils.ToastUtils;
 import com.ultimatelinemanager.Constante;
+import com.ultimatelinemanager.activity.SelectTeamActivity;
 import com.ultimatelinemanager.activity.TeamActivity;
 import com.ultimatelinemanager.activity.list_players.PickerPlayerActivity;
 import com.ultimatelinemanager.activity.match.MatchActivity;
@@ -15,9 +16,13 @@ import com.ultimatelinemanager.activity.match.PointActivity;
  */
 public class IntentHelper {
 
-    public static void goToTeamActivity(Activity activity, Long teamBeanId) {
+    public static void goToSelectTeamActivity(Activity activity) {
+        Intent intent = new Intent(activity, SelectTeamActivity.class);
+        activity.startActivity(intent);
+    }
+
+    public static void goToTeamActivity(Activity activity) {
         Intent intent = new Intent(activity, TeamActivity.class);
-        intent.putExtra(Constante.TEAM_EXTRA_ID, teamBeanId);
         activity.startActivity(intent);
     }
 

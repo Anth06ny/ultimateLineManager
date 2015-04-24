@@ -19,6 +19,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.formation.utils.LogUtils;
 import com.formation.utils.Utils;
 import com.ultimatelinemanager.Constante;
+import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.adapter.SelectAdapter;
 import com.ultimatelinemanager.dao.PlayerDaoManager;
@@ -37,7 +38,6 @@ import java.util.ArrayList;
 
 import greendao.MatchBean;
 import greendao.PlayerBean;
-import greendao.TeamBean;
 
 public class TeamActivity extends GeneriqueActivity implements SelectAdapter.SelectAdapterI, TabHost.OnTabChangeListener {
 
@@ -57,7 +57,6 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
     private static String TAG_PLAYERS, TAG_MATCH;
 
     //autre
-    private TeamBean teamBean;
     private int color_composant_main;
 
     @Override
@@ -66,13 +65,6 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
         setContentView(R.layout.activity_team);
 
         long teamId = getIntent().getLongExtra(Constante.TEAM_EXTRA_ID, -1);
-        teamBean = TeamDaoManager.getTeamDAO().load(teamId);
-
-        if (teamBean == null) {
-            LogUtils.logMessage(TAG, "teamBean à nulle, teamId=" + teamId);
-            finish();
-            return;
-        }
 
         color_composant_main = Utils.getColorFromTheme(this, R.attr.color_composant_main);
 
@@ -185,6 +177,11 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
             case R.id.menu_add_player:
                 IntentHelper.goToPickPlayer(this, teamBean.getId(), Constante.PICK_PLAYER_REQ_CODE);
                 return true;
+
+            case R.id.menu_switch_team:
+                MyApplication.getInstance().setTeamBean(null);
+                IntentHelper.goToSelectTeamActivity(this);
+                finish();
 
             default:
                 return super.onOptionsItemSelected(item);

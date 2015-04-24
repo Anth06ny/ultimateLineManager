@@ -1,7 +1,6 @@
 package com.ultimatelinemanager.activity;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +11,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.formation.utils.ToastUtils;
+import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.adapter.SelectAdapter;
 import com.ultimatelinemanager.dao.TeamDaoManager;
@@ -25,7 +25,7 @@ import java.util.Date;
 
 import greendao.TeamBean;
 
-public class SelectTeamActivity extends ActionBarActivity implements SelectAdapter.SelectAdapterI<TeamBean> {
+public class SelectTeamActivity extends GeneriqueActivity implements SelectAdapter.SelectAdapterI<TeamBean> {
 
     //Composants graphiques
     private RecyclerView st_rv;
@@ -44,7 +44,15 @@ public class SelectTeamActivity extends ActionBarActivity implements SelectAdapt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //On regarde si on a déjà une equipe dans ce cas on vas direct sur l'équipe
+        if (teamBean != null) {
+            IntentHelper.goToTeamActivity(this);
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_select_team);
+        setTitle(R.string.st_title);
 
         //RecylceView
         st_empty = (TextView) findViewById(R.id.st_empty);
@@ -85,7 +93,10 @@ public class SelectTeamActivity extends ActionBarActivity implements SelectAdapt
     // -------------------------------- */
     @Override
     public void selectAdapter_onClick(TeamBean teamBean) {
-        IntentHelper.goToTeamActivity(this, teamBean.getId());
+        //On charge l'equipe en tant qu'equipe courante
+        MyApplication.getInstance().setTeamBean(teamBean);
+        IntentHelper.goToTeamActivity(this);
+        finish();
     }
 
     /* ---------------------------------
@@ -115,6 +126,8 @@ public class SelectTeamActivity extends ActionBarActivity implements SelectAdapt
                         });
                 dialog.show();
                 return true;
+
+
 
             default:
                 return super.onOptionsItemSelected(item);

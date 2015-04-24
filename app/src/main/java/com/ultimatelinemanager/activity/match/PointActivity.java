@@ -105,7 +105,7 @@ public class PointActivity extends GeneriqueActivity implements PlayerPointAdapt
         pa_iv_time.setColorFilter(Color.BLACK);
         pa_iv_sleep.setColorFilter(Color.BLACK);
 
-        setTitle(getString(R.string.ma_title, pointBean.getMatchBean().getTeamBean().getName(), pointBean.getMatchBean().getName()));
+        setTitle(getString(R.string.ma_title, teamBean.getName(), pointBean.getMatchBean().getName()));
 
         switchFiltreImageViewColor(pa_iv_alpha, true);
 

@@ -95,10 +95,16 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
         st_rv.setItemAnimator(new DefaultItemAnimator());
         pointBeanList = new ArrayList<>();
         pointBeanList.addAll(matchBean.getPointBeanList());
+
         sortList();
         adapter = new PointAdapter(this, pointBeanList, this);
         st_rv.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
+        //On ajoute le 1er point
+        if (pointBeanList.isEmpty()) {
+            addNewPoint();
+        }
 
     }
 
@@ -212,6 +218,16 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
 
     @Override
     public void pointAdapter_click(PointBean bean) {
+
+        //Si  ce match n'est pas terminé
+        if (matchBean.getEnd() == null) {
+            //Si on n'a pas de match en cours ou si le match en cours n'est pas celui la et qu'il n'est pas commencé.
+            if (livePoint == null || (livePoint.getMatchId() != matchBean.getId() && livePoint.getMatchBean().getStart() == null)) {
+                //On positionne le 1er point en point courant
+                livePoint = pointBeanList.get(0);
+            }
+        }
+
         IntentHelper.goToPointActivity(this, bean.getId());
     }
 
@@ -337,7 +353,7 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
     private void refreshView() {
 
         //titre
-        setTitle(getString(R.string.ma_title, matchBean.getTeamBean().getName(), matchBean.getName()));
+        setTitle(getString(R.string.ma_title, teamBean.getName(), matchBean.getName()));
 
         if (matchBean.getStart() != null) {
 
