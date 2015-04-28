@@ -29,11 +29,12 @@ public class IntentHelper {
     /**
      * La page de picker de joueur
      * @param activity
+     * @param teamId : Permet de ne pas afficher les joueurs de cette equipe
      * @param requestCode
      */
-    public static void goToPickPlayer(Activity activity, long teamPlayerId, int requestCode) {
+    public static void goToPickPlayer(Activity activity, long teamId, int requestCode) {
         Intent intent = new Intent(activity, PickerPlayerActivity.class);
-        intent.putExtra(Constante.TEAM_EXTRA_ID, teamPlayerId);
+        intent.putExtra(Constante.TEAM_EXTRA_ID, teamId);
         activity.startActivityForResult(intent, requestCode);
     }
 

@@ -17,7 +17,7 @@ public class GestionSharedPreference {
     }
 
     /* ---------------------------------
-    //  Récupère la derniere équipe choisie
+    //  Recupere la derniere equipe choisie
     // -------------------------------- */
     private static final String LAST_TEAM_ID = "LAST_TEAM_ID";
 
@@ -36,7 +36,7 @@ public class GestionSharedPreference {
     }
 
     /* ---------------------------------
-    //  Récupère le dernier point en live
+    //  Recupere le dernier point en live
     // -------------------------------- */
     private static final String LAST_POINT_ID = "LAST_POINT_ID";
 

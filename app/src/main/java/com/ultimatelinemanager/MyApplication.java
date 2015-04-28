@@ -36,6 +36,7 @@ public class MyApplication extends Application {
     //Data Centrale
     private TeamBean teamBean; //Equipe selectionne
     private PointBean livePoint; //Point en cours
+    private boolean livePointOpen;
 
     public static MyApplication getInstance() {
         return instance;
@@ -54,10 +55,11 @@ public class MyApplication extends Application {
 
         initDatabase();
 
-        //On charge la derniere équipe
+        //On charge la derniere equipe
         teamBean = TeamDaoManager.getTeamDAO().load(GestionSharedPreference.getLastTeamId());
         //Et le point en cours
         livePoint = PointDaoManager.getPointBeanDao().load(GestionSharedPreference.getLastPointId());
+        livePointOpen = false;
     }
 
     private void initDatabase() {
@@ -93,8 +95,16 @@ public class MyApplication extends Application {
 
     public void setTeamBean(TeamBean teamBean) {
         this.teamBean = teamBean;
-        //On sauvegarde dans les préférences le choix de l'équipe
+        //On sauvegarde dans les preferences le choix de l'equipe
         GestionSharedPreference.setLastTeamId(teamBean != null ? teamBean.getId() : -1);
+    }
+
+    public boolean isLivePointOpen() {
+        return livePointOpen;
+    }
+
+    public void setLivePointOpen(boolean livePointOpen) {
+        this.livePointOpen = livePointOpen;
     }
 
     public DaoSession getDaoSession() {

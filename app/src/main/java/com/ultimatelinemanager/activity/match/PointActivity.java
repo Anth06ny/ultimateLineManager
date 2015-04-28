@@ -35,6 +35,7 @@ public class PointActivity extends GeneriqueActivity implements PlayerPointAdapt
     private static final String TAG = LogUtils.getLogTag(PointActivity.class);
 
     //Composant graphique
+
     private ImageView pa_iv_handler;
     private ImageView pa_iv_middle;
     private ImageView pa_iv_girl;
@@ -105,7 +106,7 @@ public class PointActivity extends GeneriqueActivity implements PlayerPointAdapt
         pa_iv_time.setColorFilter(Color.BLACK);
         pa_iv_sleep.setColorFilter(Color.BLACK);
 
-        setTitle(getString(R.string.ma_title, teamBean.getName(), pointBean.getMatchBean().getName()));
+        setTitle(getString(R.string.ma_title, getTeamBean().getName(), pointBean.getMatchBean().getName()));
 
         switchFiltreImageViewColor(pa_iv_alpha, true);
 
@@ -137,6 +138,7 @@ public class PointActivity extends GeneriqueActivity implements PlayerPointAdapt
 
     @Override
     public void onClick(View v) {
+
         if (v == pa_iv_handler) {
             switchFiltreImageViewColor(pa_iv_handler, !pa_iv_handler.isSelected());
             switchFiltreImageViewColor(pa_iv_middle, false);
@@ -215,6 +217,9 @@ public class PointActivity extends GeneriqueActivity implements PlayerPointAdapt
                 noPlayingAdapter.setSortOrder(PlayerPointAdapter.SortOrder.SLEEP_TIME);
                 noPlayingAdapter.refreshFilterList();
             }
+        }
+        else {
+            super.onClick(v);
         }
 
     }

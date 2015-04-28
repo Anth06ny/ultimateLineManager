@@ -134,6 +134,11 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     /* ---------------------------------
     // Menu
     // -------------------------------- */
@@ -210,6 +215,9 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
                 statisticClick();
             }
         }
+        else {
+            super.onClick(v);
+        }
     }
 
     /* ---------------------------------
@@ -222,9 +230,9 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
         //Si  ce match n'est pas terminé
         if (matchBean.getEnd() == null) {
             //Si on n'a pas de match en cours ou si le match en cours n'est pas celui la et qu'il n'est pas commencé.
-            if (livePoint == null || (livePoint.getMatchId() != matchBean.getId() && livePoint.getMatchBean().getStart() == null)) {
+            if (getLivePoint() == null || (getLivePoint().getMatchId() != matchBean.getId() && getLivePoint().getMatchBean().getStart() == null)) {
                 //On positionne le 1er point en point courant
-                livePoint = pointBeanList.get(0);
+                setLivePoint(pointBeanList.get(0));
             }
         }
 
@@ -353,7 +361,7 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
     private void refreshView() {
 
         //titre
-        setTitle(getString(R.string.ma_title, teamBean.getName(), matchBean.getName()));
+        setTitle(getString(R.string.ma_title, getTeamBean().getName(), matchBean.getName()));
 
         if (matchBean.getStart() != null) {
 

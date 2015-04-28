@@ -82,11 +82,11 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
 
         //List match
         matchBeansList = new ArrayList<>();
-        matchBeansList.addAll(teamBean.getMatchBeanList());
+        matchBeansList.addAll(getTeamBean().getMatchBeanList());
         adapterMatch = new SelectAdapter(this, matchBeansList, SelectAdapter.TYPE.MATCH, this);
 
         playerBeanList = new ArrayList<>();
-        playerBeanList.addAll(PlayerDaoManager.getPlayers(teamBean));
+        playerBeanList.addAll(PlayerDaoManager.getPlayers(getTeamBean()));
         adapterPlayer = new SelectAdapter(this, playerBeanList, SelectAdapter.TYPE.PLAYER, this);
 
         ta_rv_match.setAdapter(adapterMatch);
@@ -137,15 +137,15 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
         switch (item.getItemId()) {
             case R.id.menu_rename:
                 //on demande le nouveau nom
-                dialog = DialogUtils.getPromptDialog(this, R.drawable.ic_action_add_group, R.string.st_ask_team_name, R.string.add,
-                        teamBean.getName(), new DialogUtils.PromptDialogCB() {
-                            @Override
-                            public void promptDialogCB_onPositiveClick(String promptText) {
-                                teamBean.setName(promptText);
-                                TeamDaoManager.getTeamDAO().update(teamBean);
-                                refreshTitle();
-                            }
-                        });
+                dialog = DialogUtils.getPromptDialog(this, R.drawable.ic_action_add_group, R.string.st_ask_team_name, R.string.add, getTeamBean()
+                        .getName(), new DialogUtils.PromptDialogCB() {
+                    @Override
+                    public void promptDialogCB_onPositiveClick(String promptText) {
+                        getTeamBean().setName(promptText);
+                        TeamDaoManager.getTeamDAO().update(getTeamBean());
+                        refreshTitle();
+                    }
+                });
                 dialog.show();
 
                 return true;
@@ -175,7 +175,7 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
                 return true;
 
             case R.id.menu_add_player:
-                IntentHelper.goToPickPlayer(this, teamBean.getId(), Constante.PICK_PLAYER_REQ_CODE);
+                IntentHelper.goToPickPlayer(this, getTeamBean().getId(), Constante.PICK_PLAYER_REQ_CODE);
                 return true;
 
             case R.id.menu_switch_team:
@@ -222,7 +222,7 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
     // -------------------------------- */
 
     private void refreshTitle() {
-        setTitle(StringUtils.capitalize(teamBean.getName()));
+        setTitle(StringUtils.capitalize(getTeamBean().getName()));
     }
 
     private void initTabHost() {
@@ -303,7 +303,7 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
     private void addMatch(String oponentName) {
         MatchBean matchBean = new MatchBean();
         matchBean.setName(oponentName);
-        matchBean.setTeamBean(teamBean);
+        matchBean.setTeamBean(getTeamBean());
         MatchDaoManager.getMatchBeanDao().insert(matchBean);
 
         //On l'ajoute en tete pour ne pas avoir à refaire des appel bdd
@@ -319,10 +319,10 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
 
     private void addPlayer(long newPlayerId) throws LogicException {
         //On ajoute notre nouveau joueur à l'equipe
-        TeamPlayerManager.addPlayerToTeam(teamBean.getId(), newPlayerId);
+        TeamPlayerManager.addPlayerToTeam(getTeamBean().getId(), newPlayerId);
         //ON recharge la liste
         playerBeanList.clear();
-        playerBeanList.addAll(PlayerDaoManager.getPlayers(teamBean));
+        playerBeanList.addAll(PlayerDaoManager.getPlayers(getTeamBean()));
         adapterPlayer.notifyDataSetChanged();
 
         //On met à jour la liste et la vue
@@ -330,7 +330,8 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
     }
 
     private void deleteTeam() {
-        TeamDaoManager.getTeamDAO().delete(teamBean);
+        TeamDaoManager.getTeamDAO().delete(getTeamBean());
+        setTeamBean(null);
         finish();
     }
 

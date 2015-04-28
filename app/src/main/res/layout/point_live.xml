@@ -1,111 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/margin_2"
-        android:background="?attr/color_login_et_separator"
-        />
+<LinearLayout
+    android:id="@+id/lp_ll_point_live"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/standard_height"
+        android:background="@color/dark_cyan"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/margin_5"
-        android:paddingLeft="@dimen/margin_10"
-        android:paddingRight="@dimen/margin_10"
-        android:paddingTop="@dimen/margin_5">
+        >
 
         <TextView
             android:id="@+id/lp_tv_title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="France 3 -  2 Espagne"/>
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/margin_15"
+            android:gravity="center_vertical"
+            android:text="France 3 -  2 Espagne"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_13"/>
 
         <Chronometer
             android:id="@+id/lp_time"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="right"/>
+            android:layout_height="match_parent"
+
+            android:layout_marginRight="@dimen/margin_10"
+            android:layout_weight="1"
+            android:gravity="center_vertical|right"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_13"/>
+
+        <ImageView
+            android:id="@+id/lp_bt_open"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:background="?ripple_background_rounded"
+            android:gravity="center"
+            android:padding="@dimen/margin_15"
+            android:scaleType="fitCenter"
+            android:src="@drawable/plus"/>
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/margin_2"
-        android:background="?attr/color_login_et_separator"
-        />
-
-    <RelativeLayout
-        android:id="@+id/lp_rl"
+    <LinearLayout
+        android:id="@+id/lp_ll_extension"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible">
+        android:background="@color/dark_cyan_light"
+        android:orientation="vertical"
+        >
 
-        <Button
-            android:id="@+id/lp_bt_defense"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/lp_rl"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/standard_height"
-            android:text="@string/lp_defense"
-            android:textAllCaps="false"
-            android:textColor="?attr/color_text_main"
-            android:textSize="@dimen/font_14"/>
 
-        <Button
-            android:id="@+id/lp_bt_offense"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/standard_height"
-            android:layout_below="@+id/lp_bt_defense"
-            android:text="@string/lp_offense"
-            android:textAllCaps="false"
-            android:textColor="?attr/color_text_main"
-            android:textSize="@dimen/font_14"/>
+            android:orientation="horizontal"
+            android:visibility="visible">
 
-        <View
-            android:id="@+id/lp_center"
-            android:layout_width="1dp"
-            android:layout_height="1dp"
-            android:layout_centerInParent="true"
-            android:visibility="invisible"/>
+            <Button
+                android:id="@+id/lp_bt_defense"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/lp_defense"
+                android:textAllCaps="false"
+                android:textColor="?attr/color_text_main"
+                android:textSize="@dimen/font_14"/>
 
-        <ImageView
-            android:id="@+id/lp_iv_play"
+            <Button
+                android:id="@+id/lp_bt_offense"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/lp_offense"
+                android:textAllCaps="false"
+                android:textColor="?attr/color_text_main"
+                android:textSize="@dimen/font_14"/>
+
+            <ImageView
+                android:id="@+id/lp_iv_play"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="@dimen/margin_5"
+                android:paddingTop="@dimen/margin_5"
+                android:src="@drawable/play"
+                android:visibility="visible"/>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/lp_bt_offense"
-            android:layout_alignLeft="@+id/lp_center"
-            android:layout_alignTop="@+id/lp_bt_defense"
-            android:padding="@dimen/margin_10"
-            android:src="@drawable/play"/>
+            android:gravity="right"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/margin_5"
+            android:paddingRight="@dimen/margin_10"
+            android:paddingTop="@dimen/margin_5">
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/lp_tv_manage_player"
+                style="@style/button_textview_material_design"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_15"
+                android:text="@string/lp_manage_players"
+                android:textColor="?attr/material_bt_text_color_white"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/margin_10"
-        android:layout_marginTop="@dimen/margin_10"
-        android:gravity="right"
-        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/lp_tv_minimize"
-            style="@style/button_textview_material_design"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/lp_minimize"/>
-
-        <TextView
-            android:id="@+id/lp_tv_manage_player"
-            style="@style/button_textview_material_design"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_15"
-            android:text="@string/lp_manage_players"/>
-
+        </LinearLayout>
 
     </LinearLayout>
 </LinearLayout>

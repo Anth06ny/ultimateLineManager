@@ -45,7 +45,7 @@ public class SelectTeamActivity extends GeneriqueActivity implements SelectAdapt
         super.onCreate(savedInstanceState);
 
         //On regarde si on a déjà une equipe dans ce cas on vas direct sur l'équipe
-        if (teamBean != null) {
+        if (getTeamBean() != null) {
             IntentHelper.goToTeamActivity(this);
             finish();
             return;
