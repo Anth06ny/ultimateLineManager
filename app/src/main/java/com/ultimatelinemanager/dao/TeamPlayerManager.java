@@ -30,6 +30,22 @@ public class TeamPlayerManager {
     }
 
     /* ---------------------------------
+    // Delete
+    // -------------------------------- */
+
+    /**
+     * Supprime toute les relations de joueur de l'equipe
+     * @param teamId
+     */
+    public static void deleteTeamPlayer(long teamId, boolean clearSession) {
+        getTeamPlayerDAO().queryBuilder().where(TeamPlayerDao.Properties.TeamId.eq(teamId)).buildDelete().executeDeleteWithoutDetachingEntities();
+        if (clearSession) {
+            //pour bien le supprimer de la session
+            MyApplication.getInstance().getDaoSession().clear();
+        }
+    }
+
+    /* ---------------------------------
     // Autre
     // -------------------------------- */
 

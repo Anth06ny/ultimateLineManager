@@ -1,14 +1,17 @@
 package com.ultimatelinemanager.activity.match;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,8 +22,9 @@ import com.formation.utils.LogUtils;
 import com.formation.utils.ToastUtils;
 import com.formation.utils.Utils;
 import com.ultimatelinemanager.Constante;
+import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.R;
-import com.ultimatelinemanager.activity.GeneriqueActivity;
+import com.ultimatelinemanager.activity.MainFragment;
 import com.ultimatelinemanager.adapter.PointAdapter;
 import com.ultimatelinemanager.dao.match.MatchDaoManager;
 import com.ultimatelinemanager.dao.match.PointDaoManager;
@@ -36,9 +40,9 @@ import java.util.Date;
 import greendao.MatchBean;
 import greendao.PointBean;
 
-public class MatchActivity extends GeneriqueActivity implements View.OnClickListener, PointAdapter.PointAdapterCB {
+public class MatchFragment extends MainFragment implements View.OnClickListener, PointAdapter.PointAdapterCB {
 
-    private static final String TAG = LogUtils.getLogTag(MatchActivity.class);
+    private static final String TAG = LogUtils.getLogTag(MatchFragment.class);
 
     //Composant graphique
     private TextView ma_tv_statut;
@@ -60,30 +64,28 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
     //Data
     private MatchBean matchBean;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_match);
-
-        long matchId = getIntent().getLongExtra(Constante.MATCH_EXTRA_ID, -1);
-        matchBean = MatchDaoManager.getMatchBeanDao().load(matchId);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.activity_match, container, false);
 
         if (matchBean == null) {
-            LogUtils.logMessage(TAG, "matchBean à nulle, matchId=" + matchId);
-            finish();
-            return;
+            LogUtils.logMessage(TAG, "matchBean à nulle ");
+            getFragmentManager().popBackStack();
+            return null;
         }
 
-        ma_tv_statut = (TextView) findViewById(R.id.ma_tv_statut);
-        ma_tv_date = (TextView) findViewById(R.id.ma_tv_date);
-        ma_tv_playing_time = (TextView) findViewById(R.id.ma_tv_playing_time);
-        ma_tv_reel_playing_time = (TextView) findViewById(R.id.ma_tv_reel_playing_time);
-        ma_tv_score = (TextView) findViewById(R.id.ma_tv_score);
-        ma_tv_finish_stat = (TextView) findViewById(R.id.ma_tv_finish_stat);
-        ma_iv_win = (ImageView) findViewById(R.id.ma_iv_win);
-        ma_tv_finish_stat_title = (TextView) findViewById(R.id.ma_tv_finish_stat_title);
-        st_empty = (TextView) findViewById(R.id.st_empty);
-        st_rv = (RecyclerView) findViewById(R.id.st_rv);
+        ma_tv_statut = (TextView) view.findViewById(R.id.ma_tv_statut);
+        ma_tv_date = (TextView) view.findViewById(R.id.ma_tv_date);
+        ma_tv_playing_time = (TextView) view.findViewById(R.id.ma_tv_playing_time);
+        ma_tv_reel_playing_time = (TextView) view.findViewById(R.id.ma_tv_reel_playing_time);
+        ma_tv_score = (TextView) view.findViewById(R.id.ma_tv_score);
+        ma_tv_finish_stat = (TextView) view.findViewById(R.id.ma_tv_finish_stat);
+        ma_iv_win = (ImageView) view.findViewById(R.id.ma_iv_win);
+        ma_tv_finish_stat_title = (TextView) view.findViewById(R.id.ma_tv_finish_stat_title);
+        st_empty = (TextView) view.findViewById(R.id.st_empty);
+        st_rv = (RecyclerView) view.findViewById(R.id.st_rv);
 
         ma_tv_finish_stat.setOnClickListener(this);
 
@@ -91,13 +93,13 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
 
         //recycleview
         st_rv.setHasFixedSize(false);
-        st_rv.setLayoutManager(lm = new LinearLayoutManager(this));
+        st_rv.setLayoutManager(lm = new LinearLayoutManager(generiqueActivity));
         st_rv.setItemAnimator(new DefaultItemAnimator());
         pointBeanList = new ArrayList<>();
         pointBeanList.addAll(matchBean.getPointBeanList());
 
         sortList();
-        adapter = new PointAdapter(this, pointBeanList, this);
+        adapter = new PointAdapter(generiqueActivity, pointBeanList, this);
         st_rv.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
@@ -106,17 +108,19 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
             addNewPoint();
         }
 
+        return view;
+
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
 
         refreshView();
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         //On regarde si le requestCode correspont  à un point pour le rafraichir
@@ -134,21 +138,17 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
     /* ---------------------------------
     // Menu
     // -------------------------------- */
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_match, menu);
+        inflater.inflate(R.menu.menu_match, menu);
         menu.findItem(R.id.mm_end_game).setVisible(matchBean.getStart() != null && matchBean.getEnd() == null);
-        return true;
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -215,9 +215,6 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
                 statisticClick();
             }
         }
-        else {
-            super.onClick(v);
-        }
     }
 
     /* ---------------------------------
@@ -229,14 +226,17 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
 
         //Si  ce match n'est pas terminé
         if (matchBean.getEnd() == null) {
+
+            PointBean livePoint = MyApplication.getInstance().getLivePoint();
             //Si on n'a pas de match en cours ou si le match en cours n'est pas celui la et qu'il n'est pas commencé.
-            if (getLivePoint() == null || (getLivePoint().getMatchId() != matchBean.getId() && getLivePoint().getMatchBean().getStart() == null)) {
+            if (livePoint == null || (livePoint.getMatchId() != matchBean.getId() && livePoint.getMatchBean().getStart() == null)) {
                 //On positionne le 1er point en point courant
-                setLivePoint(pointBeanList.get(0));
+                generiqueActivity.setLivePoint(pointBeanList.get(0));
             }
         }
 
-        IntentHelper.goToPointActivity(this, bean.getId());
+        //On va sur le point
+        generiqueActivity.gotoPoint(bean);
     }
 
     @Override
@@ -250,7 +250,7 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
             }
         }
 
-        PointDaoManager.deletePoint(bean);
+        PointDaoManager.deletePoint(bean, true);
 
         //on essaye de le retirer en mode optimiser
         if (position >= 0) {
@@ -277,7 +277,7 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
      * Affiche l'etat des joueurs
      */
     private void statePlayerClick() {
-        IntentHelper.goToMatchStatePlayer(this, matchBean.getId());
+        IntentHelper.goToMatchStatePlayer(getActivity(), matchBean.getId());
     }
 
     /**
@@ -315,17 +315,18 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
      * Supprimer le match
      */
     private void deleteGame() {
-        DialogUtils.getConfirmDialog(this, R.drawable.ic_action_delete, R.string.ma_menu_delete_match, getString(R.string.ma_delete_game_question),
-                new MaterialDialog.ButtonCallback() {
+        DialogUtils.getConfirmDialog(generiqueActivity, R.drawable.ic_action_delete, R.string.ma_menu_delete_match,
+                getString(R.string.ma_delete_game_question), new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         super.onPositive(dialog);
                         //On supprime le match de la base et on termine l'activité
                         MatchDaoManager.getMatchBeanDao().delete(matchBean);
-                        ToastUtils.showToastOnUIThread(MatchActivity.this, R.string.ma_delete_game_confirmation, Toast.LENGTH_LONG);
-                        //Pour prévenir qu'il faut rafraichir
-                        setResult(Activity.RESULT_OK);
-                        finish();
+                        //On invalide la liste des matches
+                        MyApplication.getInstance().getTeamBean().resetMatchBeanList();
+                        ToastUtils.showToastOnUIThread(generiqueActivity, R.string.ma_delete_game_confirmation, Toast.LENGTH_LONG);
+                        //on revient en arriere
+                        generiqueActivity.getFragmentManager().popBackStack();
                     }
                 }).show();
     }
@@ -334,14 +335,16 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
      * Renome le nom de l'équipe adverse
      */
     private void renameOpponent() {
-        DialogUtils.getPromptDialog(this, R.drawable.ic_action_edit, R.string.ma_menu_rename_opponent, R.string.rename, matchBean.getName(),
-                new DialogUtils.PromptDialogCB() {
+        DialogUtils.getPromptDialog(generiqueActivity, R.drawable.ic_action_edit, R.string.ma_menu_rename_opponent, R.string.rename,
+                matchBean.getName(), new DialogUtils.PromptDialogCB() {
                     @Override
                     public void promptDialogCB_onPositiveClick(String promptText) {
                         matchBean.setName(promptText);
                         MatchDaoManager.getMatchBeanDao().update(matchBean);
+                        //On invalide la liste des matches
+                        MyApplication.getInstance().getTeamBean().resetMatchBeanList();
                         //Pour prévenir qu'il faudra rafraichir
-                        setResult(Activity.RESULT_OK);
+                        //setResult(Activity.RESULT_OK);
                         refreshView();
                     }
                 }).show();
@@ -351,7 +354,7 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
      * Aller sur la page de statistique
      */
     private void statisticClick() {
-        IntentHelper.goToMatchStatistic(this, matchBean.getId());
+        IntentHelper.goToMatchStatistic(generiqueActivity, matchBean.getId());
     }
 
     /* ---------------------------------
@@ -361,14 +364,14 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
     private void refreshView() {
 
         //titre
-        setTitle(getString(R.string.ma_title, getTeamBean().getName(), matchBean.getName()));
+        generiqueActivity.setTitle(getString(R.string.ma_title, MyApplication.getInstance().getTeamBean().getName(), matchBean.getName()));
 
         if (matchBean.getStart() != null) {
 
             //Statut
             //match non terminée
             if (matchBean.getEnd() == null) {
-                ma_tv_statut.setTextColor(Utils.getColorFromTheme(this, R.attr.color_text_main));
+                ma_tv_statut.setTextColor(Utils.getColorFromTheme(generiqueActivity, R.attr.color_text_main));
                 ma_tv_statut.setText(getString(R.string.tm_list_statut_in_progress));
             }
             else {
@@ -377,7 +380,7 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
             }
 
             //Date
-            String dateFormat = DateUtils.getFormat(this, DateUtils.DATE_FORMAT.ddMMyyyy_HHmm);
+            String dateFormat = DateUtils.getFormat(generiqueActivity, DateUtils.DATE_FORMAT.ddMMyyyy_HHmm);
             ma_tv_date.setText(DateUtils.dateToString(matchBean.getStart(), dateFormat));
 
             //Playing time
@@ -444,7 +447,7 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
         }
 
         //On invalide le menu
-        invalidateOptionsMenu();
+        generiqueActivity.invalidateOptionsMenu();
 
         //RecycleView
         if (pointBeanList.size() > 0) {
@@ -478,5 +481,16 @@ public class MatchActivity extends GeneriqueActivity implements View.OnClickList
                 }
             }
         });
+    }
+
+    /* ---------------------------------
+    // Getter Setter
+    // -------------------------------- */
+    public MatchBean getMatchBean() {
+        return matchBean;
+    }
+
+    public void setMatchBean(MatchBean matchBean) {
+        this.matchBean = matchBean;
     }
 }

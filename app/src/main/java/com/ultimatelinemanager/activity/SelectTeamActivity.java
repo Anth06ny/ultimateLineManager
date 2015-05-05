@@ -1,6 +1,8 @@
 package com.ultimatelinemanager.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,7 +18,6 @@ import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.adapter.SelectAdapter;
 import com.ultimatelinemanager.dao.TeamDaoManager;
 import com.ultimatelinemanager.metier.DialogUtils;
-import com.ultimatelinemanager.metier.IntentHelper;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,7 +26,7 @@ import java.util.Date;
 
 import greendao.TeamBean;
 
-public class SelectTeamActivity extends GeneriqueActivity implements SelectAdapter.SelectAdapterI<TeamBean> {
+public class SelectTeamActivity extends AppCompatActivity implements SelectAdapter.SelectAdapterI<TeamBean> {
 
     //Composants graphiques
     private RecyclerView st_rv;
@@ -45,9 +46,8 @@ public class SelectTeamActivity extends GeneriqueActivity implements SelectAdapt
         super.onCreate(savedInstanceState);
 
         //On regarde si on a déjà une equipe dans ce cas on vas direct sur l'équipe
-        if (getTeamBean() != null) {
-            IntentHelper.goToTeamActivity(this);
-            finish();
+        if (MyApplication.getInstance().getTeamBean() != null) {
+            goToGeneriqueActivity();
             return;
         }
 
@@ -95,8 +95,8 @@ public class SelectTeamActivity extends GeneriqueActivity implements SelectAdapt
     public void selectAdapter_onClick(TeamBean teamBean) {
         //On charge l'equipe en tant qu'equipe courante
         MyApplication.getInstance().setTeamBean(teamBean);
-        IntentHelper.goToTeamActivity(this);
-        finish();
+        //On se redirige sur Generique activity qui charge TeamActivity de base
+        goToGeneriqueActivity();
     }
 
     /* ---------------------------------
@@ -127,8 +127,6 @@ public class SelectTeamActivity extends GeneriqueActivity implements SelectAdapt
                 dialog.show();
                 return true;
 
-
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -137,6 +135,12 @@ public class SelectTeamActivity extends GeneriqueActivity implements SelectAdapt
     /* ---------------------------------
     // Autre
     // -------------------------------- */
+
+    private void goToGeneriqueActivity() {
+        Intent intent = new Intent(this, GeneriqueActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
     private void refreshView() {
         if (teamBeanList.size() > 0) {

@@ -1,38 +1,40 @@
 package com.ultimatelinemanager.activity.list_players;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 
-import com.ultimatelinemanager.Constante;
+import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.dao.PlayerDaoManager;
+import com.ultimatelinemanager.dao.TeamPlayerManager;
 import com.ultimatelinemanager.metier.DialogUtils;
+import com.ultimatelinemanager.metier.exception.LogicException;
 
 import greendao.PlayerBean;
 
 /**
  * Created by Anthony on 11/04/2015.
  */
-public class PickerPlayerActivity extends ListPlayerActivity {
+public class PickerPlayerFragment extends ListPlayerFragment {
 
     //Equipe dont on veut exclure les joueurs
     private long teamBeanId;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
 
-        teamBeanId = getIntent().getLongExtra(Constante.TEAM_EXTRA_ID, -1);
-
-        setTitle(R.string.lpt_no_team_title);
+        getActivity().setTitle(R.string.lpt_no_team_title);
         st_info.setText(R.string.lpt_no_team_info);
 
-        //Pour avoir la fleche de retour
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         refreshList();
+
+        return view;
     }
 
     /* ---------------------------------
@@ -43,7 +45,7 @@ public class PickerPlayerActivity extends ListPlayerActivity {
         switch (item.getItemId()) {
             case R.id.menu_add:
                 //On affiche la page de séléction des joueurs enregistré dans le téléphone
-                DialogUtils.getNewPlayerDialog(this, R.string.lpt_bt_new, R.string.add, new DialogUtils.NewPlayerPromptDialogCB() {
+                DialogUtils.getNewPlayerDialog(getActivity(), R.string.lpt_bt_new, R.string.add, new DialogUtils.NewPlayerPromptDialogCB() {
                     @Override
                     public void newPlayerpromptDialogCB_onPositiveClick(PlayerBean playerBean) {
                         //on ajoute le nouveau joueur
@@ -65,11 +67,16 @@ public class PickerPlayerActivity extends ListPlayerActivity {
     // -------------------------------- */
     @Override
     public void selectAdapter_onClick(PlayerBean bean) {
-        //Le joueur a été séléctionné, on le renvoit et on termine l'activity
-        Intent result = new Intent();
-        result.putExtra(Constante.PLAYER_EXTRA_ID, bean.getId());
-        setResult(Activity.RESULT_OK, result);
-        finish();
+        //On l'ajoute à l'équipe
+        try {
+            TeamPlayerManager.addPlayerToTeam(MyApplication.getInstance().getTeamBean().getId(), bean.getId());
+            generiqueActivity.onBackPressed();
+
+        }
+        catch (LogicException e) {
+            showError(e, true);
+        }
+
     }
 
     /* ---------------------------------
@@ -80,4 +87,15 @@ public class PickerPlayerActivity extends ListPlayerActivity {
         playerBeanList.addAll(PlayerDaoManager.getPlayerNotInTeam(teamBeanId));
     }
 
+    /* ---------------------------------
+    // Getter/ Setter
+    // -------------------------------- */
+
+    public long getTeamBeanId() {
+        return teamBeanId;
+    }
+
+    public void setTeamBeanId(long teamBeanId) {
+        this.teamBeanId = teamBeanId;
+    }
 }

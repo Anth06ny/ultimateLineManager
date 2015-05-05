@@ -5,6 +5,7 @@ import com.ultimatelinemanager.bean.PlayerPointBean;
 
 import java.util.List;
 
+import greendao.MatchBean;
 import greendao.PlayerPoint;
 import greendao.PointBean;
 import greendao.PointBeanDao;
@@ -37,13 +38,37 @@ public class PointDaoManager {
 
     }
 
-    public static void deletePoint(PointBean pointBean) {
+    public static void deletePoint(PointBean pointBean, boolean clearSession) {
         //On supprime tous les PlayerPoint
         PlayerPointDaoManager.getPlayerPointDao().deleteInTx(pointBean.getPlayerPointList());
-
         PointDaoManager.getPointBeanDao().delete(pointBean);
-        //pour bien le supprimer de la session
-        MyApplication.getInstance().getDaoSession().clear();
+
+        if (clearSession) {
+            //pour bien le supprimer de la session
+            MyApplication.getInstance().getDaoSession().clear();
+        }
+
+    }
+
+    /**
+     * Supprime tous les points d'un match
+     * @param matchBean
+     */
+    public static void deleteMatchPoint(MatchBean matchBean, boolean clearSession) {
+        //On supprime tous les PlayerPoint de tous les matchs
+        matchBean.resetPointBeanList();
+        for (PointBean pointBean : matchBean.getPointBeanList()) {
+            PlayerPointDaoManager.deleteMatchPoint(pointBean.getId(), false);
+        }
+
+        //On supprime les points du match
+        getPointBeanDao().queryBuilder().where(PointBeanDao.Properties.MatchId.eq(matchBean.getId())).buildDelete()
+                .executeDeleteWithoutDetachingEntities();
+
+        if (clearSession) {
+            //pour bien le supprimer de la session
+            MyApplication.getInstance().getDaoSession().clear();
+        }
 
     }
 

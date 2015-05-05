@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?color_application_bg"
-    tools:context="com.ultimatelinemanager.activity.TeamActivity">
+    tools:context="com.ultimatelinemanager.activity.TeamFragment">
 
     <TabHost
         android:id="@+id/tabHost"

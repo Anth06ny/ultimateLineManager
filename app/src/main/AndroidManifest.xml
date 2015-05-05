@@ -20,31 +20,26 @@
             </intent-filter>
         </activity>
 
-        <!-- On met l'activité en single top pour garder la team, mais une seul instance possible -->
         <activity
-            android:name=".activity.TeamActivity"
-            android:launchMode="singleTop"
+            android:name=".activity.GeneriqueActivity"
             >
 
         </activity>
         <activity
-            android:name=".activity.list_players.PickerPlayerActivity"
+            android:name=".activity.list_players.PickerPlayerFragment"
             android:label="@string/lpt_title">
         </activity>
         <activity
-            android:name=".activity.match.MatchActivity"
-            android:label="@string/title_activity_match"
-            android:parentActivityName=".activity.TeamActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.ultimatelinemanager.activity.TeamActivity"/>
+            android:name=".activity.match.MatchFragment"
+            android:label="@string/title_activity_match">
+
         </activity>
         <activity
-            android:name=".activity.match.PointActivity"
-            android:parentActivityName=".activity.match.MatchActivity">
+            android:name=".activity.match.PointFragment"
+            android:parentActivityName=".activity.match.MatchFragment">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.ultimatelinemanager.activity.match.MatchActivity"/>
+                android:value=".activity.match.MatchFragment"/>
         </activity>
     </application>
 

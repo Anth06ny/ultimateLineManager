@@ -2,18 +2,20 @@ package com.ultimatelinemanager.activity.match;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.formation.utils.LogUtils;
 import com.formation.utils.Utils;
-import com.ultimatelinemanager.Constante;
 import com.ultimatelinemanager.R;
-import com.ultimatelinemanager.activity.GeneriqueActivity;
+import com.ultimatelinemanager.activity.MainFragment;
 import com.ultimatelinemanager.adapter.PlayerPointAdapter;
 import com.ultimatelinemanager.adapter.PlayerPointWithHeaderAdapter;
 import com.ultimatelinemanager.bean.PlayerPointBean;
@@ -30,9 +32,9 @@ import greendao.PointBean;
 /**
  * Created by amonteiro on 17/04/2015.
  */
-public class PointActivity extends GeneriqueActivity implements PlayerPointAdapter.PlayerPointAdapterI, View.OnClickListener {
+public class PointFragment extends MainFragment implements PlayerPointAdapter.PlayerPointAdapterI, View.OnClickListener {
 
-    private static final String TAG = LogUtils.getLogTag(PointActivity.class);
+    private static final String TAG = LogUtils.getLogTag(PointFragment.class);
 
     //Composant graphique
 
@@ -62,31 +64,29 @@ public class PointActivity extends GeneriqueActivity implements PlayerPointAdapt
     // View
     // -------------------------------- */
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_point);
-
-        long pointId = getIntent().getLongExtra(Constante.POINT_EXTRA_ID, -1);
-        pointBean = PointDaoManager.getPointBeanDao().load(pointId);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.activity_point, container, false);
 
         if (pointBean == null) {
-            LogUtils.logMessage(TAG, "PointBean à nulle, pointId=" + pointId);
-            finish();
-            return;
+            LogUtils.logMessage(TAG, "PointBean à nulle");
+            getFragmentManager().popBackStack();
+            return null;
         }
 
-        pa_iv_handler = (ImageView) findViewById(R.id.pa_iv_handler);
-        pa_iv_middle = (ImageView) findViewById(R.id.pa_iv_middle);
-        pa_iv_girl = (ImageView) findViewById(R.id.pa_iv_girl);
-        pa_iv_boy = (ImageView) findViewById(R.id.pa_iv_boy);
-        pa_iv_alpha = (ImageView) findViewById(R.id.pa_iv_alpha);
-        pa_iv_time = (ImageView) findViewById(R.id.pa_iv_time);
-        pa_iv_sleep = (ImageView) findViewById(R.id.pa_iv_sleep);
-        paRvAll = (RecyclerView) findViewById(R.id.pa_rv_all);
-        paTvBoy = (TextView) findViewById(R.id.pa_tv_boy);
-        paTvGirl = (TextView) findViewById(R.id.pa_tv_girl);
-        pa_rv_playing = (RecyclerView) findViewById(R.id.pa_rv_playing);
+        pa_iv_handler = (ImageView) view.findViewById(R.id.pa_iv_handler);
+        pa_iv_middle = (ImageView) view.findViewById(R.id.pa_iv_middle);
+        pa_iv_girl = (ImageView) view.findViewById(R.id.pa_iv_girl);
+        pa_iv_boy = (ImageView) view.findViewById(R.id.pa_iv_boy);
+        pa_iv_alpha = (ImageView) view.findViewById(R.id.pa_iv_alpha);
+        pa_iv_time = (ImageView) view.findViewById(R.id.pa_iv_time);
+        pa_iv_sleep = (ImageView) view.findViewById(R.id.pa_iv_sleep);
+        paRvAll = (RecyclerView) view.findViewById(R.id.pa_rv_all);
+        paTvBoy = (TextView) view.findViewById(R.id.pa_tv_boy);
+        paTvGirl = (TextView) view.findViewById(R.id.pa_tv_girl);
+        pa_rv_playing = (RecyclerView) view.findViewById(R.id.pa_rv_playing);
 
         pa_iv_handler.setOnClickListener(this);
         pa_iv_middle.setOnClickListener(this);
@@ -96,7 +96,7 @@ public class PointActivity extends GeneriqueActivity implements PlayerPointAdapt
         pa_iv_time.setOnClickListener(this);
         pa_iv_sleep.setOnClickListener(this);
 
-        filtreSelectedColor = Utils.getColorFromTheme(this, R.attr.color_composant_main_highlighted);
+        filtreSelectedColor = Utils.getColorFromTheme(getActivity(), R.attr.color_composant_main_highlighted);
 
         pa_iv_handler.setColorFilter(Color.BLACK);
         pa_iv_middle.setColorFilter(Color.BLACK);
@@ -106,13 +106,16 @@ public class PointActivity extends GeneriqueActivity implements PlayerPointAdapt
         pa_iv_time.setColorFilter(Color.BLACK);
         pa_iv_sleep.setColorFilter(Color.BLACK);
 
-        setTitle(getString(R.string.ma_title, getTeamBean().getName(), pointBean.getMatchBean().getName()));
+        //On utilise le titre du match et non celui en selection dans le cas ou est en visite sur un autre match
+        getActivity().setTitle(getString(R.string.ma_title, pointBean.getMatchBean().getTeamBean().getName(), pointBean.getMatchBean().getName()));
 
         switchFiltreImageViewColor(pa_iv_alpha, true);
 
         initRecycleView();
         initList();
         refreshView();
+
+        return view;
 
     }
 
@@ -121,7 +124,7 @@ public class PointActivity extends GeneriqueActivity implements PlayerPointAdapt
     // -------------------------------- */
     @Override
     public void playerPointAdapter_onClick(PlayerPointBean playerPointBean) {
-        //Le joueur ne joue pas on le passe dans la liste des joueurs qui joue à son role de bas
+        //Le joueur ne joue pas on le passe dans la liste des joueurs qui joue à son role de base
         if (playerPointBean.getRoleInPoint() == null) {
             noPlayingAdapter.removeItem(playerPointBean.getPlayerBean().getId());
             playerInPointAdapter.addItem(playerPointBean, Role.getRole(playerPointBean.getPlayerBean().getRole()));
@@ -218,19 +221,14 @@ public class PointActivity extends GeneriqueActivity implements PlayerPointAdapt
                 noPlayingAdapter.refreshFilterList();
             }
         }
-        else {
-            super.onClick(v);
-        }
-
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
 
         //On enregistre les modifications en base
         PointDaoManager.savePlayerPointList(pointBean, playerInPointAdapter.getDaoList());
-
     }
 
     /* ---------------------------------
@@ -239,7 +237,7 @@ public class PointActivity extends GeneriqueActivity implements PlayerPointAdapt
 
     private void refreshView() {
 
-        runOnUiThread(new Runnable() {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 int nbBoy = 0, nbGirl = 0;
@@ -307,15 +305,15 @@ public class PointActivity extends GeneriqueActivity implements PlayerPointAdapt
     private void initRecycleView() {
 
         paRvAll.setHasFixedSize(false);
-        paRvAll.setLayoutManager(lmAll = new LinearLayoutManager(this));
+        paRvAll.setLayoutManager(lmAll = new LinearLayoutManager(getActivity()));
         paRvAll.setItemAnimator(new DefaultItemAnimator());
 
         pa_rv_playing.setHasFixedSize(false);
-        pa_rv_playing.setLayoutManager(lmPlaying = new LinearLayoutManager(this));
+        pa_rv_playing.setLayoutManager(lmPlaying = new LinearLayoutManager(getActivity()));
         pa_rv_playing.setItemAnimator(new DefaultItemAnimator());
 
-        paRvAll.setAdapter(noPlayingAdapter = new PlayerPointAdapter(this, this));
-        pa_rv_playing.setAdapter(playerInPointAdapter = new PlayerPointWithHeaderAdapter(this, this));
+        paRvAll.setAdapter(noPlayingAdapter = new PlayerPointAdapter(getActivity(), this));
+        pa_rv_playing.setAdapter(playerInPointAdapter = new PlayerPointWithHeaderAdapter(getActivity(), this));
 
     }
 
@@ -330,6 +328,18 @@ public class PointActivity extends GeneriqueActivity implements PlayerPointAdapt
             iv.setColorFilter(Color.BLACK);
         }
 
+    }
+
+    /* ---------------------------------
+    // Getter / setter
+    // -------------------------------- */
+
+    public PointBean getPointBean() {
+        return pointBean;
+    }
+
+    public void setPointBean(PointBean pointBean) {
+        this.pointBean = pointBean;
     }
 
 }

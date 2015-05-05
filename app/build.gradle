@@ -44,5 +44,7 @@ dependencies {
     //dialog https://github.com/afollestad/material-dialogs
     compile 'com.afollestad:material-dialogs:0.7.+'
 
+    //Otto
+    compile 'com.squareup:otto:1.3.6'
 
 }

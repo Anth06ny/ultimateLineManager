@@ -1,15 +1,19 @@
 package com.ultimatelinemanager.activity.list_players;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ultimatelinemanager.R;
-import com.ultimatelinemanager.activity.GeneriqueActivity;
+import com.ultimatelinemanager.activity.MainFragment;
 import com.ultimatelinemanager.adapter.SelectAdapter;
 
 import java.util.ArrayList;
@@ -19,7 +23,7 @@ import greendao.PlayerBean;
 /**
  * Classe permetant d'afficher une liste de joueur
  */
-public abstract class ListPlayerActivity extends GeneriqueActivity implements SelectAdapter.SelectAdapterI<PlayerBean> {
+public abstract class ListPlayerFragment extends MainFragment implements SelectAdapter.SelectAdapterI<PlayerBean> {
 
     //Composants graphiques
     private RecyclerView st_rv;
@@ -34,29 +38,31 @@ public abstract class ListPlayerActivity extends GeneriqueActivity implements Se
     // View
     // -------------------------------- */
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.list_activity_layout);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.list_activity_layout, container, false);
 
         //RecylceView
-        st_empty = (TextView) findViewById(R.id.st_empty);
-        st_rv = (RecyclerView) findViewById(R.id.st_rv);
-        st_info = (TextView) findViewById(R.id.st_info);
+        st_empty = (TextView) view.findViewById(R.id.st_empty);
+        st_rv = (RecyclerView) view.findViewById(R.id.st_rv);
+        st_info = (TextView) view.findViewById(R.id.st_info);
         st_rv.setHasFixedSize(false);
-        st_rv.setLayoutManager(new LinearLayoutManager(this));
+        st_rv.setLayoutManager(new LinearLayoutManager(getActivity()));
         st_rv.setItemAnimator(new DefaultItemAnimator());
 
         //Utils.getColorFromTheme(this, R.attr.color_application_bg)
-        adapter = new SelectAdapter(this, playerBeanList = new ArrayList<>(), SelectAdapter.TYPE.PLAYER, this);
+        adapter = new SelectAdapter(getActivity(), playerBeanList = new ArrayList<>(), SelectAdapter.TYPE.PLAYER, this);
 
         st_rv.setAdapter(adapter);
+
+        return view;
 
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         refreshView();
     }
@@ -66,10 +72,10 @@ public abstract class ListPlayerActivity extends GeneriqueActivity implements Se
     // -------------------------------- */
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_list_player, menu);
-        return true;
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_list_player, menu);
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     /* ---------------------------------
@@ -77,7 +83,7 @@ public abstract class ListPlayerActivity extends GeneriqueActivity implements Se
     // -------------------------------- */
 
     protected void refreshView() {
-        runOnUiThread(new Runnable() {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 adapter.notifyDataSetChanged();

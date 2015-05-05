@@ -1,16 +1,18 @@
 package com.ultimatelinemanager.activity;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -18,7 +20,6 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.formation.utils.LogUtils;
 import com.formation.utils.Utils;
-import com.ultimatelinemanager.Constante;
 import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.adapter.SelectAdapter;
@@ -27,10 +28,7 @@ import com.ultimatelinemanager.dao.TeamDaoManager;
 import com.ultimatelinemanager.dao.TeamPlayerManager;
 import com.ultimatelinemanager.dao.match.MatchDaoManager;
 import com.ultimatelinemanager.metier.DialogUtils;
-import com.ultimatelinemanager.metier.IntentHelper;
-import com.ultimatelinemanager.metier.exception.ExceptionA;
 import com.ultimatelinemanager.metier.exception.LogicException;
-import com.ultimatelinemanager.metier.exception.TechnicalException;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -38,16 +36,20 @@ import java.util.ArrayList;
 
 import greendao.MatchBean;
 import greendao.PlayerBean;
+import greendao.TeamBean;
 
-public class TeamActivity extends GeneriqueActivity implements SelectAdapter.SelectAdapterI, TabHost.OnTabChangeListener {
+public class TeamFragment extends MainFragment implements SelectAdapter.SelectAdapterI, TabHost.OnTabChangeListener {
 
-    private static final String TAG = LogUtils.getLogTag(TeamActivity.class);
+    private static final String TAG = LogUtils.getLogTag(TeamFragment.class);
+    private static final String TAB_TAG_KEY = "TAB_TAG_KEY";
 
     //Composant graphique
     private MaterialDialog dialog;
     private RecyclerView ta_rv_match, ta_rv_players;
     private TextView ta_empty_match, ta_empty_players;
     private ImageView icon_tab_match, icon_tab_players;
+    private TabHost tabs;
+    private String tabSelected = null;
 
     //Autre
     private SelectAdapter adapterMatch, adapterPlayer;
@@ -58,63 +60,51 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
 
     //autre
     private int color_composant_main;
+    private TeamBean teamBean;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_team);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.activity_team, container, false);
 
-        long teamId = getIntent().getLongExtra(Constante.TEAM_EXTRA_ID, -1);
+        color_composant_main = Utils.getColorFromTheme(generiqueActivity, R.attr.color_composant_main);
 
-        color_composant_main = Utils.getColorFromTheme(this, R.attr.color_composant_main);
+        ta_empty_match = (TextView) view.findViewById(R.id.ta_empty_match);
+        ta_empty_players = (TextView) view.findViewById(R.id.ta_empty_players);
+        ta_rv_match = (RecyclerView) view.findViewById(R.id.ta_rv_match);
+        ta_rv_players = (RecyclerView) view.findViewById(R.id.ta_rv_players);
 
-        ta_empty_match = (TextView) findViewById(R.id.ta_empty_match);
-        ta_empty_players = (TextView) findViewById(R.id.ta_empty_players);
-        ta_rv_match = (RecyclerView) findViewById(R.id.ta_rv_match);
-        ta_rv_players = (RecyclerView) findViewById(R.id.ta_rv_players);
+        teamBean = MyApplication.getInstance().getTeamBean();
 
         TAG_MATCH = getString(R.string.ta_bt_games);
         TAG_PLAYERS = getString(R.string.ta_bt_players);
 
-        initTabHost();
-
+        tabs = (TabHost) view.findViewById(R.id.tabHost);
+        initTabHost(view);
         initRecycleView();
 
         //List match
         matchBeansList = new ArrayList<>();
-        matchBeansList.addAll(getTeamBean().getMatchBeanList());
-        adapterMatch = new SelectAdapter(this, matchBeansList, SelectAdapter.TYPE.MATCH, this);
+        reloadMatch();
+        adapterMatch = new SelectAdapter(generiqueActivity, matchBeansList, SelectAdapter.TYPE.MATCH, this);
 
         playerBeanList = new ArrayList<>();
-        playerBeanList.addAll(PlayerDaoManager.getPlayers(getTeamBean()));
-        adapterPlayer = new SelectAdapter(this, playerBeanList, SelectAdapter.TYPE.PLAYER, this);
+        reloadPlayer();
+        adapterPlayer = new SelectAdapter(generiqueActivity, playerBeanList, SelectAdapter.TYPE.PLAYER, this);
 
         ta_rv_match.setAdapter(adapterMatch);
         ta_rv_players.setAdapter(adapterPlayer);
 
         refreshTitle();
+
+        return view;
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Constante.PICK_PLAYER_REQ_CODE && resultCode == Activity.RESULT_OK) {
-            //On recupere l'id de notre joueur
-            try {
-                long newPlayer = data.getExtras().getLong(Constante.PLAYER_EXTRA_ID, -1);
-                if (newPlayer != -1) {
-                    addPlayer(newPlayer);
-                }
-                else {
-                    throw new TechnicalException("Le playerId n'a pas été transmit");
-                }
-
-            }
-            catch (ExceptionA e) {
-                showError(e, true);
-            }
-
-        }
+    public void onStart() {
+        super.onStart();
+        refreshView();
     }
 
     /* ---------------------------------
@@ -122,10 +112,11 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
     // -------------------------------- */
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_team, menu);
-        return true;
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        inflater.inflate(R.menu.menu_team, menu);
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -137,22 +128,22 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
         switch (item.getItemId()) {
             case R.id.menu_rename:
                 //on demande le nouveau nom
-                dialog = DialogUtils.getPromptDialog(this, R.drawable.ic_action_add_group, R.string.st_ask_team_name, R.string.add, getTeamBean()
-                        .getName(), new DialogUtils.PromptDialogCB() {
-                    @Override
-                    public void promptDialogCB_onPositiveClick(String promptText) {
-                        getTeamBean().setName(promptText);
-                        TeamDaoManager.getTeamDAO().update(getTeamBean());
-                        refreshTitle();
-                    }
-                });
+                dialog = DialogUtils.getPromptDialog(generiqueActivity, R.drawable.ic_action_add_group, R.string.st_ask_team_name, R.string.add,
+                        teamBean.getName(), new DialogUtils.PromptDialogCB() {
+                            @Override
+                            public void promptDialogCB_onPositiveClick(String promptText) {
+                                teamBean.setName(promptText);
+                                TeamDaoManager.getTeamDAO().update(teamBean);
+                                refreshTitle();
+                            }
+                        });
                 dialog.show();
 
                 return true;
 
             case R.id.menu_delete:
-                dialog = DialogUtils.getConfirmDialog(this, R.drawable.ic_action_delete, R.string.delete, getString(R.string.ta_delete_confirmation),
-                        new MaterialDialog.ButtonCallback() {
+                dialog = DialogUtils.getConfirmDialog(generiqueActivity, R.drawable.ic_action_delete, R.string.delete,
+                        getString(R.string.ta_delete_confirmation), new MaterialDialog.ButtonCallback() {
                             @Override
                             public void onPositive(MaterialDialog dialog) {
                                 super.onPositive(dialog);
@@ -165,23 +156,23 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
                 return true;
 
             case R.id.menu_add_team:
-                DialogUtils.getPromptDialog(this, R.drawable.ic_action_add_group, R.string.tm_pop_up_new_match_title, R.string.add, "",
+                DialogUtils.getPromptDialog(generiqueActivity, R.drawable.ic_action_add_group, R.string.tm_pop_up_new_match_title, R.string.add, "",
                         new DialogUtils.PromptDialogCB() {
                             @Override
                             public void promptDialogCB_onPositiveClick(String promptText) {
                                 addMatch(promptText);
+                                refreshView();
                             }
                         }).show();
                 return true;
 
             case R.id.menu_add_player:
-                IntentHelper.goToPickPlayer(this, getTeamBean().getId(), Constante.PICK_PLAYER_REQ_CODE);
+                generiqueActivity.gotoPickPlayer(teamBean.getId());
+                //IntentHelper.goToPickPlayer(this, teamBean.getId(), Constante.PICK_PLAYER_REQ_CODE);
                 return true;
 
             case R.id.menu_switch_team:
-                MyApplication.getInstance().setTeamBean(null);
-                IntentHelper.goToSelectTeamActivity(this);
-                finish();
+                generiqueActivity.goToSelectTeamActivity();
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -196,20 +187,24 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
     public void selectAdapter_onClick(Object bean) {
         if (bean instanceof MatchBean) {
             //on redirige sur le match
-            IntentHelper.goToMatch(this, ((MatchBean) bean).getId(), true);
+            //IntentHelper.goToMatch(this, ((MatchBean) bean).getId(), true);
+            generiqueActivity.gotoMatch((MatchBean) bean);
         }
         else if (bean instanceof PlayerBean) {
-            //On va sur la page d'un joueur , pas encore faite.
-            IntentHelper.goToPlayerPage(this, ((PlayerBean) bean).getId());
+            generiqueActivity.gotoPlayerPage((PlayerBean) bean);
+
+            // IntentHelper.goToPlayerPage(this, ((PlayerBean) bean).getId());
         }
     }
 
     @Override
     public void onTabChanged(String tabId) {
+        tabSelected = tabId;
         if (tabId.equals(TAG_MATCH)) {
             //on change le color filter
             icon_tab_match.setColorFilter(color_composant_main);
             icon_tab_players.setColorFilter(Color.BLACK);
+
         }
         else if (tabId.equals(TAG_PLAYERS)) {
             icon_tab_match.setColorFilter(Color.BLACK);
@@ -218,18 +213,43 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
     }
 
     /* ---------------------------------
+    // private Data
+    // -------------------------------- */
+
+    /**
+     * Met a jour la liste de match depuis la bdd
+     */
+    private void reloadMatch() {
+        teamBean.resetMatchBeanList();
+        matchBeansList.clear();
+        matchBeansList.addAll(teamBean.getMatchBeanList());
+
+        if (adapterMatch != null) {
+            adapterMatch.notifyDataSetChanged();
+        }
+    }
+
+    private void reloadPlayer() {
+        teamBean.resetTeamPlayerList();
+        playerBeanList.clear();
+        playerBeanList.addAll(PlayerDaoManager.getPlayers(teamBean));
+
+        if (adapterPlayer != null) {
+            adapterPlayer.notifyDataSetChanged();
+        }
+    }
+
+    /* ---------------------------------
     // private Graphique
     // -------------------------------- */
 
     private void refreshTitle() {
-        setTitle(StringUtils.capitalize(getTeamBean().getName()));
+        generiqueActivity.setTitle(StringUtils.capitalize(teamBean.getName()));
     }
 
-    private void initTabHost() {
+    private void initTabHost(View view) {
         int dimen = getResources().getDimensionPixelSize(R.dimen.margin_5);
 
-        //Init du Tabhost
-        TabHost tabs = (TabHost) findViewById(R.id.tabHost);
         tabs.setup();
 
         //tabs match
@@ -259,20 +279,24 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
         icon_tab_players.setPadding(dimen, dimen, dimen, dimen);
 
         tabs.setOnTabChangedListener(this);
+
+        if (StringUtils.isNotBlank(tabSelected)) {
+            tabs.setCurrentTabByTag(tabSelected);
+        }
     }
 
     private void initRecycleView() {
         //preparation recycleview
         ta_rv_match.setHasFixedSize(false);
         ta_rv_players.setHasFixedSize(false);
-        ta_rv_match.setLayoutManager(lmMatch = new LinearLayoutManager(this));
-        ta_rv_players.setLayoutManager(lmPlayers = new LinearLayoutManager(this));
+        ta_rv_match.setLayoutManager(lmMatch = new LinearLayoutManager(generiqueActivity));
+        ta_rv_players.setLayoutManager(lmPlayers = new LinearLayoutManager(generiqueActivity));
         ta_rv_match.setItemAnimator(new DefaultItemAnimator());
         ta_rv_players.setItemAnimator(new DefaultItemAnimator());
     }
 
     private void refreshView() {
-        runOnUiThread(new Runnable() {
+        generiqueActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
 
@@ -303,11 +327,13 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
     private void addMatch(String oponentName) {
         MatchBean matchBean = new MatchBean();
         matchBean.setName(oponentName);
-        matchBean.setTeamBean(getTeamBean());
+        matchBean.setTeamBean(teamBean);
         MatchDaoManager.getMatchBeanDao().insert(matchBean);
 
         //On l'ajoute en tete pour ne pas avoir à refaire des appel bdd
         matchBeansList.add(0, matchBean);
+        //Mais on invalide la liste pour prendre en compte le changement
+        teamBean.resetMatchBeanList();
 
         //insertion d'item
         adapterMatch.notifyItemInserted(0);
@@ -319,10 +345,10 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
 
     private void addPlayer(long newPlayerId) throws LogicException {
         //On ajoute notre nouveau joueur à l'equipe
-        TeamPlayerManager.addPlayerToTeam(getTeamBean().getId(), newPlayerId);
+        TeamPlayerManager.addPlayerToTeam(teamBean.getId(), newPlayerId);
         //ON recharge la liste
         playerBeanList.clear();
-        playerBeanList.addAll(PlayerDaoManager.getPlayers(getTeamBean()));
+        playerBeanList.addAll(PlayerDaoManager.getPlayers(teamBean));
         adapterPlayer.notifyDataSetChanged();
 
         //On met à jour la liste et la vue
@@ -330,9 +356,10 @@ public class TeamActivity extends GeneriqueActivity implements SelectAdapter.Sel
     }
 
     private void deleteTeam() {
-        TeamDaoManager.getTeamDAO().delete(getTeamBean());
-        setTeamBean(null);
-        finish();
+        //on suprime le TeamBean
+        TeamDaoManager.deleteTeam(teamBean);
+
+        generiqueActivity.goToSelectTeamActivity();
     }
 
 }

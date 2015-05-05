@@ -7,6 +7,8 @@ import de.greenrobot.daogenerator.Schema;
 
 public class MyDaoGenerator {
 
+    //Diagramme
+    //https://www.gliffy.com/go/html5/8011489?app=1b5094b0-6042-11e2-bcfd-0800200c9a66
     public static void main(String args[]) throws Exception {
 
         final int DAO_VERSION = 4;

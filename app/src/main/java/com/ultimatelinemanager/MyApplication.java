@@ -3,6 +3,7 @@ package com.ultimatelinemanager;
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.squareup.otto.Bus;
 import com.ultimatelinemanager.dao.MyOpenHelper;
 import com.ultimatelinemanager.dao.TeamDaoManager;
 import com.ultimatelinemanager.dao.match.PointDaoManager;
@@ -38,6 +39,8 @@ public class MyApplication extends Application {
     private PointBean livePoint; //Point en cours
     private boolean livePointOpen;
 
+    private Bus bus;
+
     public static MyApplication getInstance() {
         return instance;
     }
@@ -53,6 +56,7 @@ public class MyApplication extends Application {
         //On declare les constantes static
         new Constante();
 
+        bus = new Bus();
         initDatabase();
 
         //On charge la derniere equipe
@@ -60,6 +64,9 @@ public class MyApplication extends Application {
         //Et le point en cours
         livePoint = PointDaoManager.getPointBeanDao().load(GestionSharedPreference.getLastPointId());
         livePointOpen = false;
+
+        teamBean.resetTeamPlayerList();
+
     }
 
     private void initDatabase() {
@@ -109,5 +116,9 @@ public class MyApplication extends Application {
 
     public DaoSession getDaoSession() {
         return daoSession;
+    }
+
+    public Bus getBus() {
+        return bus;
     }
 }

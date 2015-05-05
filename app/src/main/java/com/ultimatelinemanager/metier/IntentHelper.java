@@ -6,10 +6,10 @@ import android.content.Intent;
 import com.formation.utils.ToastUtils;
 import com.ultimatelinemanager.Constante;
 import com.ultimatelinemanager.activity.SelectTeamActivity;
-import com.ultimatelinemanager.activity.TeamActivity;
-import com.ultimatelinemanager.activity.list_players.PickerPlayerActivity;
-import com.ultimatelinemanager.activity.match.MatchActivity;
-import com.ultimatelinemanager.activity.match.PointActivity;
+import com.ultimatelinemanager.activity.TeamFragment;
+import com.ultimatelinemanager.activity.list_players.PickerPlayerFragment;
+import com.ultimatelinemanager.activity.match.MatchFragment;
+import com.ultimatelinemanager.activity.match.PointFragment;
 
 /**
  * Created by Anthony on 02/03/2015.
@@ -22,7 +22,7 @@ public class IntentHelper {
     }
 
     public static void goToTeamActivity(Activity activity) {
-        Intent intent = new Intent(activity, TeamActivity.class);
+        Intent intent = new Intent(activity, TeamFragment.class);
         activity.startActivity(intent);
     }
 
@@ -33,7 +33,7 @@ public class IntentHelper {
      * @param requestCode
      */
     public static void goToPickPlayer(Activity activity, long teamId, int requestCode) {
-        Intent intent = new Intent(activity, PickerPlayerActivity.class);
+        Intent intent = new Intent(activity, PickerPlayerFragment.class);
         intent.putExtra(Constante.TEAM_EXTRA_ID, teamId);
         activity.startActivityForResult(intent, requestCode);
     }
@@ -48,7 +48,7 @@ public class IntentHelper {
     // -------------------------------- */
 
     public static void goToMatch(Activity activity, long matchId, boolean startActivityForResult) {
-        Intent intent = new Intent(activity, MatchActivity.class);
+        Intent intent = new Intent(activity, MatchFragment.class);
         intent.putExtra(Constante.MATCH_EXTRA_ID, matchId);
         if (startActivityForResult) {
             activity.startActivityForResult(intent, Constante.MATCH_REQ_CODE);
@@ -74,7 +74,7 @@ public class IntentHelper {
      * @param pointId
      */
     public static void goToPointActivity(Activity activity, long pointId) {
-        Intent intent = new Intent(activity, PointActivity.class);
+        Intent intent = new Intent(activity, PointFragment.class);
         intent.putExtra(Constante.POINT_EXTRA_ID, pointId);
         activity.startActivityForResult(intent, (int) pointId);
     }
