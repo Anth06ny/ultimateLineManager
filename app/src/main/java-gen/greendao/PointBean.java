@@ -12,7 +12,10 @@ public class PointBean {
 
     private Long id;
     private java.util.Date start;
+    private java.util.Date stop;
     private Long length;
+    private java.util.Date pauseTime;
+    private Boolean pause;
     private Boolean teamOffense;
     private Boolean teamGoal;
     private long matchId;
@@ -35,10 +38,13 @@ public class PointBean {
         this.id = id;
     }
 
-    public PointBean(Long id, java.util.Date start, Long length, Boolean teamOffense, Boolean teamGoal, long matchId) {
+    public PointBean(Long id, java.util.Date start, java.util.Date stop, Long length, java.util.Date pauseTime, Boolean pause, Boolean teamOffense, Boolean teamGoal, long matchId) {
         this.id = id;
         this.start = start;
+        this.stop = stop;
         this.length = length;
+        this.pauseTime = pauseTime;
+        this.pause = pause;
         this.teamOffense = teamOffense;
         this.teamGoal = teamGoal;
         this.matchId = matchId;
@@ -66,12 +72,36 @@ public class PointBean {
         this.start = start;
     }
 
+    public java.util.Date getStop() {
+        return stop;
+    }
+
+    public void setStop(java.util.Date stop) {
+        this.stop = stop;
+    }
+
     public Long getLength() {
         return length;
     }
 
     public void setLength(Long length) {
         this.length = length;
+    }
+
+    public java.util.Date getPauseTime() {
+        return pauseTime;
+    }
+
+    public void setPauseTime(java.util.Date pauseTime) {
+        this.pauseTime = pauseTime;
+    }
+
+    public Boolean getPause() {
+        return pause;
+    }
+
+    public void setPause(Boolean pause) {
+        this.pause = pause;
     }
 
     public Boolean getTeamOffense() {

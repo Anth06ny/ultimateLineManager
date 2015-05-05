@@ -37,7 +37,6 @@ public class MyApplication extends Application {
     //Data Centrale
     private TeamBean teamBean; //Equipe selectionne
     private PointBean livePoint; //Point en cours
-    private boolean livePointOpen;
 
     private Bus bus;
 
@@ -63,7 +62,6 @@ public class MyApplication extends Application {
         teamBean = TeamDaoManager.getTeamDAO().load(GestionSharedPreference.getLastTeamId());
         //Et le point en cours
         livePoint = PointDaoManager.getPointBeanDao().load(GestionSharedPreference.getLastPointId());
-        livePointOpen = false;
 
         teamBean.resetTeamPlayerList();
 
@@ -104,14 +102,6 @@ public class MyApplication extends Application {
         this.teamBean = teamBean;
         //On sauvegarde dans les preferences le choix de l'equipe
         GestionSharedPreference.setLastTeamId(teamBean != null ? teamBean.getId() : -1);
-    }
-
-    public boolean isLivePointOpen() {
-        return livePointOpen;
-    }
-
-    public void setLivePointOpen(boolean livePointOpen) {
-        this.livePointOpen = livePointOpen;
     }
 
     public DaoSession getDaoSession() {

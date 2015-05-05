@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.formation.utils.ToastUtils;
 import com.ultimatelinemanager.MyApplication;
@@ -22,6 +23,8 @@ import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.activity.list_players.PickerPlayerFragment;
 import com.ultimatelinemanager.activity.match.MatchFragment;
 import com.ultimatelinemanager.activity.match.PointFragment;
+
+import java.util.Date;
 
 import greendao.MatchBean;
 import greendao.PlayerBean;
@@ -43,6 +46,8 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
     private Button lp_bt_offense;
     private ImageView lp_iv_play;
     private TextView lp_tv_manage_player;
+    private TextView lp_tv_previous_point;
+    private TextView lp_tv_next_point;
 
     //Graphique
     private LinearLayout cl_ll;
@@ -70,6 +75,8 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
         lp_bt_offense = (Button) findViewById(R.id.lp_bt_offense);
         lp_iv_play = (ImageView) findViewById(R.id.lp_iv_play);
         lp_tv_manage_player = (TextView) findViewById(R.id.lp_tv_manage_player);
+        lp_tv_previous_point = (TextView) findViewById(R.id.lp_tv_previous_point);
+        lp_tv_next_point = (TextView) findViewById(R.id.lp_tv_next_point);
 
         //Les animation d'apparition du menu de point
         LayoutTransition lt = new LayoutTransition();
@@ -83,15 +90,45 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
         lp_bt_defense.setOnClickListener(this);
         lp_bt_offense.setOnClickListener(this);
         lp_tv_manage_player.setOnClickListener(this);
+        lp_tv_next_point.setOnClickListener(this);
+        lp_tv_previous_point.setOnClickListener(this);
         lp_bt_open.setOnClickListener(this);
+        lp_iv_play.setOnClickListener(this);
 
         //par defaut on n'affiche pas l'extension
         lp_ll_extension.setVisibility(View.GONE);
 
-        refreshLivePoint();
-
         goTo(new TeamFragment());
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshLivePoint();
+
+        //chrono
+        if (getLivePoint() != null) {
+            //si le point est demarre
+            if (getLivePoint().getStart() != null) {
+                //Si le point est en pause, on met la duree du point
+                if (getLivePoint().getPause()) {
+                    lp_time.setBase(getLivePoint().getLength());
+                    lp_time.stop();
+                }
+                //Si le point est en cours on met la duree du point + le temps depuis la derniere reprise de pause
+                else {
+                    lp_time.setBase((new Date().getTime() - getLivePoint().getPauseTime().getTime()) + getLivePoint().getLength());
+                    lp_time.start();
+                }
+            }
+            //si point non demarre
+            else {
+
+                lp_time.setBase(0);
+                lp_time.stop();
+            }
+        }
     }
 
     @Override
@@ -122,10 +159,25 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onClick(View v) {
         if (v == lp_bt_defense) {
-            // Handle clicks for lp_bt_defense
+            //si le pint est demare but pour l'equipe adverse
+            if (getLivePoint().getStart() != null) {
+                stopPoint(false);
+            }
+            else {
+                //debut du point en defense
+                startPoint(false);
+            }
+
         }
         else if (v == lp_bt_offense) {
-            // Handle clicks for lp_bt_offense
+            //si le point est demare but pour l'equipe
+            if (getLivePoint().getStart() != null) {
+                stopPoint(true);
+            }
+            else {
+                //debut du point en attaque
+                startPoint(true);
+            }
         }
         else if (v == lp_tv_manage_player) {
             // Handle clicks for lp_bt_offense
@@ -133,6 +185,22 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
         else if (v == lp_bt_open) {
             //Ouvre / ferme l'extension
             openLivePoint(lp_ll_extension.getVisibility() != View.VISIBLE, true);
+        }
+        else if (v == lp_tv_previous_point) {
+
+        }
+        else if (v == lp_tv_next_point) {
+
+        }
+        else if (v == lp_iv_play) {
+            if (getLivePoint().getPause()) {
+                //ne sera pas comptabilise car point deja demarre
+                startPoint(true);
+            }
+            else {
+                pausePoint();
+            }
+
         }
     }
 
@@ -181,7 +249,14 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
 
     public void gotoMatch(MatchBean matchBean) {
         MatchFragment matchFragment = new MatchFragment();
-        matchFragment.setMatchBean(matchBean);
+        //Si c'est le match du point on utilise le bean du point plus a jour.
+        if (getLivePoint() != null && getLivePoint().getMatchBean().getId() == matchBean.getId()) {
+            matchFragment.setMatchBean(getLivePoint().getMatchBean());
+        }
+        else {
+            matchFragment.setMatchBean(matchBean);
+        }
+
         goTo(matchFragment);
     }
 
@@ -220,7 +295,6 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
             lp_bt_open.animate().cancel();
         }
 
-        MyApplication.getInstance().setLivePointOpen(open);
     }
 
     protected void refreshLivePoint() {
@@ -232,7 +306,6 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
                     lp_ll_point_live.setVisibility(View.GONE);
                 }
             });
-            MyApplication.getInstance().setLivePointOpen(false);
             //On s'arrete la
             return;
         }
@@ -260,15 +333,117 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
             public void run() {
                 //Si on a un point en cours ou pret a demarrer
                 lp_ll_point_live.setVisibility(View.VISIBLE);
-                //Si le livepoint est ouvert
-                openLivePoint(MyApplication.getInstance().isLivePointOpen(), false);
-
+                //le titre avec score
                 lp_tv_title.setText(liveTitle);
-                //Le chrono
 
+                //bouton par defaut
+                lp_bt_offense.setSelected(true);
+                lp_bt_defense.setSelected(true);
+                lp_tv_previous_point.setVisibility(View.GONE);
+                lp_tv_next_point.setVisibility(View.GONE);
+
+                //Bouton 1 defense ou but contre
+                //bouton 2 offense ou but pour
+
+                //Le point a commence
+                if (getLivePoint().getStart() != null) {
+                    lp_bt_defense.setText(getString(R.string.lp_goal_opponent));
+                    lp_bt_offense.setText(getString(R.string.lp_goal_us));
+                    lp_iv_play.setVisibility(View.VISIBLE);
+
+                    //Si on n'est pas en pause on affiche le bouton de pause
+                    if (!getLivePoint().getPause()) {
+                        lp_iv_play.setImageResource(R.drawable.pause);
+                    }
+                    else {
+                        //Bouton de lecture
+                        lp_iv_play.setImageResource(R.drawable.play);
+                    }
+
+                    //Si le point est termine
+                    if (getLivePoint().getStop() != null) {
+                        //On indique en selectionne le bouton choisi
+                        lp_bt_offense.setSelected(getLivePoint().getTeamGoal());
+                        lp_tv_next_point.setVisibility(View.VISIBLE);
+                    }
+
+                }
+                else {
+                    lp_bt_defense.setText(getString(R.string.lp_defense));
+                    lp_bt_offense.setText(getString(R.string.lp_offense));
+                    lp_iv_play.setVisibility(View.GONE);
+                    //Tant que le point n'a pas redemare on peut revenir a celui d'avant
+                    lp_tv_previous_point.setVisibility(View.VISIBLE);
+
+                }
             }
         });
 
+    }
+
+    private void startPoint(boolean withOffense) {
+
+        //On verifie si on a le point nombre de joueur
+        if (getLivePoint().getPlayerPointList().isEmpty()) {
+            ToastUtils.showToastOnUIThread(this, R.string.lp_no_player, Toast.LENGTH_LONG);
+            return;
+        }
+
+        //Le point est deja demarre
+        if (getLivePoint().getStart() != null) {
+            //S'il est en pause on le relance
+            if (getLivePoint().getPause()) {
+                //On redefinit la pause
+                getLivePoint().setPauseTime(new Date());
+                getLivePoint().setPause(false);
+                getLivePoint().setStop(null); //si jamais on reprend un point arrete
+                getLivePoint().setTeamGoal(null);
+            }
+            //s'il est deja en cours on ne fait rien
+            ToastUtils.showToastOnUIThread(this, "Point already in progress...");
+        }
+        else {
+            //Si le point n'est pas demarre on le demarre
+            Date date = new Date();
+            getLivePoint().setStart(date);
+            getLivePoint().setPauseTime(date);
+            getLivePoint().setPause(false);
+            getLivePoint().setTeamOffense(withOffense);
+
+            //Si le match n'est pas demarre on demarre le match
+            if (getLivePoint().getMatchBean().getStart() == null) {
+                getLivePoint().getMatchBean().setStart(date);
+            }
+        }
+
+        refreshLivePoint();
+        //On lance le timer
+        lp_time.start();
+
+    }
+
+    private void pausePoint() {
+        //S'il est deja en pause
+        if (!getLivePoint().getPause()) {
+            //On met le point en pause, et on ajoute le temps joue depuis la derniere pause
+            getLivePoint().setPause(true);
+            getLivePoint().setLength(getLivePoint().getLength() + (new Date().getTime() - getLivePoint().getPauseTime().getTime()));
+        }
+
+        refreshLivePoint();
+
+        lp_time.stop();
+    }
+
+    private void stopPoint(boolean goalUs) {
+
+        //On met le point en pause et en plus on met le resultat du point
+        if (getLivePoint().getStop() == null) {
+            //pour ne pas mettre a jour le temps a chaque appuis sur le bouton
+            getLivePoint().setStop(new Date());
+        }
+        getLivePoint().setTeamGoal(goalUs);
+        pausePoint();
     }
 
     /* ---------------------------------

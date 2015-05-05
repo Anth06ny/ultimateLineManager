@@ -106,9 +106,14 @@
     <!-- ****************** -->
     <string name="lp_offense">Start offense</string>
     <string name="lp_defense">Start defense</string>
+    <string name="lp_goal_us">Goal us</string>
+    <string name="lp_goal_opponent">Goal opponent</string>
     <string name="lp_manage_players">Manage players</string>
     <string name="lp_minimize">Minimize</string>
     <string name="lp_open">open</string>
+    <string name="lp_no_player">No player set for this point.</string>
+    <string name="lp_bt_next_point">Next Point</string>
+    <string name="lp_bt_previous_point">Previous Point</string>
 
 
     <!-- ****************** -->
