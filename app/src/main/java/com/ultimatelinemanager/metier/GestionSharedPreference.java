@@ -38,19 +38,19 @@ public class GestionSharedPreference {
     /* ---------------------------------
     //  Recupere le dernier point en live
     // -------------------------------- */
-    private static final String LAST_POINT_ID = "LAST_POINT_ID";
+    private static final String LIVE_MATCH_ID = "LIVE_MATCH_ID";
 
-    public static long getLastPointId() {
-        return getSharedPreferences().getLong(LAST_POINT_ID, -1);
+    public static long getLiveMatchId() {
+        return getSharedPreferences().getLong(LIVE_MATCH_ID, -1);
     }
 
-    public static void setLastPointId(long pointId) {
+    public static void setLiveMatchId(long matchId) {
 
-        if (pointId > 0) {
-            getSharedPreferences().edit().putLong(LAST_POINT_ID, pointId).commit();
+        if (matchId > 0) {
+            getSharedPreferences().edit().putLong(LIVE_MATCH_ID, matchId).commit();
         }
         else {
-            getSharedPreferences().edit().remove(LAST_POINT_ID);
+            getSharedPreferences().edit().remove(LIVE_MATCH_ID);
         }
     }
 

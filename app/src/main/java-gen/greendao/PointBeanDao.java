@@ -31,7 +31,7 @@ public class PointBeanDao extends AbstractDao<PointBean, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Start = new Property(1, java.util.Date.class, "start", false, "START");
         public final static Property Stop = new Property(2, java.util.Date.class, "stop", false, "STOP");
-        public final static Property Length = new Property(3, Long.class, "length", false, "LENGTH");
+        public final static Property Length = new Property(3, long.class, "length", false, "LENGTH");
         public final static Property PauseTime = new Property(4, java.util.Date.class, "pauseTime", false, "PAUSE_TIME");
         public final static Property Pause = new Property(5, Boolean.class, "pause", false, "PAUSE");
         public final static Property TeamOffense = new Property(6, Boolean.class, "teamOffense", false, "TEAM_OFFENSE");
@@ -59,7 +59,7 @@ public class PointBeanDao extends AbstractDao<PointBean, Long> {
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
                 "'START' INTEGER," + // 1: start
                 "'STOP' INTEGER," + // 2: stop
-                "'LENGTH' INTEGER," + // 3: length
+                "'LENGTH' INTEGER NOT NULL ," + // 3: length
                 "'PAUSE_TIME' INTEGER," + // 4: pauseTime
                 "'PAUSE' INTEGER," + // 5: pause
                 "'TEAM_OFFENSE' INTEGER," + // 6: teamOffense
@@ -92,11 +92,7 @@ public class PointBeanDao extends AbstractDao<PointBean, Long> {
         if (stop != null) {
             stmt.bindLong(3, stop.getTime());
         }
- 
-        Long length = entity.getLength();
-        if (length != null) {
-            stmt.bindLong(4, length);
-        }
+        stmt.bindLong(4, entity.getLength());
  
         java.util.Date pauseTime = entity.getPauseTime();
         if (pauseTime != null) {
@@ -139,7 +135,7 @@ public class PointBeanDao extends AbstractDao<PointBean, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : new java.util.Date(cursor.getLong(offset + 1)), // start
             cursor.isNull(offset + 2) ? null : new java.util.Date(cursor.getLong(offset + 2)), // stop
-            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // length
+            cursor.getLong(offset + 3), // length
             cursor.isNull(offset + 4) ? null : new java.util.Date(cursor.getLong(offset + 4)), // pauseTime
             cursor.isNull(offset + 5) ? null : cursor.getShort(offset + 5) != 0, // pause
             cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0, // teamOffense
@@ -155,7 +151,7 @@ public class PointBeanDao extends AbstractDao<PointBean, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setStart(cursor.isNull(offset + 1) ? null : new java.util.Date(cursor.getLong(offset + 1)));
         entity.setStop(cursor.isNull(offset + 2) ? null : new java.util.Date(cursor.getLong(offset + 2)));
-        entity.setLength(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
+        entity.setLength(cursor.getLong(offset + 3));
         entity.setPauseTime(cursor.isNull(offset + 4) ? null : new java.util.Date(cursor.getLong(offset + 4)));
         entity.setPause(cursor.isNull(offset + 5) ? null : cursor.getShort(offset + 5) != 0);
         entity.setTeamOffense(cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0);

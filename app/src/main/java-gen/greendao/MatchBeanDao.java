@@ -32,7 +32,8 @@ public class MatchBeanDao extends AbstractDao<MatchBean, Long> {
         public final static Property Name = new Property(1, String.class, "name", false, "NAME");
         public final static Property Start = new Property(2, java.util.Date.class, "start", false, "START");
         public final static Property End = new Property(3, java.util.Date.class, "end", false, "END");
-        public final static Property TeamId = new Property(4, long.class, "teamId", false, "TEAM_ID");
+        public final static Property CurrentPoint = new Property(4, int.class, "currentPoint", false, "CURRENT_POINT");
+        public final static Property TeamId = new Property(5, long.class, "teamId", false, "TEAM_ID");
     };
 
     private DaoSession daoSession;
@@ -56,7 +57,8 @@ public class MatchBeanDao extends AbstractDao<MatchBean, Long> {
                 "'NAME' TEXT NOT NULL ," + // 1: name
                 "'START' INTEGER," + // 2: start
                 "'END' INTEGER," + // 3: end
-                "'TEAM_ID' INTEGER NOT NULL );"); // 4: teamId
+                "'CURRENT_POINT' INTEGER NOT NULL ," + // 4: currentPoint
+                "'TEAM_ID' INTEGER NOT NULL );"); // 5: teamId
     }
 
     /** Drops the underlying database table. */
@@ -85,7 +87,8 @@ public class MatchBeanDao extends AbstractDao<MatchBean, Long> {
         if (end != null) {
             stmt.bindLong(4, end.getTime());
         }
-        stmt.bindLong(5, entity.getTeamId());
+        stmt.bindLong(5, entity.getCurrentPoint());
+        stmt.bindLong(6, entity.getTeamId());
     }
 
     @Override
@@ -108,7 +111,8 @@ public class MatchBeanDao extends AbstractDao<MatchBean, Long> {
             cursor.getString(offset + 1), // name
             cursor.isNull(offset + 2) ? null : new java.util.Date(cursor.getLong(offset + 2)), // start
             cursor.isNull(offset + 3) ? null : new java.util.Date(cursor.getLong(offset + 3)), // end
-            cursor.getLong(offset + 4) // teamId
+            cursor.getInt(offset + 4), // currentPoint
+            cursor.getLong(offset + 5) // teamId
         );
         return entity;
     }
@@ -120,7 +124,8 @@ public class MatchBeanDao extends AbstractDao<MatchBean, Long> {
         entity.setName(cursor.getString(offset + 1));
         entity.setStart(cursor.isNull(offset + 2) ? null : new java.util.Date(cursor.getLong(offset + 2)));
         entity.setEnd(cursor.isNull(offset + 3) ? null : new java.util.Date(cursor.getLong(offset + 3)));
-        entity.setTeamId(cursor.getLong(offset + 4));
+        entity.setCurrentPoint(cursor.getInt(offset + 4));
+        entity.setTeamId(cursor.getLong(offset + 5));
      }
     
     /** @inheritdoc */

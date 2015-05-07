@@ -35,7 +35,7 @@ public class TeamDaoManager {
         TeamDaoManager.getTeamDAO().delete(teamBean);
         //on suprime le TeamBean
         MyApplication.getInstance().setTeamBean(null);
-        MyApplication.getInstance().setLivePoint(null);
+        MyApplication.getInstance().setLiveMatch(null);
 
         //pour bien le supprimer de la session
         MyApplication.getInstance().getDaoSession().clear();

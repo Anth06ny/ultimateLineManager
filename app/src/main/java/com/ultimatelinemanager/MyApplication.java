@@ -6,12 +6,13 @@ import android.database.sqlite.SQLiteDatabase;
 import com.squareup.otto.Bus;
 import com.ultimatelinemanager.dao.MyOpenHelper;
 import com.ultimatelinemanager.dao.TeamDaoManager;
-import com.ultimatelinemanager.dao.match.PointDaoManager;
+import com.ultimatelinemanager.dao.match.MatchDaoManager;
 import com.ultimatelinemanager.metier.GestionSharedPreference;
 
 import de.greenrobot.dao.query.QueryBuilder;
 import greendao.DaoMaster;
 import greendao.DaoSession;
+import greendao.MatchBean;
 import greendao.PointBean;
 import greendao.TeamBean;
 
@@ -20,8 +21,8 @@ import greendao.TeamBean;
  */
 public class MyApplication extends Application {
 
-    //TODO faire apparaitre le bandeau pour le match en cours
-    //TODO Faire Activite principale qui inclu le bandeau
+    //TODO on pause de l'activité sauvegarde le match
+    //TODO Suppression de point, gerer si c'est le point courant
 
     //TODO Faire confirmation suppression point
     //TODO Continuer ecran point
@@ -30,13 +31,15 @@ public class MyApplication extends Application {
     //TODO Ajouter fleche sur les boutons de tri
     //TODO selection multiplayer
     //TODO importer joueur autre equipe
+    //TODO cloturer tous les match de plus de 3h en bdd
 
     private static MyApplication instance;
     private DaoSession daoSession;
 
     //Data Centrale
     private TeamBean teamBean; //Equipe selectionne
-    private PointBean livePoint; //Point en cours
+
+    private MatchBean liveMatch;// match courant
 
     private Bus bus;
 
@@ -61,7 +64,13 @@ public class MyApplication extends Application {
         //On charge la derniere equipe
         teamBean = TeamDaoManager.getTeamDAO().load(GestionSharedPreference.getLastTeamId());
         //Et le point en cours
-        livePoint = PointDaoManager.getPointBeanDao().load(GestionSharedPreference.getLastPointId());
+        liveMatch = MatchDaoManager.getMatchBeanDao().load(GestionSharedPreference.getLiveMatchId());
+
+        //Si le match n'appartient pas a l'equipe on l'enleve
+        if (liveMatch != null && liveMatch.getTeamId() != teamBean.getId()) {
+            liveMatch = null;
+            GestionSharedPreference.setLiveMatchId(-1);
+        }
 
         teamBean.resetTeamPlayerList();
 
@@ -86,12 +95,24 @@ public class MyApplication extends Application {
     // Getter /  Setter
     // -------------------------------- */
 
-    public PointBean getLivePoint() {
-        return livePoint;
+    public MatchBean getLiveMatch() {
+        return liveMatch;
     }
 
-    public void setLivePoint(PointBean livePoint) {
-        this.livePoint = livePoint;
+    /**
+     * @return Retourne le point courant s'il y en a 1
+     */
+    public PointBean getLivePoint() {
+        if (liveMatch != null && !liveMatch.getPointBeanList().isEmpty()) {
+            return getLiveMatch().getPointBeanList().get(getLiveMatch().getCurrentPoint());
+        }
+        else {
+            return null;
+        }
+    }
+
+    public void setLiveMatch(MatchBean liveMatch) {
+        this.liveMatch = liveMatch;
     }
 
     public TeamBean getTeamBean() {

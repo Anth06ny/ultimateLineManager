@@ -32,7 +32,6 @@ import com.ultimatelinemanager.metier.DialogUtils;
 import com.ultimatelinemanager.metier.IntentHelper;
 import com.ultimatelinemanager.metier.exception.TechnicalException;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -59,7 +58,6 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
     private RecyclerView st_rv;
     private LinearLayoutManager lm;
     private PointAdapter adapter;
-    private ArrayList<PointBean> pointBeanList;
 
     //Data
     private MatchBean matchBean;
@@ -95,16 +93,14 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
         st_rv.setHasFixedSize(false);
         st_rv.setLayoutManager(lm = new LinearLayoutManager(generiqueActivity));
         st_rv.setItemAnimator(new DefaultItemAnimator());
-        pointBeanList = new ArrayList<>();
-        pointBeanList.addAll(matchBean.getPointBeanList());
 
         sortList();
-        adapter = new PointAdapter(generiqueActivity, pointBeanList, this);
+        adapter = new PointAdapter(generiqueActivity, matchBean.getPointBeanList(), this);
         st_rv.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
         //On ajoute le 1er point
-        if (pointBeanList.isEmpty()) {
+        if (matchBean.getPointBeanList().isEmpty()) {
             addNewPoint();
         }
 
@@ -126,7 +122,7 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
         //On regarde si le requestCode correspont  à un point pour le rafraichir
         if (requestCode != 0) {
             int i = 0;
-            for (PointBean pointBean : pointBeanList) {
+            for (PointBean pointBean : matchBean.getPointBeanList()) {
                 if (pointBean.getId() == requestCode) {
                     adapter.notifyItemChanged(i);
                     break;
@@ -227,11 +223,21 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
         //Si  ce match n'est pas terminé
         if (matchBean.getEnd() == null) {
 
-            PointBean livePoint = MyApplication.getInstance().getLivePoint();
-            //Si on n'a pas de match en cours ou si le match en cours n'est pas celui la et qu'il n'est pas commencé.
-            if (livePoint == null || (livePoint.getMatchId() != matchBean.getId() && livePoint.getMatchBean().getStart() == null)) {
-                //On positionne le 1er point en point courant
-                generiqueActivity.setLivePoint(pointBeanList.get(0));
+            //Si on n'a pas de match en cours
+            if (MyApplication.getInstance().getLiveMatch() == null) {
+                //On positionne le match courant
+                MyApplication.getInstance().setLiveMatch(matchBean);
+                generiqueActivity.refreshLivePoint();
+            }
+            //ou si le match en cours n'est pas celui la et qu'il n'est pas commencé.
+            else if (MyApplication.getInstance().getLiveMatch().getId() != matchBean.getId()) {
+                PointBean livePoint = MyApplication.getInstance().getLivePoint();
+                if (livePoint == null || livePoint.getStart() == null) {
+                    //On positionne le match courant
+                    MyApplication.getInstance().setLiveMatch(matchBean);
+                    generiqueActivity.refreshLivePoint();
+                }
+
             }
         }
 
@@ -243,8 +249,8 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
     public void pointAdapter_deletePoint(PointBean bean) {
 
         int position = -1;
-        for (int i = 0; i < pointBeanList.size(); i++) {
-            if (pointBeanList.get(i).getId() == bean.getId()) {
+        for (int i = 0; i < matchBean.getPointBeanList().size(); i++) {
+            if (matchBean.getPointBeanList().get(i).getId() == bean.getId()) {
                 position = i;
                 break;
             }
@@ -254,16 +260,16 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
 
         //on essaye de le retirer en mode optimiser
         if (position >= 0) {
-            pointBeanList.remove(position);
+            matchBean.getPointBeanList().remove(position);
             adapter.notifyItemRemoved(position);
         }
         //Sinon de maniere normal
         else {
-            pointBeanList.remove(bean);
+            matchBean.getPointBeanList().remove(bean);
             adapter.notifyDataSetChanged();
         }
 
-        if (pointBeanList.isEmpty()) {
+        if (matchBean.getPointBeanList().isEmpty()) {
             refreshView();
         }
 
@@ -288,9 +294,10 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
         PointBean pointBean = new PointBean();
         pointBean.setMatchBean(matchBean);
         pointBean.setId(PointDaoManager.getPointBeanDao().insert(pointBean));
-        pointBeanList.add(0, pointBean);
+        matchBean.getPointBeanList().add(0, pointBean);
 
-        if (pointBeanList.size() == 1) {
+        //Change l'interface graphique
+        if (matchBean.getPointBeanList().size() == 1) {
             refreshView();
         }
 
@@ -324,6 +331,13 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
                         MatchDaoManager.getMatchBeanDao().delete(matchBean);
                         //On invalide la liste des matches
                         MyApplication.getInstance().getTeamBean().resetMatchBeanList();
+                        //Si c'etait le match en cours on l'enleve
+                        if (MyApplication.getInstance().getLiveMatch() != null
+                                && matchBean.getId() == MyApplication.getInstance().getLiveMatch().getId()) {
+                            MyApplication.getInstance().setLiveMatch(null);
+                            generiqueActivity.refreshLivePoint();
+                        }
+
                         ToastUtils.showToastOnUIThread(generiqueActivity, R.string.ma_delete_game_confirmation, Toast.LENGTH_LONG);
                         //on revient en arriere
                         generiqueActivity.getFragmentManager().popBackStack();
@@ -388,7 +402,7 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
 
             long reelTime = 0;
             int team = 0, opponent = 0;
-            for (PointBean pointBean : pointBeanList) {
+            for (PointBean pointBean : matchBean.getPointBeanList()) {
                 if (pointBean.getLength() != null) {
                     reelTime += pointBean.getLength();
 
@@ -450,19 +464,19 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
         generiqueActivity.invalidateOptionsMenu();
 
         //RecycleView
-        if (pointBeanList.size() > 0) {
-            st_empty.setVisibility(View.INVISIBLE);
-            st_rv.setVisibility(View.VISIBLE);
-        }
-        else {
+        if (matchBean.getPointBeanList().isEmpty()) {
             st_empty.setVisibility(View.VISIBLE);
             st_rv.setVisibility(View.INVISIBLE);
+        }
+        else {
+            st_empty.setVisibility(View.INVISIBLE);
+            st_rv.setVisibility(View.VISIBLE);
         }
 
     }
 
     private void sortList() {
-        Collections.sort(pointBeanList, new Comparator<PointBean>() {
+        Collections.sort(matchBean.getPointBeanList(), new Comparator<PointBean>() {
             @Override
             public int compare(PointBean p1, PointBean p2) {
                 if (p1.getStart() == null && p2.getStart() == null) {
@@ -486,10 +500,6 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
     /* ---------------------------------
     // Getter Setter
     // -------------------------------- */
-    public MatchBean getMatchBean() {
-        return matchBean;
-    }
-
     public void setMatchBean(MatchBean matchBean) {
         this.matchBean = matchBean;
     }

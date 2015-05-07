@@ -187,13 +187,10 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
     public void selectAdapter_onClick(Object bean) {
         if (bean instanceof MatchBean) {
             //on redirige sur le match
-            //IntentHelper.goToMatch(this, ((MatchBean) bean).getId(), true);
             generiqueActivity.gotoMatch((MatchBean) bean);
         }
         else if (bean instanceof PlayerBean) {
             generiqueActivity.gotoPlayerPage((PlayerBean) bean);
-
-            // IntentHelper.goToPlayerPage(this, ((PlayerBean) bean).getId());
         }
     }
 

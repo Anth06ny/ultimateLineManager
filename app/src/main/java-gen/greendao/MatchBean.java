@@ -15,6 +15,7 @@ public class MatchBean {
     private String name;
     private java.util.Date start;
     private java.util.Date end;
+    private int currentPoint;
     private long teamId;
 
     /** Used to resolve relations */
@@ -36,11 +37,12 @@ public class MatchBean {
         this.id = id;
     }
 
-    public MatchBean(Long id, String name, java.util.Date start, java.util.Date end, long teamId) {
+    public MatchBean(Long id, String name, java.util.Date start, java.util.Date end, int currentPoint, long teamId) {
         this.id = id;
         this.name = name;
         this.start = start;
         this.end = end;
+        this.currentPoint = currentPoint;
         this.teamId = teamId;
     }
 
@@ -82,6 +84,14 @@ public class MatchBean {
 
     public void setEnd(java.util.Date end) {
         this.end = end;
+    }
+
+    public int getCurrentPoint() {
+        return currentPoint;
+    }
+
+    public void setCurrentPoint(int currentPoint) {
+        this.currentPoint = currentPoint;
     }
 
     public long getTeamId() {

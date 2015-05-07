@@ -205,6 +205,9 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
         public void onClick(View v) {
 
             if (v == tv_delete_point) {
+
+
+
                 if (pointAdapterCB != null) {
                     pointAdapterCB.pointAdapter_deletePoint(pointBean);
                 }

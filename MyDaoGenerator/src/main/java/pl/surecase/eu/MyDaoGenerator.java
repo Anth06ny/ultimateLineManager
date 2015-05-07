@@ -11,7 +11,7 @@ public class MyDaoGenerator {
     //https://www.gliffy.com/go/html5/8011489?app=1b5094b0-6042-11e2-bcfd-0800200c9a66
     public static void main(String args[]) throws Exception {
 
-        final int DAO_VERSION = 5;
+        final int DAO_VERSION = 6;
 
         Schema schema = new Schema(DAO_VERSION, "greendao");
 
@@ -59,6 +59,7 @@ public class MyDaoGenerator {
         matchBean.addStringProperty("name").notNull();
         matchBean.addDateProperty("start");
         matchBean.addDateProperty("end");
+        matchBean.addIntProperty("currentPoint").notNull();
 
         //Relation : Team * Match
         teamId = matchBean.addLongProperty("teamId").notNull().getProperty();
@@ -73,7 +74,7 @@ public class MyDaoGenerator {
         pointBean.addIdProperty().getProperty();
         pointBean.addDateProperty("start");
         pointBean.addDateProperty("stop"); //fin du point
-        pointBean.addLongProperty("length");//durée
+        pointBean.addLongProperty("length").notNull();//durée
         pointBean.addDateProperty("pauseTime");//date de la pause
         pointBean.addBooleanProperty("pause");//en pause
         pointBean.addBooleanProperty("teamOffense"); //attaque ou défense

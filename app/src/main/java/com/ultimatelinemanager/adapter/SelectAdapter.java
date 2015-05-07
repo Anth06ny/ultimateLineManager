@@ -1,6 +1,7 @@
 package com.ultimatelinemanager.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.formation.utils.DateUtils;
 import com.formation.utils.Utils;
+import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.R;
 
 import java.util.List;
@@ -35,7 +37,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
     private Context context;
 
     //config
-    private int girlColor, boyColor;
+    private int girlColor, boyColor, selectedColor;
     private String notStartHexaColor, inProgressHexaColor, finishedHexaColor;
 
     public SelectAdapter(Context context, List<?> daoList, TYPE type, SelectAdapterI selectAdapterI) {
@@ -43,6 +45,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
         this.daoList = daoList;
         this.selectAdapterI = selectAdapterI;
         this.type = type;
+        selectedColor = context.getResources().getColor(R.color.lily_white);
 
         switch (type) {
             case TEAM:
@@ -146,6 +149,14 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
 
                 holder.row_tv3.setText(Html.fromHtml(context.getString(R.string.tm_list_statut, hexColor, statut)));
 
+                //Si c'est le match en cours
+                if (MyApplication.getInstance().getLiveMatch() != null && MyApplication.getInstance().getLiveMatch().getId() == matchBean.getId()) {
+                    holder.cv.setBackgroundColor(selectedColor);
+                }
+                else {
+                    holder.cv.setBackgroundColor(Color.WHITE);
+                }
+
                 break;
         }
 
@@ -162,6 +173,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
 
     protected static class ViewHolder<T> extends RecyclerView.ViewHolder implements View.OnClickListener {
         //Composant graphique
+        public View cv;
         public final TextView row_tv1;
         public final TextView row_tv2;
         public TextView row_tv3;
@@ -173,6 +185,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
 
         public ViewHolder(View itemView, TYPE type1, SelectAdapterI callBack) {
             super(itemView);
+            cv = itemView.findViewById(R.id.cv);
             row_tv1 = (TextView) itemView.findViewById(R.id.row_tv1);
             row_tv2 = (TextView) itemView.findViewById(R.id.row_tv2);
             root = itemView.findViewById(R.id.root);
