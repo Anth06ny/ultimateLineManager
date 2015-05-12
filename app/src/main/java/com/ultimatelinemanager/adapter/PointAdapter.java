@@ -46,9 +46,9 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
         girlColor = context.getResources().getColor(R.color.girl_color);
         boyColor = context.getResources().getColor(R.color.boy_color);
         winColor = context.getResources().getColor(R.color.win_color);
-        inProgressHexaColor = Utils.getColorFromTheme(context, R.attr.color_text_main);
-        finishedHexaColor = context.getResources().getColor(R.color.vivid_green);
-        notStartHexaColor = context.getResources().getColor(R.color.red);
+        inProgressHexaColor = context.getResources().getColor(R.color.in_progress_color);
+        finishedHexaColor = context.getResources().getColor(R.color.finish_color);
+        notStartHexaColor = context.getResources().getColor(R.color.not_start_color);
         paddingLeftPlayer = context.getResources().getDimensionPixelSize(R.dimen.margin_20);
 
         notifyDataSetChanged();
@@ -106,7 +106,7 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
 
             //playing time
             //s'il y a deja du temps on met le temps sinon on met le temps écoulé deplus le début du point
-            long playingTime = pointBean.getLength() != null ? pointBean.getLength() : (new Date().getTime() - pointBean.getStart().getTime());
+            long playingTime = pointBean.getLength() != 0 ? pointBean.getLength() : (new Date().getTime() - pointBean.getStart().getTime());
             holder.ma_tv_playing_time.setText(Utils.timeToHHMM(playingTime));
         }
 
@@ -205,8 +205,6 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
         public void onClick(View v) {
 
             if (v == tv_delete_point) {
-
-
 
                 if (pointAdapterCB != null) {
                     pointAdapterCB.pointAdapter_deletePoint(pointBean);

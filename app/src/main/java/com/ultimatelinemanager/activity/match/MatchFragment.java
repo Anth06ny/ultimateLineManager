@@ -21,11 +21,13 @@ import com.formation.utils.DateUtils;
 import com.formation.utils.LogUtils;
 import com.formation.utils.ToastUtils;
 import com.formation.utils.Utils;
+import com.squareup.otto.Subscribe;
 import com.ultimatelinemanager.Constante;
 import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.activity.MainFragment;
 import com.ultimatelinemanager.adapter.PointAdapter;
+import com.ultimatelinemanager.bean.OttoRefreshEvent;
 import com.ultimatelinemanager.dao.match.MatchDaoManager;
 import com.ultimatelinemanager.dao.match.PointDaoManager;
 import com.ultimatelinemanager.metier.DialogUtils;
@@ -61,6 +63,9 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
 
     //Data
     private MatchBean matchBean;
+
+    //Otto
+    private Object ottoListner;
 
     @Nullable
     @Override
@@ -99,6 +104,18 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
         st_rv.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
+        //ON s'enregistre à OTTo
+        ottoListner = new Object() {
+
+            @Subscribe
+            public void listen(OttoRefreshEvent event) {
+                gestionOttoEvent(event);
+            }
+
+        };
+
+        MyApplication.getInstance().getBus().register(ottoListner);
+
         //On ajoute le 1er point
         if (matchBean.getPointBeanList().isEmpty()) {
             addNewPoint();
@@ -132,6 +149,12 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
 
         }
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        MyApplication.getInstance().getBus().unregister(ottoListner);
     }
 
     /* ---------------------------------
@@ -276,6 +299,30 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
     }
 
     /* ---------------------------------
+    // OTTO
+    // -------------------------------- */
+
+    private void gestionOttoEvent(OttoRefreshEvent event) {
+        switch (event) {
+        //Un point à été ajouté on met à jour l'UI
+            case NEW_POINT:
+                addNewPointUI();
+                break;
+
+            case MATCH_START:
+            case SCORE_CHANGE:
+                refreshView();
+                break;
+
+            case POINT_START:
+            case POINT_FINISHED:
+                adapter.notifyItemChanged(matchBean.getCurrentPoint());
+                break;
+
+        }
+    }
+
+    /* ---------------------------------
     // Click action
     // -------------------------------- */
 
@@ -295,18 +342,27 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
         pointBean.setMatchBean(matchBean);
         pointBean.setId(PointDaoManager.getPointBeanDao().insert(pointBean));
         matchBean.getPointBeanList().add(0, pointBean);
+        addNewPointUI();
 
-        //Change l'interface graphique
-        if (matchBean.getPointBeanList().size() == 1) {
-            refreshView();
-        }
+    }
 
-        //On indique une insertion d'item
-        adapter.notifyItemInserted(0);
-        if (lm.findFirstCompletelyVisibleItemPosition() == 0) {
-            lm.scrollToPosition(0);
-        }
+    private void addNewPointUI() {
 
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //Change l'interface graphique
+                if (matchBean.getPointBeanList().size() == 1) {
+                    refreshView();
+                }
+
+                //On indique une insertion d'item
+                adapter.notifyItemInserted(0);
+                if (lm.findFirstCompletelyVisibleItemPosition() == 0) {
+                    lm.scrollToPosition(0);
+                }
+            }
+        });
     }
 
     /**
@@ -376,103 +432,109 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
     // -------------------------------- */
 
     private void refreshView() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //titre
+                generiqueActivity.setTitle(getString(R.string.ma_title, MyApplication.getInstance().getTeamBean().getName(), matchBean.getName()));
 
-        //titre
-        generiqueActivity.setTitle(getString(R.string.ma_title, MyApplication.getInstance().getTeamBean().getName(), matchBean.getName()));
+                if (matchBean.getStart() != null) {
 
-        if (matchBean.getStart() != null) {
+                    long reelTime = 0;
+                    int team = 0, opponent = 0;
+                    for (PointBean pointBean : matchBean.getPointBeanList()) {
+                        reelTime += pointBean.getLength();
 
-            //Statut
-            //match non terminée
-            if (matchBean.getEnd() == null) {
-                ma_tv_statut.setTextColor(Utils.getColorFromTheme(generiqueActivity, R.attr.color_text_main));
-                ma_tv_statut.setText(getString(R.string.tm_list_statut_in_progress));
-            }
-            else {
-                ma_tv_statut.setTextColor(getResources().getColor(R.color.vivid_green));
-                ma_tv_statut.setText(getString(R.string.tm_list_statut_finish));
-            }
-
-            //Date
-            String dateFormat = DateUtils.getFormat(generiqueActivity, DateUtils.DATE_FORMAT.ddMMyyyy_HHmm);
-            ma_tv_date.setText(DateUtils.dateToString(matchBean.getStart(), dateFormat));
-
-            //Playing time
-            ma_tv_playing_time.setText(Utils.timeToHHMM(matchBean.getEnd().getTime() - matchBean.getStart().getTime()));
-
-            long reelTime = 0;
-            int team = 0, opponent = 0;
-            for (PointBean pointBean : matchBean.getPointBeanList()) {
-                if (pointBean.getLength() != null) {
-                    reelTime += pointBean.getLength();
-
-                    //Si le point est termine
-                    if (pointBean.getTeamGoal() != null) {
-                        if (pointBean.getTeamGoal()) {
-                            team++;
-                        }
-                        else {
-                            opponent++;
+                        //Si le point est termine
+                        if (pointBean.getTeamGoal() != null) {
+                            if (pointBean.getTeamGoal()) {
+                                team++;
+                            }
+                            else {
+                                opponent++;
+                            }
                         }
                     }
+
+                    //Statut
+                    //match non terminée
+                    if (matchBean.getEnd() == null) {
+                        ma_tv_statut.setTextColor(getResources().getColor(R.color.in_progress_color));
+                        ma_tv_statut.setText(getString(R.string.tm_list_statut_in_progress));
+                        //Playing time
+                        ma_tv_playing_time.setText(Utils.timeToHHMM(new Date().getTime() - matchBean.getStart().getTime()));
+
+                        //Win
+                        ma_iv_win.setVisibility(View.INVISIBLE);
+                    }
+                    else {
+                        ma_tv_statut.setTextColor(getResources().getColor(R.color.finish_color));
+                        ma_tv_statut.setText(getString(R.string.tm_list_statut_finish));
+                        //Playing time
+                        ma_tv_playing_time.setText(Utils.timeToHHMM(matchBean.getEnd().getTime() - matchBean.getStart().getTime()));
+
+                        //Win
+                        ma_iv_win.setVisibility(team > opponent ? View.VISIBLE : View.INVISIBLE);
+                    }
+
+                    //Date
+                    String dateFormat = DateUtils.getFormat(generiqueActivity, DateUtils.DATE_FORMAT.ddMMyyyy_HHmm);
+                    ma_tv_date.setText(DateUtils.dateToString(matchBean.getStart(), dateFormat));
+
+                    //reel playing time
+                    ma_tv_reel_playing_time.setText(Utils.timeToHHMM(reelTime));
+
+                    //Score
+                    ma_tv_score.setText(team + " - " + opponent);
+
+                    //bouton end game ou statistics
+                    ma_tv_finish_stat_title.setVisibility(View.VISIBLE);
+                    ma_tv_finish_stat.setVisibility(View.VISIBLE);
+                    ma_tv_finish_stat.setText(matchBean.getEnd() == null ? getString(R.string.ma_menu_end_match) : getString(R.string.stat));
+
+                }
+                //Match non commencé
+                else {
+
+                    //Statut
+                    ma_tv_statut.setText(getString(R.string.tm_list_statut_not_start));
+                    ma_tv_statut.setTextColor(getResources().getColor(R.color.not_start_color));
+                    //date
+
+                    ma_tv_date.setText(Constante.EMPTY);
+
+                    //playing time
+                    ma_tv_playing_time.setText(Constante.EMPTY);
+
+                    //reel playing time
+                    ma_tv_reel_playing_time.setText(Constante.EMPTY);
+
+                    //Score
+                    ma_tv_score.setText(Constante.EMPTY);
+
+                    //Win
+                    ma_iv_win.setVisibility(View.INVISIBLE);
+
+                    //bouton finish stat invisible
+                    ma_tv_finish_stat_title.setVisibility(View.GONE);
+                    ma_tv_finish_stat.setVisibility(View.GONE);
+
+                }
+
+                //On invalide le menu
+                generiqueActivity.invalidateOptionsMenu();
+
+                //RecycleView
+                if (matchBean.getPointBeanList().isEmpty()) {
+                    st_empty.setVisibility(View.VISIBLE);
+                    st_rv.setVisibility(View.INVISIBLE);
+                }
+                else {
+                    st_empty.setVisibility(View.INVISIBLE);
+                    st_rv.setVisibility(View.VISIBLE);
                 }
             }
-
-            //reel playing time
-            ma_tv_reel_playing_time.setText(Utils.timeToHHMM(reelTime));
-
-            //Score
-            ma_tv_score.setText(team + " - " + opponent);
-
-            //Win
-            ma_iv_win.setVisibility(team > opponent ? View.VISIBLE : View.INVISIBLE);
-
-            //bouton end game ou statistics
-            ma_tv_finish_stat_title.setVisibility(View.VISIBLE);
-            ma_tv_finish_stat.setVisibility(View.VISIBLE);
-            ma_tv_finish_stat.setText(matchBean.getEnd() == null ? getString(R.string.ma_menu_end_match) : getString(R.string.stat));
-
-        }
-        //Match non commencé
-        else {
-
-            //Statut
-            ma_tv_statut.setText(getString(R.string.tm_list_statut_not_start));
-            ma_tv_statut.setTextColor(getResources().getColor(R.color.red));
-            //date
-            ma_tv_date.setText(Constante.EMPTY);
-
-            //playing time
-            ma_tv_playing_time.setText(Constante.EMPTY);
-
-            //reel playing time
-            ma_tv_reel_playing_time.setText(Constante.EMPTY);
-
-            //Score
-            ma_tv_score.setText(Constante.EMPTY);
-
-            //Win
-            ma_iv_win.setVisibility(View.INVISIBLE);
-
-            //bouton finish stat invisible
-            ma_tv_finish_stat_title.setVisibility(View.GONE);
-            ma_tv_finish_stat.setVisibility(View.GONE);
-
-        }
-
-        //On invalide le menu
-        generiqueActivity.invalidateOptionsMenu();
-
-        //RecycleView
-        if (matchBean.getPointBeanList().isEmpty()) {
-            st_empty.setVisibility(View.VISIBLE);
-            st_rv.setVisibility(View.INVISIBLE);
-        }
-        else {
-            st_empty.setVisibility(View.INVISIBLE);
-            st_rv.setVisibility(View.VISIBLE);
-        }
-
+        });
     }
 
     private void sortList() {

@@ -24,6 +24,8 @@ import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.activity.list_players.PickerPlayerFragment;
 import com.ultimatelinemanager.activity.match.MatchFragment;
 import com.ultimatelinemanager.activity.match.PointFragment;
+import com.ultimatelinemanager.bean.OttoRefreshEvent;
+import com.ultimatelinemanager.dao.match.PointDaoManager;
 
 import java.util.Date;
 
@@ -177,9 +179,26 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
             openLivePoint(lp_ll_extension.getVisibility() != View.VISIBLE, true);
         }
         else if (v == lp_tv_previous_point) {
+            //On revient au point d'avant
+            getLiveMatch().setCurrentPoint(getLiveMatch().getCurrentPoint() - 1);
+            refreshLivePoint();
 
         }
         else if (v == lp_tv_next_point) {
+
+            if (getLiveMatch().getCurrentPoint() + 1 < getLiveMatch().getPointBeanList().size()) {
+                getLiveMatch().setCurrentPoint(getLiveMatch().getCurrentPoint() + 1);
+            }
+            //On ajoute le point suivant
+            else {
+                PointBean pointBean = new PointBean();
+                pointBean.setMatchBean(getLiveMatch());
+                pointBean.setId(PointDaoManager.getPointBeanDao().insert(pointBean));
+                getLiveMatch().getPointBeanList().add(0, pointBean);
+
+                //ON propage l'evenement qu'un point a été ajouté
+                MyApplication.getInstance().getBus().post(OttoRefreshEvent.NEW_POINT);
+            }
 
         }
         else if (v == lp_iv_play) {
@@ -277,7 +296,7 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
 
         //init chrono
         if (livePoint != null) {
-            //si le point est demarre
+            //si le point est demarré
             if (livePoint.getStart() != null) {
                 //Si le point est en pause, on met la duree du point
                 if (livePoint.getPause()) {
@@ -392,9 +411,10 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
                     lp_bt_defense.setText(getString(R.string.lp_defense));
                     lp_bt_offense.setText(getString(R.string.lp_offense));
                     lp_iv_play.setVisibility(View.GONE);
-                    //Tant que le point n'a pas redemare on peut revenir a celui d'avant
-                    lp_tv_previous_point.setVisibility(View.VISIBLE);
-
+                    //Tant que le point n'a pas démare on peut revenir a celui d'avant s'il y en a
+                    if (getLiveMatch().getCurrentPoint() != 0) {
+                        lp_tv_previous_point.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         });
@@ -419,8 +439,10 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
                 livePoint.setStop(null); //si jamais on reprend un point arrete
                 livePoint.setTeamGoal(null);
             }
-            //s'il est deja en cours on ne fait rien
-            ToastUtils.showToastOnUIThread(this, "Point already in progress...");
+            else {
+                //s'il est deja en cours on ne fait rien
+                ToastUtils.showToastOnUIThread(this, "Point already in progress...");
+            }
         }
         else {
             //Si le point n'est pas demarre on le demarre
@@ -433,11 +455,17 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
             //Si le match n'est pas demarre on demarre le match
             if (livePoint.getMatchBean().getStart() == null) {
                 livePoint.getMatchBean().setStart(date);
+                //On propage l'evenement que le match démarre
+                MyApplication.getInstance().getBus().post(OttoRefreshEvent.MATCH_START);
             }
         }
 
+        //On propage que le point est démarré
+        MyApplication.getInstance().getBus().post(OttoRefreshEvent.POINT_START);
+
         refreshLivePointUI();
         //On lance le timer
+        lp_time.setBase(SystemClock.elapsedRealtime() - livePoint.getLength());
         lp_time.start();
 
     }
@@ -464,6 +492,9 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
         }
         livePoint.setTeamGoal(goalUs);
         pausePoint();
+        //On indique l'evenement que le score a changé
+        MyApplication.getInstance().getBus().post(OttoRefreshEvent.SCORE_CHANGE);
+        MyApplication.getInstance().getBus().post(OttoRefreshEvent.POINT_FINISHED);
     }
 
     /* ---------------------------------

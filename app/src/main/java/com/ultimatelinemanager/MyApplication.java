@@ -21,6 +21,9 @@ import greendao.TeamBean;
  */
 public class MyApplication extends Application {
 
+    //TODO LivePoint faire nextPoint et previous Point
+    //TODO un click sur le logo defense/offense d'un point, change son statut
+    //TODO Même chose pour point pour et contre
     //TODO on pause de l'activité sauvegarde le match
     //TODO Suppression de point, gerer si c'est le point courant
 
@@ -72,7 +75,9 @@ public class MyApplication extends Application {
             GestionSharedPreference.setLiveMatchId(-1);
         }
 
-        teamBean.resetTeamPlayerList();
+        if (teamBean != null) {
+            teamBean.resetTeamPlayerList();
+        }
 
     }
 

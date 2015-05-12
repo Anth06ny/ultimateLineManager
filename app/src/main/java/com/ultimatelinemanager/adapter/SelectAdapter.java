@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.formation.utils.DateUtils;
-import com.formation.utils.Utils;
 import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.R;
 
@@ -57,9 +56,9 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
                 break;
             case MATCH:
                 dateFormat = DateUtils.getFormat(context, DateUtils.DATE_FORMAT.ddMMyyyy_HHmm);
-                inProgressHexaColor = String.format("#%06X", (0xFFFFFF & Utils.getColorFromTheme(context, R.attr.color_text_main)));
-                finishedHexaColor = String.format("#%06X", (0xFFFFFF & context.getResources().getColor(R.color.vivid_green)));
-                notStartHexaColor = String.format("#%06X", (0xFFFFFF & context.getResources().getColor(R.color.red)));
+                inProgressHexaColor = String.format("#%06X", (0xFFFFFF & context.getResources().getColor(R.color.in_progress_color)));
+                finishedHexaColor = String.format("#%06X", (0xFFFFFF & context.getResources().getColor(R.color.finish_color)));
+                notStartHexaColor = String.format("#%06X", (0xFFFFFF & context.getResources().getColor(R.color.not_start_color)));
                 break;
         }
 
