@@ -5,9 +5,17 @@
 
 
     <item
-        android:id="@+id/mp_start"
+        android:id="@+id/mp_previous"
+        android:icon="@drawable/ic_keyboard_arrow_left_white_48dp"
         android:orderInCategory="100"
         android:title="@string/st_menu_add"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/mp_next"
+        android:icon="@drawable/ic_keyboard_arrow_right_white_48dp"
+        android:orderInCategory="101"
+        android:title="@string/st_menu_add"
+        app:showAsAction="always"/>
 
 </menu>

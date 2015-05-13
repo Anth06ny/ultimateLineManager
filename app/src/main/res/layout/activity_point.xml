@@ -8,6 +8,7 @@
               android:baselineAligned="false"
               android:orientation="horizontal"
               android:padding="@dimen/margin_10"
+              android:id="@+id/root"
     >
 
     <RelativeLayout

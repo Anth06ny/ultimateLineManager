@@ -40,7 +40,7 @@ import greendao.TeamBean;
 public class GeneriqueActivity extends AppCompatActivity implements View.OnClickListener {
 
     //Live Point
-    private LinearLayout lp_ll_point_live;
+    private LinearLayout lp_ll_point_live, lp_ll_bar;
     private TextView lp_tv_title;
     private Chronometer lp_time;
     private ImageView lp_bt_open;
@@ -83,6 +83,7 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
         lp_tv_manage_player = (TextView) findViewById(R.id.lp_tv_manage_player);
         lp_tv_previous_point = (TextView) findViewById(R.id.lp_tv_previous_point);
         lp_tv_next_point = (TextView) findViewById(R.id.lp_tv_next_point);
+        lp_ll_bar = (LinearLayout) findViewById(R.id.lp_ll_bar);
 
         //Les animation d'apparition du menu de point
         LayoutTransition lt = new LayoutTransition();
@@ -172,7 +173,7 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
             }
         }
         else if (v == lp_tv_manage_player) {
-            // Handle clicks for lp_bt_offense
+            gotoLivePoint();
         }
         else if (v == lp_bt_open) {
             //Ouvre / ferme l'extension
@@ -180,26 +181,34 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
         }
         else if (v == lp_tv_previous_point) {
             //On revient au point d'avant
-            getLiveMatch().setCurrentPoint(getLiveMatch().getCurrentPoint() - 1);
+            getLiveMatch().setCurrentPoint(getLiveMatch().getCurrentPoint() + 1);
             refreshLivePoint();
+
+            MyApplication.getInstance().getBus().post(OttoRefreshEvent.CHANGE_POINT);
 
         }
         else if (v == lp_tv_next_point) {
 
-            if (getLiveMatch().getCurrentPoint() + 1 < getLiveMatch().getPointBeanList().size()) {
-                getLiveMatch().setCurrentPoint(getLiveMatch().getCurrentPoint() + 1);
-            }
-            //On ajoute le point suivant
-            else {
+            //On passe au point suivant (precedant dans la liste ) s'il y en a plus on l'ajoute
+            if (getLiveMatch().getCurrentPoint() == 0) {
                 PointBean pointBean = new PointBean();
                 pointBean.setMatchBean(getLiveMatch());
                 pointBean.setId(PointDaoManager.getPointBeanDao().insert(pointBean));
                 getLiveMatch().getPointBeanList().add(0, pointBean);
 
                 //ON propage l'evenement qu'un point a été ajouté
-                MyApplication.getInstance().getBus().post(OttoRefreshEvent.NEW_POINT);
+                MyApplication.getInstance().getBus().post(OttoRefreshEvent.ADD_POINT);
+
+                //On ne decale pas le current point car avec l'ajout du point en début de liste cela a decalé tous seule
+            }
+            else {
+                //On decale de 1 le current point
+                getLiveMatch().setCurrentPoint(getLiveMatch().getCurrentPoint() - 1);
             }
 
+            refreshLivePoint();
+
+            MyApplication.getInstance().getBus().post(OttoRefreshEvent.CHANGE_POINT);
         }
         else if (v == lp_iv_play) {
             if (livePoint.getPause()) {
@@ -236,8 +245,26 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
     // -------------------------------- */
 
     private void goTo(MainFragment mainFragment) {
+        goTo(mainFragment, null);
+    }
+
+    /**
+     *
+     * @param mainFragment
+     * @param slideAnimation true pour une slide animation Left, false pour une slide animation right et null pour
+     *                       defaut
+     */
+    private void goTo(MainFragment mainFragment, Boolean slideAnimation) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
+        if (slideAnimation == null) {
+            fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
+        }
+        else if (slideAnimation) {
+            fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, 0, 0);
+        }
+        else {
+            fragmentTransaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, 0, 0);
+        }
         fragmentTransaction.addToBackStack(mainFragment.getClass().getName());
         fragmentTransaction.replace(R.id.container, mainFragment).commit();
     }
@@ -268,12 +295,24 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
         goTo(matchFragment);
     }
 
+    //Redirige sur le point courant
+    public void gotoLivePoint() {
+        // On remonte jusqu'a l'ecran de l'équipe
+        getFragmentManager().popBackStack(TeamFragment.class.getName(), 0);
+        //On redirige sur le match
+        gotoMatch(getLiveMatch());
+        gotoPoint(livePoint, getLiveMatch().getPointBeanList().size() - getLiveMatch().getPointBeanList().indexOf(livePoint), null);
+    }
+
     public void gotoPlayerPage(PlayerBean playerBean) {
         //On va sur la page d'un joueur , pas encore faite.
         ToastUtils.showNotImplementedToast(this);
     }
 
-    public void gotoPoint(PointBean pointBean) {
+    public void gotoPoint(PointBean pointBean, Integer numOfPoint, Boolean slideAnimation) {
+
+        getFragmentManager().popBackStack(MatchFragment.class.getName(), 0);
+
         PointFragment pointFragment = new PointFragment();
         //Si c'est le live point on passe le live point a la place pour le mettre a jour au passage
         if (livePoint != null && livePoint.getId() == pointBean.getId()) {
@@ -283,7 +322,12 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
             pointFragment.setPointBean(pointBean);
         }
 
-        goTo(pointFragment);
+        //Le numéro du point pour le titre
+        if (numOfPoint != null && numOfPoint >= 0) {
+            pointFragment.setNumOfPoint(numOfPoint);
+        }
+
+        goTo(pointFragment, slideAnimation);
     }
 
     /* ---------------------------------
@@ -365,11 +409,17 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
                 }
             }
         }
-        final String liveTitle = getTeamBean().getName() + " " + teamScore + " - " + opponentScore + " " + getLiveMatch().getName();
+
+        int pointNumber = getLiveMatch().getPointBeanList().size() - getLiveMatch().getCurrentPoint();
+        final String liveTitle = "(P" + pointNumber + ") " + getTeamBean().getName() + " " + teamScore + " - " + opponentScore + " "
+                + getLiveMatch().getName();
 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+
+                //Si on est sur le fragment du point et que c'est pas le même point
+
                 //Si on a un point en cours ou pret a demarrer
                 lp_ll_point_live.setVisibility(View.VISIBLE);
                 //le titre avec score
@@ -412,7 +462,7 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
                     lp_bt_offense.setText(getString(R.string.lp_offense));
                     lp_iv_play.setVisibility(View.GONE);
                     //Tant que le point n'a pas démare on peut revenir a celui d'avant s'il y en a
-                    if (getLiveMatch().getCurrentPoint() != 0) {
+                    if (getLiveMatch().getCurrentPoint() != (getLiveMatch().getPointBeanList().size() - 1)) {
                         lp_tv_previous_point.setVisibility(View.VISIBLE);
                     }
                 }

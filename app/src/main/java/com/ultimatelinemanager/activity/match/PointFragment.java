@@ -7,6 +7,9 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -14,14 +17,18 @@ import android.widget.TextView;
 
 import com.formation.utils.LogUtils;
 import com.formation.utils.Utils;
+import com.squareup.otto.Subscribe;
+import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.activity.MainFragment;
 import com.ultimatelinemanager.adapter.PlayerPointAdapter;
 import com.ultimatelinemanager.adapter.PlayerPointWithHeaderAdapter;
+import com.ultimatelinemanager.bean.OttoRefreshEvent;
 import com.ultimatelinemanager.bean.PlayerPointBean;
 import com.ultimatelinemanager.bean.Role;
 import com.ultimatelinemanager.dao.PlayerDaoManager;
 import com.ultimatelinemanager.dao.match.PointDaoManager;
+import com.ultimatelinemanager.metier.composant.OnSwipeTouchListener;
 
 import java.util.List;
 
@@ -49,6 +56,8 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
     private TextView paTvBoy;
     private TextView paTvGirl;
 
+    private View root;
+
     //recycleview
     private RecyclerView pa_rv_playing;
     private RecyclerView paRvAll;
@@ -58,7 +67,11 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
 
     //data
     private PointBean pointBean;
+    private Integer numOfPoint;
     private int filtreSelectedColor;
+
+    //Otto
+    private Object ottoListner;
 
     /* ---------------------------------
     // View
@@ -76,6 +89,7 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
             return null;
         }
 
+        root = view.findViewById(R.id.root);
         pa_iv_handler = (ImageView) view.findViewById(R.id.pa_iv_handler);
         pa_iv_middle = (ImageView) view.findViewById(R.id.pa_iv_middle);
         pa_iv_girl = (ImageView) view.findViewById(R.id.pa_iv_girl);
@@ -107,9 +121,25 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
         pa_iv_sleep.setColorFilter(Color.BLACK);
 
         //On utilise le titre du match et non celui en selection dans le cas ou est en visite sur un autre match
-        getActivity().setTitle(getString(R.string.ma_title, pointBean.getMatchBean().getTeamBean().getName(), pointBean.getMatchBean().getName()));
+        String numPoint = numOfPoint != null ? ("P" + numOfPoint) : "-";
+        getActivity().setTitle(
+                getString(R.string.pa_title, pointBean.getMatchBean().getTeamBean().getName(), pointBean.getMatchBean().getName(), numPoint));
 
         switchFiltreImageViewColor(pa_iv_alpha, true);
+
+        root.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+            @Override
+            public void onSwipeLeft() {
+                super.onSwipeLeft();
+                gotoNextPoint();
+            }
+
+            @Override
+            public void onSwipeRight() {
+                super.onSwipeRight();
+                gotoPreviousPoint();
+            }
+        });
 
         initRecycleView();
         initList();
@@ -119,8 +149,72 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
 
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        //ON s'enregistre à OTTo
+        ottoListner = new Object() {
+
+            @Subscribe
+            public void listen(OttoRefreshEvent event) {
+                //On ecoute les evenement du live que si c'est le match en cours
+                if (pointBean.getMatchBean().getId() == MyApplication.getInstance().getLiveMatch().getId()) {
+                    gestionOttoEvent(event);
+                }
+            }
+
+        };
+        MyApplication.getInstance().getBus().register(ottoListner);
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        MyApplication.getInstance().getBus().unregister(ottoListner);
+    }
+
     /* ---------------------------------
-    // click
+    // Menu
+    // -------------------------------- */
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.menu_point, menu);
+
+        //Si c'est le dernier point du match
+        if (pointBean.getMatchBean().getPointBeanList().indexOf(pointBean) == 0) {
+            menu.findItem(R.id.mp_next).setVisible(false);
+        }
+
+        //si c'est le premier du match
+        if (pointBean.getMatchBean().getPointBeanList().indexOf(pointBean) == pointBean.getMatchBean().getPointBeanList().size() - 1) {
+            menu.findItem(R.id.mp_previous).setVisible(false);
+        }
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.mp_next:
+                gotoNextPoint();
+                return true;
+
+            case R.id.mp_previous:
+                gotoPreviousPoint();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    /* ---------------------------------
+    // Click
     // -------------------------------- */
     @Override
     public void playerPointAdapter_onClick(PlayerPointBean playerPointBean) {
@@ -128,11 +222,25 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
         if (playerPointBean.getRoleInPoint() == null) {
             noPlayingAdapter.removeItem(playerPointBean.getPlayerBean().getId());
             playerInPointAdapter.addItem(playerPointBean, Role.getRole(playerPointBean.getPlayerBean().getRole()));
+
+            //La liste passe de vide à 1 élément on ajoute juste un fake joueur pour que pour que
+            // generiqueActivity puisse savoir que la liste n'est pas vide et accepté le début du point
+            //EN quittant l'écran il y aura une sauvegarde
+            if (playerInPointAdapter.getDaoList().size() == 1) {
+                pointBean.getPlayerPointList().clear();
+                pointBean.getPlayerPointList().add(new PlayerPoint((long) 0));
+            }
         }
         else {
             //Le joueur joue on le replace dans la liste des joueurs qui ne joue pas
             playerInPointAdapter.removeItem(playerPointBean.getPlayerBean().getId());
             noPlayingAdapter.addItem(playerPointBean);
+
+            //On vide la liste des playerPoint du point pour generiqueActivity, en quittant l'ecran la sauvegarde se
+            // fera
+            if (playerInPointAdapter.getDaoList().isEmpty()) {
+                pointBean.getPlayerPointList().clear();
+            }
         }
 
         refreshView();
@@ -232,6 +340,28 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
     }
 
     /* ---------------------------------
+    // OTTO
+    // -------------------------------- */
+
+    private void gestionOttoEvent(OttoRefreshEvent event) {
+        switch (event) {
+            case SCORE_CHANGE:
+            case MATCH_START:
+            case POINT_START:
+            case POINT_FINISHED:
+            case MATCH_END:
+            case ADD_POINT:
+                //Pas d'interaction sur le point en cours
+                break;
+
+            //On suit le livePoint
+            case CHANGE_POINT:
+                generiqueActivity.gotoLivePoint();
+                break;
+        }
+    }
+
+    /* ---------------------------------
     // private graphique
     // -------------------------------- */
 
@@ -253,6 +383,14 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
                 paTvBoy.setText(nbBoy + "");
                 paTvGirl.setText(nbGirl + "");
 
+                //En fonction de si on est sur le point courant ou non on change la couleur de la barre
+                if (MyApplication.getInstance().getLivePoint() != null && MyApplication.getInstance().getLivePoint().getId() == pointBean.getId()) {
+                    root.setBackgroundColor(getResources().getColor(R.color.bg_point_in_progress));
+                }
+                else {
+                    root.setBackgroundColor(Color.WHITE);
+                }
+
             }
         });
 
@@ -269,7 +407,7 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
         //Joueur jouant ce point
         List<PlayerPoint> playerPointList = pointBean.getPlayerPointList();
 
-        //L'ensemble des joueur de l'equipe et On l'ajoute la liste qui lui correspond
+        //L'ensemble des joueurs de l'equipe et On l'ajoute la liste qui lui correspond
         PlayerPoint temp;
         PlayerPointBean playerPointBean;
         for (PlayerBean playerBean : PlayerDaoManager.getPlayers(pointBean.getMatchBean().getTeamId())) {
@@ -277,7 +415,7 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
             playerPointBean = new PlayerPointBean(playerBean);
             //On regarde si le joueur joue quelque part
             for (PlayerPoint playerPoint : playerPointList) {
-                if (playerPoint.getId().equals(playerBean.getId())) {
+                if (playerPoint.getPlayerId() == playerBean.getId()) {
                     temp = playerPoint;
                     break;
                 }
@@ -330,6 +468,20 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
 
     }
 
+    private void gotoNextPoint() {
+        int indexpoint = pointBean.getMatchBean().getPointBeanList().indexOf(pointBean);
+
+        generiqueActivity.gotoPoint(pointBean.getMatchBean().getPointBeanList().get(indexpoint - 1), (pointBean.getMatchBean().getPointBeanList()
+                .size() - indexpoint) + 1, true);
+    }
+
+    private void gotoPreviousPoint() {
+        int indexpoint = pointBean.getMatchBean().getPointBeanList().indexOf(pointBean);
+
+        generiqueActivity.gotoPoint(pointBean.getMatchBean().getPointBeanList().get(indexpoint + 1), (pointBean.getMatchBean().getPointBeanList()
+                .size() - indexpoint) - 1, false);
+    }
+
     /* ---------------------------------
     // Getter / setter
     // -------------------------------- */
@@ -342,4 +494,7 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
         this.pointBean = pointBean;
     }
 
+    public void setNumOfPoint(Integer numOfPoint) {
+        this.numOfPoint = numOfPoint;
+    }
 }

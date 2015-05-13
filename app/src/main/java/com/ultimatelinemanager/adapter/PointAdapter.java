@@ -46,9 +46,9 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
         girlColor = context.getResources().getColor(R.color.girl_color);
         boyColor = context.getResources().getColor(R.color.boy_color);
         winColor = context.getResources().getColor(R.color.win_color);
-        inProgressHexaColor = context.getResources().getColor(R.color.in_progress_color);
-        finishedHexaColor = context.getResources().getColor(R.color.finish_color);
-        notStartHexaColor = context.getResources().getColor(R.color.not_start_color);
+        inProgressHexaColor = context.getResources().getColor(R.color.bg_point_in_progress);
+        finishedHexaColor = context.getResources().getColor(R.color.bg_point_finish);
+        notStartHexaColor = context.getResources().getColor(R.color.bg_point_not_start);
         paddingLeftPlayer = context.getResources().getDimensionPixelSize(R.dimen.margin_20);
 
         notifyDataSetChanged();
@@ -79,8 +79,7 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
             holder.rp_iv_offense.setVisibility(View.INVISIBLE);
 
             //Statut
-            holder.ma_tv_statut.setTextColor(notStartHexaColor);
-            holder.ma_tv_statut.setText(context.getString(R.string.tm_list_statut_not_start));
+            holder.cv.setBackgroundColor(notStartHexaColor);
 
             //playingTime
             holder.ma_tv_playing_time.setText(Constante.EMPTY);
@@ -95,13 +94,11 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
             //Statut
             if (pointBean.getTeamGoal() == null) {
                 //Point en cours
-                holder.ma_tv_statut.setTextColor(inProgressHexaColor);
-                holder.ma_tv_statut.setText(context.getString(R.string.tm_list_statut_in_progress));
+                holder.cv.setBackgroundColor(inProgressHexaColor);
             }
             else {
                 //point terminé
-                holder.ma_tv_statut.setTextColor(finishedHexaColor);
-                holder.ma_tv_statut.setText(context.getString(R.string.tm_list_statut_finish));
+                holder.cv.setBackgroundColor(finishedHexaColor);
             }
 
             //playing time
@@ -160,12 +157,11 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
         public ImageView rp_iv_offense;
         public TextView rp_title;
         public TableLayout rp_tl;
-        public TextView ma_tv_statut;
         public TextView ma_tv_playing_time;
         public LinearLayout rp_ll_players;
         public TextView tv_show_players;
         public TextView tv_delete_point;
-        public View root;
+        public View root, cv;
 
         //Data
         public PointBean pointBean;
@@ -178,11 +174,11 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
                 List<PointBean> pointBeanList, PointAdapterCB pointAdapterCB) {
             super(itemView);
             root = itemView.findViewById(R.id.root);
+            cv = itemView.findViewById(R.id.cv);
             rp_iv_result = (ImageView) itemView.findViewById(R.id.rp_iv_result);
             rp_iv_offense = (ImageView) itemView.findViewById(R.id.rp_iv_offense);
             rp_title = (TextView) itemView.findViewById(R.id.rp_title);
             rp_tl = (TableLayout) itemView.findViewById(R.id.rp_tl);
-            ma_tv_statut = (TextView) itemView.findViewById(R.id.ma_tv_statut);
             ma_tv_playing_time = (TextView) itemView.findViewById(R.id.ma_tv_playing_time);
             rp_ll_players = (LinearLayout) itemView.findViewById(R.id.rp_ll_players);
             tv_show_players = (TextView) itemView.findViewById(R.id.tv_show_players);

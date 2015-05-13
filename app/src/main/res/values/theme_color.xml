@@ -136,6 +136,10 @@
     <color name="in_progress_color">@color/bright_orange</color>
     <color name="finish_color">#2bac00</color>
 
+    <!-- Arriere plan indiquant l'état du point -->
+    <color name="bg_point_not_start">@color/white</color>
+    <color name="bg_point_in_progress">@color/light_grayish_blue</color>
+    <color name="bg_point_finish">@color/iron</color>
 
     <!--<style name="LauncherTheme_blue" parent="AppTheme_Blue">-->
     <!--<item name="android:windowBackground">@drawable/splashscreen_blue</item>-->
