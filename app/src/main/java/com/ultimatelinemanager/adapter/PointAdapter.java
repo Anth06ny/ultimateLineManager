@@ -72,7 +72,7 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
 
         PointBean pointBean = daoList.get(position);
         //titre
-        holder.rp_title.setText(context.getString(R.string.lp_bloc_tittle, daoList.size() - position));
+        holder.rp_title.setText(context.getString(R.string.lp_bloc_tittle, pointBean.getNumber()));
         //statut point non commencé
         if (pointBean.getStart() == null) {
             //offense / defense

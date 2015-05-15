@@ -230,24 +230,24 @@ public class PlayerPointWithHeaderAdapter extends PlayerPointAdapter {
                     return 0;
                 }
                 else if (lhs.getRoleInPoint() == null) {
-                    return -1;
+                    return 1;
                 }
                 else if (rhs.getRoleInPoint() == null) {
                     return 0;
                 }
                 else if (lhs.getRoleInPoint() == Role.Handler) {
                     //L'autre est forcement middle ou both sinon on serait passé dans le if
-                    return 1;
+                    return -1;
                 }
                 else if (rhs.getRoleInPoint() == Role.Handler) {
-                    return -1;
+                    return 1;
 
                 }
                 else if (lhs.getRoleInPoint() == Role.Middle) {
-                    return 1;
+                    return -1;
                 }
                 else if (rhs.getRoleInPoint() == Role.Middle) {
-                    return -1;
+                    return 1;
                 }
                 else {
                     //Il ne reste que le cas ou les 2 sont both

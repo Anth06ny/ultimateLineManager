@@ -1,5 +1,7 @@
 package com.ultimatelinemanager.activity;
 
+import java.util.Date;
+
 import android.animation.LayoutTransition;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -26,8 +28,8 @@ import com.ultimatelinemanager.activity.match.MatchFragment;
 import com.ultimatelinemanager.activity.match.PointFragment;
 import com.ultimatelinemanager.bean.OttoRefreshEvent;
 import com.ultimatelinemanager.dao.match.PointDaoManager;
-
-import java.util.Date;
+import com.ultimatelinemanager.metier.DialogUtils;
+import com.ultimatelinemanager.metier.exception.TechnicalException;
 
 import greendao.MatchBean;
 import greendao.PlayerBean;
@@ -180,20 +182,25 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
             openLivePoint(lp_ll_extension.getVisibility() != View.VISIBLE, true);
         }
         else if (v == lp_tv_previous_point) {
-            //On revient au point d'avant
-            getLiveMatch().setCurrentPoint(getLiveMatch().getCurrentPoint() + 1);
-            refreshLivePoint();
 
-            MyApplication.getInstance().getBus().post(OttoRefreshEvent.CHANGE_POINT);
+            //LE point 1 est le 1er point on ne revient pas avant
+            if (getLiveMatch().getCurrentPoint() > 1) {
+                //On revient au point d'avant
+                getLiveMatch().setCurrentPoint(getLiveMatch().getCurrentPoint() - 1);
+                refreshLivePoint();
 
+                MyApplication.getInstance().getBus().post(OttoRefreshEvent.CHANGE_POINT);
+            }
         }
         else if (v == lp_tv_next_point) {
 
-            //On passe au point suivant (precedant dans la liste ) s'il y en a plus on l'ajoute
-            if (getLiveMatch().getCurrentPoint() == 0) {
+            //On passe au point suivant  s'il y en a plus on l'ajoute
+            if (getLiveMatch().getCurrentPoint() == getLiveMatch().getPointBeanList().size()) {
                 PointBean pointBean = new PointBean();
                 pointBean.setMatchBean(getLiveMatch());
+                pointBean.setNumber(getLiveMatch().getPointBeanList().size() + 1);
                 pointBean.setId(PointDaoManager.getPointBeanDao().insert(pointBean));
+
                 getLiveMatch().getPointBeanList().add(0, pointBean);
 
                 //ON propage l'evenement qu'un point a été ajouté
@@ -203,7 +210,7 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
             }
             else {
                 //On decale de 1 le current point
-                getLiveMatch().setCurrentPoint(getLiveMatch().getCurrentPoint() - 1);
+                getLiveMatch().setCurrentPoint(getLiveMatch().getCurrentPoint() + 1);
             }
 
             refreshLivePoint();
@@ -244,29 +251,26 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
     // Navigation
     // -------------------------------- */
 
-    private void goTo(MainFragment mainFragment) {
-        goTo(mainFragment, null);
-    }
-
     /**
      *
      * @param mainFragment
-     * @param slideAnimation true pour une slide animation Left, false pour une slide animation right et null pour
+     * @param slideAnimation true pour une slide animation de droite vers la gauche, false pour une slide animation
+     *                      gauche vers la droite
      *                       defaut
      */
-    private void goTo(MainFragment mainFragment, Boolean slideAnimation) {
+    private void goTo(MainFragment mainFragment) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        if (slideAnimation == null) {
-            fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
-        }
-        else if (slideAnimation) {
-            fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, 0, 0);
-        }
-        else {
-            fragmentTransaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, 0, 0);
-        }
+        //        if (slideAnimation == null) {
+        fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out);
+        //        }
+        //        else if (slideAnimation) {
+        //            fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left);
+        //        }
+        //        else {
+        //            fragmentTransaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right);
+        //        }
         fragmentTransaction.addToBackStack(mainFragment.getClass().getName());
-        fragmentTransaction.replace(R.id.container, mainFragment).commit();
+        fragmentTransaction.replace(R.id.container, mainFragment, mainFragment.getClass().getName()).commit();
     }
 
     public void gotoPickPlayer(Long teamId) {
@@ -301,7 +305,7 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
         getFragmentManager().popBackStack(TeamFragment.class.getName(), 0);
         //On redirige sur le match
         gotoMatch(getLiveMatch());
-        gotoPoint(livePoint, getLiveMatch().getPointBeanList().size() - getLiveMatch().getPointBeanList().indexOf(livePoint), null);
+        gotoPoint(livePoint);
     }
 
     public void gotoPlayerPage(PlayerBean playerBean) {
@@ -309,7 +313,7 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
         ToastUtils.showNotImplementedToast(this);
     }
 
-    public void gotoPoint(PointBean pointBean, Integer numOfPoint, Boolean slideAnimation) {
+    public void gotoPoint(PointBean pointBean) {
 
         getFragmentManager().popBackStack(MatchFragment.class.getName(), 0);
 
@@ -322,12 +326,21 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
             pointFragment.setPointBean(pointBean);
         }
 
-        //Le numéro du point pour le titre
-        if (numOfPoint != null && numOfPoint >= 0) {
-            pointFragment.setNumOfPoint(numOfPoint);
-        }
+        //        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        //        if (slideAnimation == null) {
+        //            fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.enter_from_right, R.anim.exit_to_left);
+        //        }
+        //        else if (slideAnimation == null || slideAnimation) {
+        //            fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_right, R.anim.exit_to_left);
+        //        }
+        //        else {
+        //            //Todo gerer le cas ou on recule pour l'animation
+        //            fragmentTransaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left);
+        //        }
+        //        fragmentTransaction.addToBackStack(pointFragment.getClass().getName());
+        //        fragmentTransaction.replace(R.id.container, pointFragment, pointFragment.getClass().getName()).commit();
+        goTo(pointFragment);
 
-        goTo(pointFragment, slideAnimation);
     }
 
     /* ---------------------------------
@@ -336,7 +349,13 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
 
     public void refreshLivePoint() {
         //On met a jour le livePoint
-        livePoint = MyApplication.getInstance().getLivePoint();
+        try {
+            livePoint = MyApplication.getInstance().getLivePoint();
+        }
+        catch (TechnicalException e) {
+            DialogUtils.getOkDialog(this, R.drawable.ic_launcher, R.string.erreur_generique,
+                    "Erreur sur le LivePoint" + " : " + e.getMessageTechnique());
+        }
 
         //init chrono
         if (livePoint != null) {
@@ -410,8 +429,7 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
             }
         }
 
-        int pointNumber = getLiveMatch().getPointBeanList().size() - getLiveMatch().getCurrentPoint();
-        final String liveTitle = "(P" + pointNumber + ") " + getTeamBean().getName() + " " + teamScore + " - " + opponentScore + " "
+        final String liveTitle = "(P" + livePoint.getNumber() + ") " + getTeamBean().getName() + " " + teamScore + " - " + opponentScore + " "
                 + getLiveMatch().getName();
 
         runOnUiThread(new Runnable() {
@@ -462,7 +480,7 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
                     lp_bt_offense.setText(getString(R.string.lp_offense));
                     lp_iv_play.setVisibility(View.GONE);
                     //Tant que le point n'a pas démare on peut revenir a celui d'avant s'il y en a
-                    if (getLiveMatch().getCurrentPoint() != (getLiveMatch().getPointBeanList().size() - 1)) {
+                    if (getLiveMatch().getCurrentPoint() > 1) {
                         lp_tv_previous_point.setVisibility(View.VISIBLE);
                     }
                 }

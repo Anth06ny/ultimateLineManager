@@ -7,7 +7,9 @@ import com.squareup.otto.Bus;
 import com.ultimatelinemanager.dao.MyOpenHelper;
 import com.ultimatelinemanager.dao.TeamDaoManager;
 import com.ultimatelinemanager.dao.match.MatchDaoManager;
+import com.ultimatelinemanager.dao.match.PointDaoManager;
 import com.ultimatelinemanager.metier.GestionSharedPreference;
+import com.ultimatelinemanager.metier.exception.TechnicalException;
 
 import de.greenrobot.dao.query.QueryBuilder;
 import greendao.DaoMaster;
@@ -21,7 +23,6 @@ import greendao.TeamBean;
  */
 public class MyApplication extends Application {
 
-    //TODO LivePoint faire nextPoint et previous Point
     //TODO un click sur le logo defense/offense d'un point, change son statut
     //TODO Même chose pour point pour et contre
     //TODO on pause de l'activité sauvegarde le match
@@ -107,9 +108,9 @@ public class MyApplication extends Application {
     /**
      * @return Retourne le point courant s'il y en a 1
      */
-    public PointBean getLivePoint() {
+    public PointBean getLivePoint() throws TechnicalException {
         if (liveMatch != null && !liveMatch.getPointBeanList().isEmpty()) {
-            return getLiveMatch().getPointBeanList().get(getLiveMatch().getCurrentPoint());
+            return PointDaoManager.getPointNumber(liveMatch.getPointBeanList(), getLiveMatch().getCurrentPoint());
         }
         else {
             return null;

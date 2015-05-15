@@ -11,6 +11,7 @@ import de.greenrobot.dao.DaoException;
 public class PointBean {
 
     private Long id;
+    private int number;
     private java.util.Date start;
     private java.util.Date stop;
     private long length;
@@ -38,8 +39,9 @@ public class PointBean {
         this.id = id;
     }
 
-    public PointBean(Long id, java.util.Date start, java.util.Date stop, long length, java.util.Date pauseTime, Boolean pause, Boolean teamOffense, Boolean teamGoal, long matchId) {
+    public PointBean(Long id, int number, java.util.Date start, java.util.Date stop, long length, java.util.Date pauseTime, Boolean pause, Boolean teamOffense, Boolean teamGoal, long matchId) {
         this.id = id;
+        this.number = number;
         this.start = start;
         this.stop = stop;
         this.length = length;
@@ -62,6 +64,14 @@ public class PointBean {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public java.util.Date getStart() {

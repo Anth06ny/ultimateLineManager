@@ -95,7 +95,7 @@
     <!-- ****************** -->
     <!-- PointActivity -->
     <!-- ****************** -->
-    <string name="pa_title">%1$s vs %2$s (%3$s)</string>
+    <string name="pa_title">(P%3$s)%1$s vs %2$s</string>
     <string name="pa_fille">Women : </string>
     <string name="pa_boy">Mens : </string>
     <string name="pa_handler">Handler : </string>
@@ -103,6 +103,7 @@
     <string name="pa_both">Both : </string>
     <string name="pa_previous_point">Previous point</string>
     <string name="pa_next_point">Next point</string>
+    <string name="pa_new_point">New point</string>
 
     <!-- ****************** -->
     <!-- LivePoint -->

@@ -29,6 +29,7 @@ import com.ultimatelinemanager.bean.Role;
 import com.ultimatelinemanager.dao.PlayerDaoManager;
 import com.ultimatelinemanager.dao.match.PointDaoManager;
 import com.ultimatelinemanager.metier.composant.OnSwipeTouchListener;
+import com.ultimatelinemanager.metier.exception.TechnicalException;
 
 import java.util.List;
 
@@ -67,7 +68,6 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
 
     //data
     private PointBean pointBean;
-    private Integer numOfPoint;
     private int filtreSelectedColor;
 
     //Otto
@@ -121,9 +121,9 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
         pa_iv_sleep.setColorFilter(Color.BLACK);
 
         //On utilise le titre du match et non celui en selection dans le cas ou est en visite sur un autre match
-        String numPoint = numOfPoint != null ? ("P" + numOfPoint) : "-";
         getActivity().setTitle(
-                getString(R.string.pa_title, pointBean.getMatchBean().getTeamBean().getName(), pointBean.getMatchBean().getName(), numPoint));
+                getString(R.string.pa_title, pointBean.getMatchBean().getTeamBean().getName(), pointBean.getMatchBean().getName(),
+                        pointBean.getNumber()));
 
         switchFiltreImageViewColor(pa_iv_alpha, true);
 
@@ -183,14 +183,22 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_point, menu);
 
-        //Si c'est le dernier point du match
-        if (pointBean.getMatchBean().getPointBeanList().indexOf(pointBean) == 0) {
+        //Si c'est le dernier point du match, on affiche le point d'apres et s'il y en a plus on ajoute le plus
+        if (pointBean.getNumber() == pointBean.getMatchBean().getPointBeanList().size()) {
             menu.findItem(R.id.mp_next).setVisible(false);
+            menu.findItem(R.id.mp_add).setVisible(true);
+        }
+        else {
+            menu.findItem(R.id.mp_next).setVisible(true);
+            menu.findItem(R.id.mp_add).setVisible(false);
         }
 
         //si c'est le premier du match
-        if (pointBean.getMatchBean().getPointBeanList().indexOf(pointBean) == pointBean.getMatchBean().getPointBeanList().size() - 1) {
+        if (pointBean.getNumber() == 1) {
             menu.findItem(R.id.mp_previous).setVisible(false);
+        }
+        else {
+            menu.findItem(R.id.mp_previous).setVisible(true);
         }
 
         super.onCreateOptionsMenu(menu, inflater);
@@ -207,6 +215,27 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
             case R.id.mp_previous:
                 gotoPreviousPoint();
                 return true;
+
+            case R.id.mp_add:
+                //On ajoute un point
+                PointBean newPoint = new PointBean();
+                newPoint.setMatchId(pointBean.getMatchId());
+                newPoint.setNumber(pointBean.getNumber() + 1);
+                newPoint.setId(PointDaoManager.getPointBeanDao().insert(newPoint));
+
+                //Si c'est  le matche en cour
+                if (MyApplication.getInstance().getLiveMatch() != null && MyApplication.getInstance().getLiveMatch().getId() == newPoint.getMatchId()) {
+                    //on l'ajoute au point en cours
+                    MyApplication.getInstance().getLiveMatch().getPointBeanList().add(0, newPoint);
+                }
+                else {
+                    //On reactualise la liste des points
+                    pointBean.getMatchBean().resetPointBeanList();
+                }
+                generiqueActivity.gotoPoint(newPoint);
+
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -384,11 +413,16 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
                 paTvGirl.setText(nbGirl + "");
 
                 //En fonction de si on est sur le point courant ou non on change la couleur de la barre
-                if (MyApplication.getInstance().getLivePoint() != null && MyApplication.getInstance().getLivePoint().getId() == pointBean.getId()) {
-                    root.setBackgroundColor(getResources().getColor(R.color.bg_point_in_progress));
+                try {
+                    if (MyApplication.getInstance().getLivePoint() != null && MyApplication.getInstance().getLivePoint().getId() == pointBean.getId()) {
+                        root.setBackgroundColor(getResources().getColor(R.color.bg_point_in_progress));
+                    }
+                    else {
+                        root.setBackgroundColor(Color.WHITE);
+                    }
                 }
-                else {
-                    root.setBackgroundColor(Color.WHITE);
+                catch (TechnicalException e) {
+                    showError(e, true);
                 }
 
             }
@@ -469,17 +503,28 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
     }
 
     private void gotoNextPoint() {
-        int indexpoint = pointBean.getMatchBean().getPointBeanList().indexOf(pointBean);
 
-        generiqueActivity.gotoPoint(pointBean.getMatchBean().getPointBeanList().get(indexpoint - 1), (pointBean.getMatchBean().getPointBeanList()
-                .size() - indexpoint) + 1, true);
+        if (pointBean.getNumber() + 1 <= pointBean.getMatchBean().getPointBeanList().size()) {
+            try {
+                generiqueActivity.gotoPoint(PointDaoManager.getPointNumber(pointBean.getMatchBean().getPointBeanList(), pointBean.getNumber() + 1));
+            }
+            catch (TechnicalException e) {
+                showError(e, true);
+            }
+        }
+
     }
 
     private void gotoPreviousPoint() {
-        int indexpoint = pointBean.getMatchBean().getPointBeanList().indexOf(pointBean);
 
-        generiqueActivity.gotoPoint(pointBean.getMatchBean().getPointBeanList().get(indexpoint + 1), (pointBean.getMatchBean().getPointBeanList()
-                .size() - indexpoint) - 1, false);
+        if (pointBean.getNumber() > 1) {
+            try {
+                generiqueActivity.gotoPoint(PointDaoManager.getPointNumber(pointBean.getMatchBean().getPointBeanList(), pointBean.getNumber() - 1));
+            }
+            catch (TechnicalException e) {
+                showError(e, true);
+            }
+        }
     }
 
     /* ---------------------------------
@@ -494,7 +539,4 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
         this.pointBean = pointBean;
     }
 
-    public void setNumOfPoint(Integer numOfPoint) {
-        this.numOfPoint = numOfPoint;
-    }
 }

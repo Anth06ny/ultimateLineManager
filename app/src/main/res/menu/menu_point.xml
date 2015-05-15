@@ -8,14 +8,21 @@
         android:id="@+id/mp_previous"
         android:icon="@drawable/ic_keyboard_arrow_left_white_48dp"
         android:orderInCategory="100"
-        android:title="@string/st_menu_add"
+        android:title="@string/pa_previous_point"
         app:showAsAction="always"/>
 
     <item
         android:id="@+id/mp_next"
         android:icon="@drawable/ic_keyboard_arrow_right_white_48dp"
         android:orderInCategory="101"
-        android:title="@string/st_menu_add"
+        android:title="@string/pa_next_point"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/mp_add"
+        android:icon="@drawable/ic_add_white_48dp"
+        android:orderInCategory="102"
+        android:title="@string/pa_new_point"
         app:showAsAction="always"/>
 
 </menu>

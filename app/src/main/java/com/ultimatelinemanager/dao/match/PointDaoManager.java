@@ -2,11 +2,13 @@ package com.ultimatelinemanager.dao.match;
 
 import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.bean.PlayerPointBean;
+import com.ultimatelinemanager.metier.exception.TechnicalException;
 
 import java.util.List;
 
 import greendao.MatchBean;
 import greendao.PlayerPoint;
+import greendao.PlayerPointDao;
 import greendao.PointBean;
 import greendao.PointBeanDao;
 
@@ -22,7 +24,8 @@ public class PointDaoManager {
     public static void savePlayerPointList(PointBean pointBean, List<PlayerPointBean> playerPointBeanList) {
 
         //On efface tous les player point du point
-        PlayerPointDaoManager.getPlayerPointDao().deleteInTx(pointBean.getPlayerPointList());
+        PlayerPointDaoManager.getPlayerPointDao().queryBuilder().where(PlayerPointDao.Properties.PointId.eq(pointBean.getId())).buildDelete()
+                .executeDeleteWithoutDetachingEntities();
 
         //on ajoute tous les nouveaux
         for (PlayerPointBean playerPointBean : playerPointBeanList) {
@@ -35,6 +38,8 @@ public class PointDaoManager {
 
         //On invalide la liste de playerPoint
         pointBean.resetPlayerPointList();
+        //ON clean la session
+        MyApplication.getInstance().getDaoSession().clear();
 
     }
 
@@ -72,4 +77,18 @@ public class PointDaoManager {
 
     }
 
+    /* ---------------------------------
+    // Utils
+    // -------------------------------- */
+    public static PointBean getPointNumber(List<PointBean> list, int number) throws TechnicalException {
+        //On cherche le point numéro "number"
+        for (PointBean pointBean : list) {
+            if (pointBean.getNumber() == number) {
+                return pointBean;
+            }
+        }
+
+        throw new TechnicalException("Number non trouvé : " + number + " TailleList=" + list.size());
+
+    }
 }

@@ -44,4 +44,23 @@ public class MatchDaoManager {
 
     }
 
+    /**
+     * Supprime 1 match
+     * @param matchBean
+     * @param clearSession
+     */
+    public static void deleteMatch(MatchBean matchBean, boolean clearSession) {
+        //on supprime tous les points en relation avec le match
+        PointDaoManager.deleteMatchPoint(matchBean, false);
+        //on supprime le match
+        MatchDaoManager.getMatchBeanDao().delete(matchBean);
+
+        if (clearSession) {
+            //pour bien le supprimer de la session
+            MyApplication.getInstance().getDaoSession().clear();
+        }
+    }
+
+
+
 }

@@ -325,6 +325,7 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
         MatchBean matchBean = new MatchBean();
         matchBean.setName(oponentName);
         matchBean.setTeamBean(teamBean);
+        matchBean.setCurrentPoint(1);
         MatchDaoManager.getMatchBeanDao().insert(matchBean);
 
         //On l'ajoute en tete pour ne pas avoir à refaire des appel bdd

@@ -77,6 +77,7 @@ public class MyOpenHelper extends DaoMaster.DevOpenHelper {
         //Match à l'quipe
         MatchBean matchBean = new MatchBean();
         matchBean.setName("Espagne");
+        matchBean.setCurrentPoint(1);
         matchBean.setTeamBean(teamBean);
         matchBean.setId(MatchDaoManager.getMatchBeanDao().insert(matchBean));
 
