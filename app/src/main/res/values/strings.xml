@@ -104,6 +104,7 @@
     <string name="pa_previous_point">Previous point</string>
     <string name="pa_next_point">Next point</string>
     <string name="pa_new_point">New point</string>
+    <string name="pa_delete_point">Delete point</string>
 
     <!-- ****************** -->
     <!-- LivePoint -->
@@ -112,7 +113,7 @@
     <string name="lp_defense">Start defense</string>
     <string name="lp_goal_us">Goal us</string>
     <string name="lp_goal_opponent">Goal opponent</string>
-    <string name="lp_manage_players">Manage players</string>
+    <string name="lp_manage_players">Current point</string>
     <string name="lp_minimize">Minimize</string>
     <string name="lp_open">open</string>
     <string name="lp_no_player">No player set for this point.</string>

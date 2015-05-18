@@ -25,4 +25,11 @@
         android:title="@string/pa_new_point"
         app:showAsAction="always"/>
 
+    <item
+        android:id="@+id/mp_delete"
+        android:orderInCategory="103"
+        android:title="@string/pa_delete_point"
+        app:showAsAction="never"/>
+
+
 </menu>

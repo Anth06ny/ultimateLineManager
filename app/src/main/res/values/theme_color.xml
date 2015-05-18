@@ -13,6 +13,7 @@
         <item name="colorControlNormal">?color_composant_main</item>
         <item name="colorControlActivated">?color_composant_main_highlighted</item>
         <item name="colorControlHighlight">?color_composant_main_highlighted</item>
+        <item name="android:state_selected">?color_composant_main_highlighted</item>
 
 
     </style>

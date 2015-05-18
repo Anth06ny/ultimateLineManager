@@ -24,8 +24,8 @@ import greendao.TeamBean;
 public class MyApplication extends Application {
 
     //TODO un click sur le logo defense/offense d'un point, change son statut
-    //TODO Même chose pour point pour et contre
-    //TODO on pause de l'activité sauvegarde le match
+    //TODO Mï¿½me chose pour point pour et contre
+    //TODO on pause de l'activitï¿½ sauvegarde le match
     //TODO Suppression de point, gerer si c'est le point courant
 
     //TODO Faire confirmation suppression point
@@ -64,6 +64,9 @@ public class MyApplication extends Application {
 
         bus = new Bus();
         initDatabase();
+
+        //ON termine les matches commencÃ©s depuis tres longtemps
+        MatchDaoManager.closeMatchNotEnd();
 
         //On charge la derniere equipe
         teamBean = TeamDaoManager.getTeamDAO().load(GestionSharedPreference.getLastTeamId());
@@ -111,8 +114,7 @@ public class MyApplication extends Application {
     public PointBean getLivePoint() throws TechnicalException {
         if (liveMatch != null && !liveMatch.getPointBeanList().isEmpty()) {
             return PointDaoManager.getPointNumber(liveMatch.getPointBeanList(), getLiveMatch().getCurrentPoint());
-        }
-        else {
+        } else {
             return null;
         }
     }

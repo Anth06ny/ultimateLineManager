@@ -43,10 +43,33 @@ public class PointDaoManager {
 
     }
 
-    public static void deletePoint(PointBean pointBean, boolean clearSession) {
+
+    /* ---------------------------------
+    // Delete
+    // -------------------------------- */
+
+    public static void deletePoint(MatchBean matchBean, PointBean pointBean, boolean clearSession) {
+
+        //On parcourt tous les points suivant pour dÃ©caler leur numero (le point 4 devient le numÃ©ro 3)
+        for (PointBean pb : matchBean.getPointBeanList()) {
+            if (pb.getNumber() > pointBean.getNumber()) {
+                pb.setNumber(pb.getNumber() - 1);
+                getPointBeanDao().update(pb);
+            }
+        }
+
+
         //On supprime tous les PlayerPoint
         PlayerPointDaoManager.getPlayerPointDao().deleteInTx(pointBean.getPlayerPointList());
+
+        //enfin on supprime le point
         PointDaoManager.getPointBeanDao().delete(pointBean);
+        matchBean.getPointBeanList().remove(pointBean);
+
+        //On recalcule le point courant
+        MatchDaoManager.recalculateCurrentPoint(matchBean);
+
+        MatchDaoManager.getMatchBeanDao().update(matchBean);
 
         if (clearSession) {
             //pour bien le supprimer de la session
@@ -57,6 +80,7 @@ public class PointDaoManager {
 
     /**
      * Supprime tous les points d'un match
+     *
      * @param matchBean
      */
     public static void deleteMatchPoint(MatchBean matchBean, boolean clearSession) {
@@ -81,14 +105,14 @@ public class PointDaoManager {
     // Utils
     // -------------------------------- */
     public static PointBean getPointNumber(List<PointBean> list, int number) throws TechnicalException {
-        //On cherche le point numéro "number"
+        //On cherche le point numï¿½ro "number"
         for (PointBean pointBean : list) {
             if (pointBean.getNumber() == number) {
                 return pointBean;
             }
         }
 
-        throw new TechnicalException("Number non trouvé : " + number + " TailleList=" + list.size());
+        throw new TechnicalException("Number non trouvï¿½ : " + number + " TailleList=" + list.size());
 
     }
 }

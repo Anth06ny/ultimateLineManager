@@ -1,9 +1,5 @@
 package com.ultimatelinemanager.activity.match;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -37,6 +33,10 @@ import com.ultimatelinemanager.dao.match.PointDaoManager;
 import com.ultimatelinemanager.metier.DialogUtils;
 import com.ultimatelinemanager.metier.IntentHelper;
 import com.ultimatelinemanager.metier.exception.TechnicalException;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 
 import greendao.MatchBean;
 import greendao.PointBean;
@@ -102,7 +102,7 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
         sortList();
         adapter = new PointAdapter(generiqueActivity, matchBean.getPointBeanList(), this);
         st_rv.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+
 
         //On ajoute le 1er point
         if (matchBean.getPointBeanList().isEmpty()) {
@@ -112,7 +112,7 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
 
         //On recalcule le point courant pour ne pas avoir d'incohérence mais si
         //le point courant correspon au dernier point terminée ou au premier point non commencé on ne touche pas
-        recalculateCurrentPoint(matchBean);
+        MatchDaoManager.recalculateCurrentPoint(matchBean);
 
         //ON s'enregistre à OTTo
         ottoListner = new Object() {
@@ -137,6 +137,26 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
         MyApplication.getInstance().getBus().register(ottoListner);
 
         refreshView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        MatchBean liveMatch = MyApplication.getInstance().getLiveMatch();
+        if (liveMatch == null || liveMatch.getId() != matchBean.getId()) {
+            if (matchBean.getStart() != null && matchBean.getEnd()
+                    == null) {
+                //Si le match est en cours et que ce n'est pas le match courant on le passe en match courant
+                MyApplication.getInstance().setLiveMatch(matchBean);
+                generiqueActivity.refreshLivePoint();
+            }
+        }
+
+        refreshView();
+
+        adapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -198,11 +218,9 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
             case R.id.mm_end_game:
                 if (matchBean.getStart() == null) {
                     showError(new TechnicalException("Click sur le menu terminé alors que le match n'a pas commencé"), true);
-                }
-                else if (matchBean.getEnd() != null) {
+                } else if (matchBean.getEnd() != null) {
                     showError(new TechnicalException("Click sur le menu terminé alors que le match est déjà terminé"), true);
-                }
-                else {
+                } else {
                     endGameClick();
                 }
 
@@ -276,7 +294,7 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
         }
 
         //On va sur le point
-        generiqueActivity.gotoPoint(bean);
+        generiqueActivity.gotoPoint(matchBean, bean);
     }
 
     @Override
@@ -290,22 +308,23 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
             }
         }
 
-        PointDaoManager.deletePoint(bean, true);
+        PointDaoManager.deletePoint(matchBean, bean, true);
 
         //on essaye de le retirer en mode optimiser
         if (position >= 0) {
-            matchBean.getPointBeanList().remove(position);
             adapter.notifyItemRemoved(position);
         }
         //Sinon de maniere normal
         else {
-            matchBean.getPointBeanList().remove(bean);
             adapter.notifyDataSetChanged();
         }
 
         if (matchBean.getPointBeanList().isEmpty()) {
             refreshView();
         }
+
+        //Si jamais c'est le point du live qui a ete modifié
+        generiqueActivity.refreshLivePoint();
 
     }
 
@@ -315,7 +334,7 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
 
     private void gestionOttoEvent(OttoRefreshEvent event) {
         switch (event) {
-        //Un point à été ajouté on met à jour l'UI
+            //Un point à été ajouté on met à jour l'UI
             case ADD_POINT:
                 addNewPointUI();
                 break;
@@ -390,26 +409,22 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
         //Pour terminer un match le match doit être démarré
         if (matchBean.getStart() == null) {
             showError(new TechnicalException("Click sur le menu terminé alors que le match n'a pas commencé"), true);
-        }
-        else if (matchBean.getEnd() != null) {
+        } else if (matchBean.getEnd() != null) {
             showError(new TechnicalException("Click sur le menu terminé alors que le match est déjà terminé"), true);
-        }
-        else {
+        } else {
             //Pour terminer un match le point ne doit pas être en cours
             try {
                 PointBean currentPoint = PointDaoManager.getPointNumber(matchBean.getPointBeanList(), matchBean.getCurrentPoint());
                 if (currentPoint.getStart() != null && currentPoint.getStop() == null) {
                     ToastUtils.showToastOnUIThread(getActivity(), R.string.ma_end_game_point_in_progress_message, Toast.LENGTH_SHORT);
-                }
-                else {
+                } else {
                     matchBean.setEnd(new Date());
                     MatchDaoManager.getMatchBeanDao().update(matchBean);
                     refreshView();
 
                     MyApplication.getInstance().getBus().post(OttoRefreshEvent.MATCH_END);
                 }
-            }
-            catch (TechnicalException e) {
+            } catch (TechnicalException e) {
                 showError(e, true);
             }
 
@@ -494,8 +509,7 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
                         if (pointBean.getTeamGoal() != null) {
                             if (pointBean.getTeamGoal()) {
                                 team++;
-                            }
-                            else {
+                            } else {
                                 opponent++;
                             }
                         }
@@ -511,8 +525,7 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
 
                         //Win
                         ma_iv_win.setVisibility(View.INVISIBLE);
-                    }
-                    else {
+                    } else {
                         ma_tv_statut.setTextColor(getResources().getColor(R.color.finish_color));
                         ma_tv_statut.setText(getString(R.string.tm_list_statut_finish));
                         //Playing time
@@ -573,8 +586,7 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
                 if (matchBean.getPointBeanList().isEmpty()) {
                     st_empty.setVisibility(View.VISIBLE);
                     st_rv.setVisibility(View.INVISIBLE);
-                }
-                else {
+                } else {
                     st_empty.setVisibility(View.INVISIBLE);
                     st_rv.setVisibility(View.VISIBLE);
                 }
@@ -592,28 +604,6 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
         });
     }
 
-    private static void recalculateCurrentPoint(MatchBean matchBean) {
-
-        int lastEndPoint = 0;//Si aucun point terminé
-
-        //on cherche le dernier point terminée
-        for (PointBean pointBean : matchBean.getPointBeanList()) {
-            if (pointBean.getStop() != null && pointBean.getNumber() > lastEndPoint) {
-                lastEndPoint = pointBean.getNumber();
-            }
-        }
-
-        //Si inferieur au dernier point terminée on le place sur le dernier point
-        if (matchBean.getCurrentPoint() < lastEndPoint) {
-            matchBean.setCurrentPoint(lastEndPoint);
-        }
-
-        //Si superieur au 1er point non commencé on le place sur celui ci
-        else if (matchBean.getCurrentPoint() > lastEndPoint + 1) {
-            matchBean.setCurrentPoint(lastEndPoint + 1);
-        }
-
-    }
 
     /* ---------------------------------
     // Getter Setter
