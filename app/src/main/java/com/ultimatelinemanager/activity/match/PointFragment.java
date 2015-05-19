@@ -1,6 +1,7 @@
 package com.ultimatelinemanager.activity.match;
 
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -31,6 +32,8 @@ import com.ultimatelinemanager.dao.match.PointDaoManager;
 import com.ultimatelinemanager.metier.composant.OnSwipeTouchListener;
 import com.ultimatelinemanager.metier.exception.TechnicalException;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import greendao.MatchBean;
@@ -173,6 +176,22 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
         };
         MyApplication.getInstance().getBus().register(ottoListner);
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        new RefreshPLayerAT().execute();
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        //On enregistre les modifications en base
+        PointDaoManager.savePlayerPointList(pointBean, playerInPointAdapter.getDaoList());
     }
 
     @Override
@@ -357,13 +376,7 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
         }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
 
-        //On enregistre les modifications en base
-        PointDaoManager.savePlayerPointList(pointBean, playerInPointAdapter.getDaoList());
-    }
 
     /* ---------------------------------
     // OTTO
@@ -519,6 +532,39 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
         }
     }
 
+    private void refreshStatePlayer() {
+
+        long now = new Date().getTime();
+
+        List<PlayerPointBean> list = new ArrayList<>();
+        list.addAll(noPlayingAdapter.getDaoList());
+        list.addAll(playerInPointAdapter.getDaoList());
+
+        //On parcourt la liste de chacun des joueurs
+        for (PlayerPointBean playerPointBean : list) {
+
+            playerPointBean.setPlayingTime((long) 0);
+            if (matchBean.getStart() != null) {
+                playerPointBean.setRestTime(matchBean.getStart() != null ? (now - matchBean.getStart().getTime()) : 0);
+            }
+
+            //Les points qu'a fait le joueur dans l'ordre
+            for (PointBean bean : PointDaoManager.getPointPlayerOfMatch(matchBean, playerPointBean.getPlayerBean().getId())) {
+                playerPointBean.setPlayingTime(playerPointBean.getPlayingTime() + bean.getLength());
+
+                //Temps depuis que le joueur n'a pas joué
+                if (bean.getStart() != null && bean.getStop() == null) {
+                    //Si le joueur joue un point en cours on met le restTime à 0
+                    playerPointBean.setPlayingTime((long) 0);
+                } else if (bean.getStop() != null) {
+                    //Point terminée
+                    playerPointBean.setRestTime(now - bean.getStop().getTime());
+                }
+            }
+        }
+
+    }
+
     /* ---------------------------------
     // Getter / setter
     // -------------------------------- */
@@ -533,5 +579,24 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
 
     public void setMatchBean(MatchBean matchBean) {
         this.matchBean = matchBean;
+    }
+
+    private class RefreshPLayerAT extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            refreshStatePlayer();
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            //on met à jour l'interface graphique
+            noPlayingAdapter.notifyDataSetChanged();
+            playerInPointAdapter.notifyDataSetChanged();
+        }
     }
 }

@@ -28,7 +28,6 @@ public class MatchBean {
     private Long teamBean__resolvedKey;
 
     private List<PointBean> pointBeanList;
-    private List<StatePlayerBean> statePlayerBeanList;
 
     public MatchBean() {
     }
@@ -150,28 +149,6 @@ public class MatchBean {
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     public synchronized void resetPointBeanList() {
         pointBeanList = null;
-    }
-
-    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
-    public List<StatePlayerBean> getStatePlayerBeanList() {
-        if (statePlayerBeanList == null) {
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            StatePlayerBeanDao targetDao = daoSession.getStatePlayerBeanDao();
-            List<StatePlayerBean> statePlayerBeanListNew = targetDao._queryMatchBean_StatePlayerBeanList(id);
-            synchronized (this) {
-                if(statePlayerBeanList == null) {
-                    statePlayerBeanList = statePlayerBeanListNew;
-                }
-            }
-        }
-        return statePlayerBeanList;
-    }
-
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
-    public synchronized void resetStatePlayerBeanList() {
-        statePlayerBeanList = null;
     }
 
     /** Convenient call for {@link AbstractDao#delete(Object)}. Entity must attached to an entity context. */

@@ -11,7 +11,7 @@ public class MyDaoGenerator {
     //https://www.gliffy.com/go/html5/8011489?app=1b5094b0-6042-11e2-bcfd-0800200c9a66
     public static void main(String args[]) throws Exception {
 
-        final int DAO_VERSION = 8;
+        final int DAO_VERSION = 9;
 
         Schema schema = new Schema(DAO_VERSION, "greendao");
 
@@ -104,25 +104,6 @@ public class MyDaoGenerator {
         //Relation PlayerPoint 1 Point
         playerPoint.addToOne(pointBean, pointId);
 
-        /* ---------------------------------
-        // State Player
-        // -------------------------------- */
-        Entity statePlayerBean = schema.addEntity("StatePlayerBean");
-        statePlayerBean.addIdProperty().getProperty();
-        statePlayerBean.addLongProperty("playingTime");
-        statePlayerBean.addLongProperty("restTime");
-        statePlayerBean.addIntProperty("stateIndicator");
-
-        //Relation Match * StatePlayer
-        matchId = statePlayerBean.addLongProperty("matchId").notNull().getProperty();
-        matchBean.addToMany(statePlayerBean, matchId);
-        //Relation : StatePlayer 1 Match
-        statePlayerBean.addToOne(matchBean, matchId);
-
-        //Relation Player * StatePlayer : inutile
-        playerId = statePlayerBean.addLongProperty("playerId").notNull().getProperty();
-        //Relation StatePlayer 1 Player
-        statePlayerBean.addToOne(playerBean, playerId);
 
         new DaoGenerator().generateAll(schema, args[0]);
     }

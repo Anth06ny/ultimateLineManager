@@ -19,7 +19,6 @@ public class PlayerPointDaoManager {
 
     /**
      * Supprime tous les playerPoint du point
-     * @param pointBean
      */
     public static void deleteMatchPoint(long pointId, boolean clearSession) {
         getPlayerPointDao().queryBuilder().where(PlayerPointDao.Properties.PointId.eq(pointId)).buildDelete().executeDeleteWithoutDetachingEntities();

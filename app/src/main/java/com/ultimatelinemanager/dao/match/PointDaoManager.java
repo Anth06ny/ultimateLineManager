@@ -1,12 +1,15 @@
 package com.ultimatelinemanager.dao.match;
 
+import com.formation.utils.LogUtils;
 import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.bean.PlayerPointBean;
 import com.ultimatelinemanager.metier.exception.TechnicalException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import greendao.MatchBean;
+import greendao.PlayerBeanDao;
 import greendao.PlayerPoint;
 import greendao.PlayerPointDao;
 import greendao.PointBean;
@@ -43,6 +46,28 @@ public class PointDaoManager {
 
     }
 
+    /**
+     * Retourne les points qu'a joué le joueur dans le match
+     */
+    public static List<PointBean> getPointPlayerOfMatch(MatchBean matchBean, long playerID) {
+
+        String innerJoinPlayerPoint = " INNER JOIN " + PlayerPointDao.TABLENAME + " PP ON PP." + PlayerPointDao
+                .Properties
+                .PlayerId.columnName + " = ? AND PP." + PlayerPointDao.Properties.PointId.columnName + " = T." + PointBeanDao
+                .Properties.Id.columnName + " \n";
+        String where = " WHERE T." + PointBeanDao.Properties.MatchId.columnName + " = ?";
+        String orderBy = " ORDER BY T." + PointBeanDao.Properties.Number.columnName + " \n";
+        String query = innerJoinPlayerPoint + where + orderBy;
+
+
+        try {
+            return getPointBeanDao().queryRawCreate(query, playerID, matchBean.getId()).list();
+        } catch (Throwable e) {
+            LogUtils.logException(PlayerBeanDao.class, e, true);
+            return new ArrayList<>();
+        }
+
+    }
 
     /* ---------------------------------
     // Delete

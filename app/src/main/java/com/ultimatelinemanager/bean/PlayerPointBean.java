@@ -9,8 +9,8 @@ public class PlayerPointBean {
 
     private PlayerBean playerBean;
     private Role roleInPoint;
-    private Long playingTime; //En seconde
-    private Long restTime;//En seconde
+    private Long playingTime; //En milliseconde
+    private Long restTime;//En milliseconde
     private Integer stateIndicator;
 
     public PlayerPointBean(PlayerBean playerBean) {
