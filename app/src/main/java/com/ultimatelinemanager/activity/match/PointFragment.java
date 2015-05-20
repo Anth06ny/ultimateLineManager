@@ -534,7 +534,9 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
 
     private void refreshStatePlayer() {
 
-        long now = new Date().getTime();
+//Si le match est terminé innutile de prendre le temps courant
+        long lastTime = matchBean.getEnd() != null ? Math.min(new Date().getTime(), matchBean.getEnd().getTime()) :
+                new Date().getTime();
 
         List<PlayerPointBean> list = new ArrayList<>();
         list.addAll(noPlayingAdapter.getDaoList());
@@ -545,7 +547,7 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
 
             playerPointBean.setPlayingTime((long) 0);
             if (matchBean.getStart() != null) {
-                playerPointBean.setRestTime(matchBean.getStart() != null ? (now - matchBean.getStart().getTime()) : 0);
+                playerPointBean.setRestTime(matchBean.getStart() != null ? (lastTime - matchBean.getStart().getTime()) : 0);
             }
 
             //Les points qu'a fait le joueur dans l'ordre
@@ -555,10 +557,10 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
                 //Temps depuis que le joueur n'a pas joué
                 if (bean.getStart() != null && bean.getStop() == null) {
                     //Si le joueur joue un point en cours on met le restTime à 0
-                    playerPointBean.setPlayingTime((long) 0);
+                    playerPointBean.setRestTime((long) 0);
                 } else if (bean.getStop() != null) {
                     //Point terminée
-                    playerPointBean.setRestTime(now - bean.getStop().getTime());
+                    playerPointBean.setRestTime(lastTime - bean.getStop().getTime());
                 }
             }
         }

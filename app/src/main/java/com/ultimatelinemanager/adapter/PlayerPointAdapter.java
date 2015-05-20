@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ultimatelinemanager.Constante;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.bean.PlayerPointBean;
 import com.ultimatelinemanager.bean.Role;
@@ -103,9 +104,9 @@ public class PlayerPointAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         //Nom
         holder.rpr_tv_name.setText(playerPointBean.getPlayerBean().getName());
         //playingTime
-        holder.rpr_tv_run.setText(playerPointBean.getPlayingTime() / 1000 + "min");
+        holder.rpr_tv_run.setText(playerPointBean.getPlayingTime() / Constante.PLAYING_TIME_DIVISE + "min");
         //sleep
-        holder.rpr_tv_sleep.setText(playerPointBean.getRestTime() / 1000 + "min");
+        holder.rpr_tv_sleep.setText(playerPointBean.getRestTime() / Constante.PLAYING_TIME_DIVISE + "min");
         //indicateur fatigue
         holder.rpr_iv_indicator.setImageResource(R.drawable.cold);
         holder.rpr_iv_indicator.setColorFilter(iceColor);
@@ -208,12 +209,10 @@ public class PlayerPointAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         return lhs.getPlayerBean().getName().compareTo(rhs.getPlayerBean().getName());
 
                     case PLAYING_TIME:
-                        lhs.getPlayingTime().compareTo(rhs.getPlayingTime());
-                        break;
+                        return lhs.getPlayingTime().compareTo(rhs.getPlayingTime());
                     case SLEEP_TIME:
                         //sens inverse
-                        rhs.getRestTime().compareTo(lhs.getRestTime());
-                        break;
+                        return rhs.getRestTime().compareTo(lhs.getRestTime());
                 }
 
                 return 0;

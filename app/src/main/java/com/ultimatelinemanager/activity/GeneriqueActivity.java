@@ -431,6 +431,9 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
                 //bouton par defaut
                 lp_tv_previous_point.setVisibility(View.GONE);
                 lp_tv_next_point.setVisibility(View.GONE);
+                lp_bt_defense.setTextColor(Utils.getColorFromTheme(GeneriqueActivity.this, R.attr.color_text_main));
+                lp_bt_offense.setTextColor(lp_bt_defense.getCurrentTextColor());
+
 
                 //Bouton 1 defense ou but contre
                 //bouton 2 offense ou but pour
@@ -439,8 +442,6 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
                 if (livePoint.getStart() != null) {
                     lp_bt_defense.setText(getString(R.string.lp_goal_opponent));
                     lp_bt_offense.setText(getString(R.string.lp_goal_us));
-                    lp_bt_defense.setTextColor(Utils.getColorFromTheme(GeneriqueActivity.this, R.attr.color_text_main));
-                    lp_bt_offense.setTextColor(lp_bt_defense.getCurrentTextColor());
                     lp_iv_play.setVisibility(View.VISIBLE);
 
                     //Si on n'est pas en pause on affiche le bouton de pause

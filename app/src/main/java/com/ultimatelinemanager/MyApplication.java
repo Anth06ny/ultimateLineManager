@@ -25,17 +25,14 @@ public class MyApplication extends Application {
 
     //TODO un click sur le logo defense/offense d'un point, change son statut
     //TODO M�me chose pour point pour et contre
-    //TODO on pause de l'activit� sauvegarde le match
-    //TODO Suppression de point, gerer si c'est le point courant
+    //TODO Ajouter numéro du joueur
+    //TODO Editer un joueur
 
     //TODO Faire confirmation suppression point
-    //TODO Continuer ecran point
-    //TODO Ecran controle point en cours
 
     //TODO Ajouter fleche sur les boutons de tri
     //TODO selection multiplayer
     //TODO importer joueur autre equipe
-    //TODO cloturer tous les match de plus de 3h en bdd
 
     private static MyApplication instance;
     private DaoSession daoSession;
