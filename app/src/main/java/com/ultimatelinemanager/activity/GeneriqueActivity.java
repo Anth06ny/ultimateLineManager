@@ -25,6 +25,7 @@ import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.activity.list_players.PickerPlayerFragment;
 import com.ultimatelinemanager.activity.match.MatchFragment;
 import com.ultimatelinemanager.activity.match.PointFragment;
+import com.ultimatelinemanager.activity.match.StatFragment;
 import com.ultimatelinemanager.bean.OttoRefreshEvent;
 import com.ultimatelinemanager.dao.match.MatchDaoManager;
 import com.ultimatelinemanager.dao.match.PointDaoManager;
@@ -34,7 +35,6 @@ import com.ultimatelinemanager.metier.exception.TechnicalException;
 import java.util.Date;
 
 import greendao.MatchBean;
-import greendao.PlayerBean;
 import greendao.PointBean;
 import greendao.TeamBean;
 
@@ -295,10 +295,6 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
         gotoPoint(getLiveMatch(), livePoint);
     }
 
-    public void gotoPlayerPage(PlayerBean playerBean) {
-        //On va sur la page d'un joueur , pas encore faite.
-        ToastUtils.showNotImplementedToast(this);
-    }
 
     public void gotoPoint(MatchBean matchBean, PointBean pointBean) {
 
@@ -330,6 +326,16 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
         goTo(pointFragment);
 
     }
+
+    public void gotoStatistic(MatchBean matchBean) {
+
+        StatFragment statFragment = new StatFragment();
+        statFragment.setMatchBean(matchBean);
+
+        goTo(statFragment);
+
+    }
+
 
     /* ---------------------------------
     // LIVE POINT

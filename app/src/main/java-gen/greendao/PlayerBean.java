@@ -16,6 +16,7 @@ public class PlayerBean implements java.io.Serializable {
     /** Not-null value. */
     private String role;
     private boolean sexe;
+    private int number;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
@@ -32,11 +33,12 @@ public class PlayerBean implements java.io.Serializable {
         this.id = id;
     }
 
-    public PlayerBean(Long id, String name, String role, boolean sexe) {
+    public PlayerBean(Long id, String name, String role, boolean sexe, int number) {
         this.id = id;
         this.name = name;
         this.role = role;
         this.sexe = sexe;
+        this.number = number;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -79,6 +81,14 @@ public class PlayerBean implements java.io.Serializable {
 
     public void setSexe(boolean sexe) {
         this.sexe = sexe;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */

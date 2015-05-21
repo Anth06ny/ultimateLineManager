@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    android:id="@+id/cv"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/margin_2"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context=".activity.match.ListPointsActivity">
+
+
+    <RelativeLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/margin_2"
+        android:paddingLeft="@dimen/margin_10"
+        android:paddingRight="@dimen/margin_10"
+        android:paddingTop="@dimen/margin_2">
+
+
+        <TextView
+            android:id="@+id/rps_name"
+            style="@style/bloc_title"
+            android:text="@string/lp_bloc_tittle"/>
+
+        <TableLayout
+            android:id="@+id/rp_tl"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rps_name">
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/ma_tv_title"
+                    android:text="@string/stat_playing_time"
+                    />
+
+
+                <TextView
+                    android:id="@+id/stat_tv_playing_time_value"
+                    style="@style/ma_tv_value"/>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/ma_tv_title"
+                    android:text="@string/stat_goal_attaque"
+                    />
+
+
+                <TextView
+                    android:id="@+id/stat_goal_attaque_value"
+                    style="@style/ma_tv_value"/>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/ma_tv_title"
+                    android:text="@string/stat_goal_defense"
+                    />
+
+
+                <TextView
+                    android:id="@+id/stat_goal_defense_value"
+                    style="@style/ma_tv_value"/>
+            </TableRow>
+        </TableLayout>
+
+
+    </RelativeLayout>
+
+
+</android.support.v7.widget.CardView>

@@ -25,14 +25,14 @@ import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.adapter.SelectAdapter;
 import com.ultimatelinemanager.dao.PlayerDaoManager;
 import com.ultimatelinemanager.dao.TeamDaoManager;
-import com.ultimatelinemanager.dao.TeamPlayerManager;
 import com.ultimatelinemanager.dao.match.MatchDaoManager;
 import com.ultimatelinemanager.metier.DialogUtils;
-import com.ultimatelinemanager.metier.exception.LogicException;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import greendao.MatchBean;
 import greendao.PlayerBean;
@@ -188,9 +188,20 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
         if (bean instanceof MatchBean) {
             //on redirige sur le match
             generiqueActivity.gotoMatch((MatchBean) bean);
-        }
-        else if (bean instanceof PlayerBean) {
-            generiqueActivity.gotoPlayerPage((PlayerBean) bean);
+        } else if (bean instanceof PlayerBean) {
+
+            //On affiche la fenetre de modification du joueur
+            //On affiche la page de séléction des joueurs enregistré dans le téléphone
+            DialogUtils.getNewPlayerDialog(getActivity(), (PlayerBean) bean, R.string.ta_edit_player, R.string.save, new
+                    DialogUtils
+                            .NewPlayerPromptDialogCB() {
+                        @Override
+                        public void newPlayerpromptDialogCB_onPositiveClick(PlayerBean playerBean) {
+                            //on ajoute le nouveau joueur
+                            PlayerDaoManager.getPlayerDAO().update(playerBean);
+                            adapterPlayer.notifyDataSetChanged();
+                        }
+                    }).show();
         }
     }
 
@@ -202,8 +213,7 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
             icon_tab_match.setColorFilter(color_composant_main);
             icon_tab_players.setColorFilter(Color.BLACK);
 
-        }
-        else if (tabId.equals(TAG_PLAYERS)) {
+        } else if (tabId.equals(TAG_PLAYERS)) {
             icon_tab_match.setColorFilter(Color.BLACK);
             icon_tab_players.setColorFilter(color_composant_main);
         }
@@ -220,6 +230,20 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
         teamBean.resetMatchBeanList();
         matchBeansList.clear();
         matchBeansList.addAll(teamBean.getMatchBeanList());
+
+        Collections.sort(matchBeansList, new Comparator<MatchBean>() {
+            @Override
+            public int compare(MatchBean lhs, MatchBean rhs) {
+
+                if (lhs.getStart() == null) {
+                    return -1;
+                } else if (rhs.getStart() == null) {
+                    return 1;
+                } else {
+                    return (int) (rhs.getStart().getTime() - lhs.getStart().getTime());
+                }
+            }
+        });
 
         if (adapterMatch != null) {
             adapterMatch.notifyDataSetChanged();
@@ -300,8 +324,7 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
                 if (playerBeanList.size() > 0) {
                     ta_empty_players.setVisibility(View.INVISIBLE);
                     ta_rv_players.setVisibility(View.VISIBLE);
-                }
-                else {
+                } else {
                     ta_empty_players.setVisibility(View.VISIBLE);
                     ta_rv_players.setVisibility(View.INVISIBLE);
                 }
@@ -309,8 +332,7 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
                 if (matchBeansList.size() > 0) {
                     ta_empty_match.setVisibility(View.INVISIBLE);
                     ta_rv_match.setVisibility(View.VISIBLE);
-                }
-                else {
+                } else {
                     ta_empty_match.setVisibility(View.VISIBLE);
                     ta_rv_match.setVisibility(View.INVISIBLE);
                 }
@@ -341,17 +363,6 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
 
     }
 
-    private void addPlayer(long newPlayerId) throws LogicException {
-        //On ajoute notre nouveau joueur à l'equipe
-        TeamPlayerManager.addPlayerToTeam(teamBean.getId(), newPlayerId);
-        //ON recharge la liste
-        playerBeanList.clear();
-        playerBeanList.addAll(PlayerDaoManager.getPlayers(teamBean));
-        adapterPlayer.notifyDataSetChanged();
-
-        //On met à jour la liste et la vue
-        refreshView();
-    }
 
     private void deleteTeam() {
         //on suprime le TeamBean

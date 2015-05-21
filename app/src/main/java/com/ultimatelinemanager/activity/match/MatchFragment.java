@@ -484,7 +484,7 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
      * Aller sur la page de statistique
      */
     private void statisticClick() {
-        IntentHelper.goToMatchStatistic(generiqueActivity, matchBean.getId());
+        generiqueActivity.gotoStatistic(matchBean);
     }
 
     /* ---------------------------------

@@ -6,6 +6,7 @@
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme_Color">
 
@@ -24,22 +25,6 @@
             android:name=".activity.GeneriqueActivity"
             >
 
-        </activity>
-        <activity
-            android:name=".activity.list_players.PickerPlayerFragment"
-            android:label="@string/lpt_title">
-        </activity>
-        <activity
-            android:name=".activity.match.MatchFragment"
-            android:label="@string/title_activity_match">
-
-        </activity>
-        <activity
-            android:name=".activity.match.PointFragment"
-            android:parentActivityName=".activity.match.MatchFragment">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.match.MatchFragment"/>
         </activity>
     </application>
 

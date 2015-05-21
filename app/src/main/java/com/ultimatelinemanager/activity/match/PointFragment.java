@@ -57,6 +57,7 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
     private ImageView pa_iv_alpha;
     private ImageView pa_iv_time;
     private ImageView pa_iv_sleep;
+    private ImageView pa_iv_number;
 
     private TextView paTvBoy;
     private TextView paTvGirl;
@@ -107,6 +108,7 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
         pa_iv_alpha = (ImageView) view.findViewById(R.id.pa_iv_alpha);
         pa_iv_time = (ImageView) view.findViewById(R.id.pa_iv_time);
         pa_iv_sleep = (ImageView) view.findViewById(R.id.pa_iv_sleep);
+        pa_iv_number = (ImageView) view.findViewById(R.id.pa_iv_number);
         paRvAll = (RecyclerView) view.findViewById(R.id.pa_rv_all);
         paTvBoy = (TextView) view.findViewById(R.id.pa_tv_boy);
         paTvGirl = (TextView) view.findViewById(R.id.pa_tv_girl);
@@ -119,6 +121,7 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
         pa_iv_alpha.setOnClickListener(this);
         pa_iv_time.setOnClickListener(this);
         pa_iv_sleep.setOnClickListener(this);
+        pa_iv_number.setOnClickListener(this);
 
         filtreSelectedColor = Utils.getColorFromTheme(getActivity(), R.attr.color_composant_main_highlighted);
 
@@ -129,6 +132,7 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
         pa_iv_alpha.setColorFilter(Color.BLACK);
         pa_iv_time.setColorFilter(Color.BLACK);
         pa_iv_sleep.setColorFilter(Color.BLACK);
+        pa_iv_number.setColorFilter(Color.BLACK);
 
         //On utilise le titre du match et non celui en selection dans le cas ou est en visite sur un autre match
         getActivity().setTitle(
@@ -352,7 +356,21 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
                 switchFiltreImageViewColor(pa_iv_alpha, true);
                 switchFiltreImageViewColor(pa_iv_time, false);
                 switchFiltreImageViewColor(pa_iv_sleep, false);
+                switchFiltreImageViewColor(pa_iv_number, false);
                 noPlayingAdapter.setSortOrder(PlayerPointAdapter.SortOrder.AZ);
+                noPlayingAdapter.refreshFilterList();
+            } else {
+                noPlayingAdapter.setSortOrder(PlayerPointAdapter.SortOrder.NUMBER);
+                noPlayingAdapter.refreshFilterList();
+            }
+
+        } else if (v == pa_iv_number) {
+            if (!pa_iv_number.isSelected()) {
+                switchFiltreImageViewColor(pa_iv_alpha, false);
+                switchFiltreImageViewColor(pa_iv_time, false);
+                switchFiltreImageViewColor(pa_iv_sleep, false);
+                switchFiltreImageViewColor(pa_iv_number, true);
+                noPlayingAdapter.setSortOrder(PlayerPointAdapter.SortOrder.NUMBER);
                 noPlayingAdapter.refreshFilterList();
             }
 
@@ -361,6 +379,7 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
                 switchFiltreImageViewColor(pa_iv_time, true);
                 switchFiltreImageViewColor(pa_iv_alpha, false);
                 switchFiltreImageViewColor(pa_iv_sleep, false);
+                switchFiltreImageViewColor(pa_iv_number, false);
                 noPlayingAdapter.setSortOrder(PlayerPointAdapter.SortOrder.PLAYING_TIME);
                 noPlayingAdapter.refreshFilterList();
             }
@@ -370,6 +389,7 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
                 switchFiltreImageViewColor(pa_iv_sleep, !pa_iv_sleep.isSelected());
                 switchFiltreImageViewColor(pa_iv_time, false);
                 switchFiltreImageViewColor(pa_iv_alpha, false);
+                switchFiltreImageViewColor(pa_iv_number, false);
                 noPlayingAdapter.setSortOrder(PlayerPointAdapter.SortOrder.SLEEP_TIME);
                 noPlayingAdapter.refreshFilterList();
             }

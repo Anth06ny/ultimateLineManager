@@ -4,9 +4,6 @@ android {
     compileSdkVersion Integer.parseInt(project.COMPILE_SDK_VERSION)
     buildToolsVersion project.BUILD_TOOLS_VERSION
 
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
-
     compileOptions.encoding = 'ISO-8859-1'
 
     defaultConfig {

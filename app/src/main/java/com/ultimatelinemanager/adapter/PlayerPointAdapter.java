@@ -29,7 +29,7 @@ public class PlayerPointAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     public enum SortOrder {
-        AZ, PLAYING_TIME, SLEEP_TIME
+        AZ, PLAYING_TIME, SLEEP_TIME, NUMBER
     }
 
     protected List<PlayerPointBean> daoList;
@@ -102,7 +102,9 @@ public class PlayerPointAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         //Nom
-        holder.rpr_tv_name.setText(playerPointBean.getPlayerBean().getName());
+        String number = playerPointBean.getPlayerBean().getNumber() > 0 ? (playerPointBean.getPlayerBean().getNumber
+                () + " - ") : "";
+        holder.rpr_tv_name.setText(number + playerPointBean.getPlayerBean().getName());
         //playingTime
         holder.rpr_tv_run.setText(playerPointBean.getPlayingTime() / Constante.PLAYING_TIME_DIVISE + "min");
         //sleep
@@ -213,6 +215,9 @@ public class PlayerPointAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     case SLEEP_TIME:
                         //sens inverse
                         return rhs.getRestTime().compareTo(lhs.getRestTime());
+
+                    case NUMBER:
+                        return lhs.getPlayerBean().getNumber() - rhs.getPlayerBean().getNumber();
                 }
 
                 return 0;

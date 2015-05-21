@@ -103,14 +103,14 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
             case PLAYER:
                 PlayerBean playerBean = (PlayerBean) daoList.get(position);
                 holder.bean = playerBean;
-                holder.row_tv1.setText(playerBean.getName());
+                String number = playerBean.getNumber() > 0 ? (playerBean.getNumber() + " - ") : "";
+                holder.row_tv1.setText(number + playerBean.getName());
                 holder.row_tv2.setText(playerBean.getRole());
 
                 //Couleur de l'image
                 if (playerBean.getSexe()) {
                     holder.iv_main.setColorFilter(boyColor);
-                }
-                else {
+                } else {
                     holder.iv_main.setColorFilter(girlColor);
                 }
 
@@ -132,8 +132,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
                     if (matchBean.getEnd() == null) {
                         hexColor = inProgressHexaColor;
                         statut = context.getString(R.string.tm_list_statut_in_progress);
-                    }
-                    else {
+                    } else {
                         hexColor = finishedHexaColor;
                         statut = context.getString(R.string.tm_list_statut_finish);
                     }
@@ -151,8 +150,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
                 //Si c'est le match en cours
                 if (MyApplication.getInstance().getLiveMatch() != null && MyApplication.getInstance().getLiveMatch().getId() == matchBean.getId()) {
                     holder.cv.setBackgroundColor(selectedColor);
-                }
-                else {
+                } else {
                     holder.cv.setBackgroundColor(Color.WHITE);
                 }
 
@@ -224,7 +222,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
     // -------------------------------- */
 
     public interface SelectAdapterI<T> {
-        public void selectAdapter_onClick(T bean);
+         void selectAdapter_onClick(T bean);
     }
 
 }

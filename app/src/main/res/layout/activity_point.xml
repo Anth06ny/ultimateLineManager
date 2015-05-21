@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="?color_application_bg"
-              android:baselineAligned="false"
-              android:orientation="horizontal"
-              android:padding="@dimen/margin_10"
-              android:id="@+id/root"
+<LinearLayout
+    android:id="@+id/root"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?color_application_bg"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    android:padding="@dimen/margin_10"
     >
 
     <RelativeLayout
@@ -111,6 +112,21 @@
                         android:background="?attr/selectableItemBackground"
                         android:padding="@dimen/margin_5"
                         android:src="@drawable/alpha"
+                        />
+
+                    <View
+                        android:layout_width="@dimen/margin_2"
+                        android:layout_height="match_parent"
+                        android:background="?attr/color_clavier_separation"/>
+
+                    <ImageView
+                        android:id="@+id/pa_iv_number"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
+                        android:padding="@dimen/margin_5"
+                        android:src="@drawable/number"
                         />
 
                     <View

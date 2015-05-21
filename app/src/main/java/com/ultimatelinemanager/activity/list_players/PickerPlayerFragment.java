@@ -45,7 +45,8 @@ public class PickerPlayerFragment extends ListPlayerFragment {
         switch (item.getItemId()) {
             case R.id.menu_add:
                 //On affiche la page de séléction des joueurs enregistré dans le téléphone
-                DialogUtils.getNewPlayerDialog(getActivity(), R.string.lpt_bt_new, R.string.add, new DialogUtils.NewPlayerPromptDialogCB() {
+                DialogUtils.getNewPlayerDialog(getActivity(),null, R.string.lpt_bt_new, R.string.add, new DialogUtils
+                        .NewPlayerPromptDialogCB() {
                     @Override
                     public void newPlayerpromptDialogCB_onPositiveClick(PlayerBean playerBean) {
                         //on ajoute le nouveau joueur

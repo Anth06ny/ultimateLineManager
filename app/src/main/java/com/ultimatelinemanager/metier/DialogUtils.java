@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -36,6 +37,7 @@ public class DialogUtils {
 
     /**
      * Affiche une fenetre de dialog pour demander qque chose
+     *
      * @param context
      * @param iconId
      * @param titleId
@@ -44,7 +46,7 @@ public class DialogUtils {
      * @return
      */
     public static MaterialDialog getPromptDialog(Context context, int iconId, int titleId, int positiveTextId, String editTextValue,
-            final PromptDialogCB callBack) {
+                                                 final PromptDialogCB callBack) {
 
         EditText dp_et;
         final View positiveAction;
@@ -118,13 +120,17 @@ public class DialogUtils {
 
     /**
      * Permet de créer un joueur
+     *
      * @param context
      * @param titleId
      * @param positiveTextId
      * @param callBack
      * @return
      */
-    public static MaterialDialog getNewPlayerDialog(final Context context, int titleId, int positiveTextId, final NewPlayerPromptDialogCB callBack) {
+    public static MaterialDialog getNewPlayerDialog(final Context context, final PlayerBean existingPlayer, int titleId,
+                                                    int
+                                                            positiveTextId,
+                                                    final NewPlayerPromptDialogCB callBack) {
 
         Drawable d = context.getResources().getDrawable(R.drawable.ic_action_user_add);
         d.setColorFilter(Utils.getColorFromTheme(context, com.formation.utils.R.attr.color_composant_main), PorterDuff.Mode.MULTIPLY);
@@ -134,38 +140,51 @@ public class DialogUtils {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         if (callBack != null) {
-                            PlayerBean playerBean = new PlayerBean();
 
+
+                            PlayerBean playerBean = existingPlayer != null ? existingPlayer : new PlayerBean();
+
+                            //Nom
                             EditText np_name = (EditText) dialog.getCustomView().findViewById(R.id.np_name);
                             playerBean.setName(np_name.getText().toString());
 
+                            //Role
                             final CheckBox np_cb_handler = (CheckBox) dialog.getCustomView().findViewById(R.id.np_cb_handler);
                             final CheckBox np_cb_middle = (CheckBox) dialog.getCustomView().findViewById(R.id.np_cb_middle);
 
                             if (np_cb_handler.isChecked() && np_cb_middle.isChecked()) {
                                 playerBean.setRole(Role.Both.name());
-                            }
-                            else if (np_cb_handler.isChecked()) {
+                            } else if (np_cb_handler.isChecked()) {
                                 playerBean.setRole(Role.Handler.name());
-                            }
-                            else if (np_cb_middle.isChecked()) {
+                            } else if (np_cb_middle.isChecked()) {
                                 playerBean.setRole(Role.Middle.name());
                             }
 
+                            //Sexe
                             playerBean.setSexe(((RadioButton) dialog.getCustomView().findViewById(R.id.np_rb_boy)).isChecked());
 
-                            try {
+                            //Number
+                            NumberPicker np_np_dizaine = (NumberPicker) dialog.findViewById(R.id.np_np_dizaine);
+                            NumberPicker np_np_unite = (NumberPicker) dialog.findViewById(R.id.np_np_unite);
 
-                                if (!PlayerDaoManager.existPlayer(playerBean.getName())) {
-                                    callBack.newPlayerpromptDialogCB_onPositiveClick(playerBean);
+                            playerBean.setNumber(np_np_dizaine.getValue() * 10 + np_np_unite.getValue());
+
+
+                            try {
+                                //Modification
+                                if (existingPlayer != null) {
+                                    callBack.newPlayerpromptDialogCB_onPositiveClick(existingPlayer);
                                     dialog.dismiss();
                                 }
-                                else {
-                                    //Si le nom existe déjà.
+                                //Création
+                                else if (!PlayerDaoManager.existPlayer(playerBean.getName())) {
+                                    callBack.newPlayerpromptDialogCB_onPositiveClick(playerBean);
+                                    dialog.dismiss();
+                                } else {
+                                    //Si le nom existe déjà pour un création
                                     ToastUtils.showToastOnUIThread(context, R.string.lpt_player_exist);
                                 }
-                            }
-                            catch (Throwable e) {
+                            } catch (Throwable e) {
                                 LogUtils.logException(getClass(), e, true);
                                 ToastUtils.showToastOnUIThread(context, R.string.erreur_generique);
                             }
@@ -186,6 +205,13 @@ public class DialogUtils {
         final CheckBox np_cb_handler = (CheckBox) dialog.getCustomView().findViewById(R.id.np_cb_handler);
         final CheckBox np_cb_middle = (CheckBox) dialog.getCustomView().findViewById(R.id.np_cb_middle);
         final RadioGroup np_rg_sexe = (RadioGroup) dialog.getCustomView().findViewById(R.id.np_rg_sexe);
+
+        NumberPicker np_np_dizaine = (NumberPicker) dialog.findViewById(R.id.np_np_dizaine);
+        np_np_dizaine.setMaxValue(9);
+        np_np_dizaine.setMinValue(0);
+        NumberPicker np_np_unite = (NumberPicker) dialog.findViewById(R.id.np_np_unite);
+        np_np_unite.setMaxValue(9);
+        np_np_unite.setMinValue(0);
 
         //l'edit text
         np_name.addTextChangedListener(new TextWatcher() {
@@ -219,11 +245,37 @@ public class DialogUtils {
             }
         });
 
+        //On préremplie si c'est une modification
+        if (existingPlayer != null) {
+            np_name.setText(existingPlayer.getName());
+            switch (Role.getRole(existingPlayer.getRole())) {
+                case Handler:
+                    np_cb_handler.setChecked(true);
+                    break;
+                case Middle:
+                    np_cb_middle.setChecked(true);
+                    break;
+                case Both:
+                    np_cb_handler.setChecked(true);
+                    np_cb_middle.setChecked(true);
+                    break;
+            }
+            if (existingPlayer.getSexe()) {
+                ((RadioButton) dialog.getCustomView().findViewById(R.id.np_rb_boy)).setChecked(true);
+            } else {
+                ((RadioButton) dialog.getCustomView().findViewById(R.id.np_rb_girl)).setChecked(true);
+            }
+            np_np_dizaine.setValue(existingPlayer.getNumber() / 10);
+            np_np_unite.setValue(existingPlayer.getNumber() % 10);
+
+        }
+
         return dialog;
     }
 
     /**
      * affiche ou non le bouton valider
+     *
      * @param name
      * @param handler
      * @param middle

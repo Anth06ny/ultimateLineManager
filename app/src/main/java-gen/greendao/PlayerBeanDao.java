@@ -27,6 +27,7 @@ public class PlayerBeanDao extends AbstractDao<PlayerBean, Long> {
         public final static Property Name = new Property(1, String.class, "name", false, "NAME");
         public final static Property Role = new Property(2, String.class, "role", false, "ROLE");
         public final static Property Sexe = new Property(3, boolean.class, "sexe", false, "SEXE");
+        public final static Property Number = new Property(4, int.class, "number", false, "NUMBER");
     };
 
     private DaoSession daoSession;
@@ -48,7 +49,8 @@ public class PlayerBeanDao extends AbstractDao<PlayerBean, Long> {
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
                 "'NAME' TEXT NOT NULL ," + // 1: name
                 "'ROLE' TEXT NOT NULL ," + // 2: role
-                "'SEXE' INTEGER NOT NULL );"); // 3: sexe
+                "'SEXE' INTEGER NOT NULL ," + // 3: sexe
+                "'NUMBER' INTEGER NOT NULL );"); // 4: number
     }
 
     /** Drops the underlying database table. */
@@ -69,6 +71,7 @@ public class PlayerBeanDao extends AbstractDao<PlayerBean, Long> {
         stmt.bindString(2, entity.getName());
         stmt.bindString(3, entity.getRole());
         stmt.bindLong(4, entity.getSexe() ? 1l: 0l);
+        stmt.bindLong(5, entity.getNumber());
     }
 
     @Override
@@ -90,7 +93,8 @@ public class PlayerBeanDao extends AbstractDao<PlayerBean, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.getString(offset + 1), // name
             cursor.getString(offset + 2), // role
-            cursor.getShort(offset + 3) != 0 // sexe
+            cursor.getShort(offset + 3) != 0, // sexe
+            cursor.getInt(offset + 4) // number
         );
         return entity;
     }
@@ -102,6 +106,7 @@ public class PlayerBeanDao extends AbstractDao<PlayerBean, Long> {
         entity.setName(cursor.getString(offset + 1));
         entity.setRole(cursor.getString(offset + 2));
         entity.setSexe(cursor.getShort(offset + 3) != 0);
+        entity.setNumber(cursor.getInt(offset + 4));
      }
     
     /** @inheritdoc */

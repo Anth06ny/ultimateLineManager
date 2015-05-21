@@ -6,6 +6,7 @@
     <!-- ################ -->
     <string name="app_name">UltimateLineManager</string>
     <string name="add">Add</string>
+    <string name="save">Save</string>
     <string name="delete">Delete</string>
     <string name="rename">Rename</string>
     <string name="handler">Handler</string>
@@ -40,6 +41,7 @@
     <string name="ta_bt_switch_team">Switch Team</string>
     <string name="ta_no_match">No match registered</string>
     <string name="ta_delete_confirmation">Are you sure you want to delete this team?</string>
+    <string name="ta_edit_player">Edit player</string>
 
     <!-- ****************** -->
     <!-- ListPlayerTeam -->
@@ -50,6 +52,7 @@
     <string name="lpt_bt_new">New Player</string>
     <string name="lpt_no_player">No player registered</string>
     <string name="lpt_post">Post</string>
+    <string name="lpt_number">Number</string>
     <string name="lpt_player_exist">Player already exist</string>
 
     <!-- ****************** -->
@@ -120,6 +123,18 @@
     <string name="lp_bt_next_point">Next Point</string>
     <string name="lp_bt_previous_point">Previous Point</string>
 
+    <!-- ****************** -->
+    <!-- Statistic -->
+    <!-- ****************** -->
+    <string name="stat_title">Statistics</string>
+    <string name="stat_playing_time">Playing time : </string>
+    <string name="stat_playing_time_value">%1$smin / %2$s point(s)</string>
+    <string name="stat_goal_attaque">Attaque point (success) : </string>
+    <string name="stat_goal_attaque_value">%1$s / %2$s</string>
+    <string name="stat_goal_defense">Defense point (success)  : </string>
+    <string name="stat_goal_defense_value">%1$s / %2$s</string>
+    <string name="stat_lucky">Lucky player : </string>
+    <string name="stat_unlucky">Unlucky player : </string>
 
     <!-- ****************** -->
     <!-- Exception -->

@@ -1,0 +1,132 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="?color_application_bg"
+              android:orientation="vertical"
+              android:paddingBottom="@dimen/activity_vertical_margin"
+              android:paddingLeft="@dimen/activity_horizontal_margin"
+              android:paddingRight="@dimen/activity_horizontal_margin"
+              android:paddingTop="@dimen/activity_vertical_margin"
+              tools:context="com.ultimatelinemanager.activity.match.StatFragment">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_5"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/margin_5">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/bloc_title"
+                    android:text="@string/ma_bloc_title"
+                    />
+
+                <TextView
+                    style="@style/ma_tv_title"
+                    android:text="@string/ma_playing_time"
+                    />
+
+                <TextView
+                    style="@style/ma_tv_title"
+                    android:text="@string/ma_reel_playing_time"
+                    />
+
+                <TextView
+                    style="@style/ma_tv_title"
+                    android:text="@string/ma_score"
+                    />
+
+                <TextView
+                    style="@style/ma_tv_title"
+                    android:text="@string/stat_lucky"
+                    />
+
+                <TextView
+                    style="@style/ma_tv_title"
+                    android:text="@string/stat_unlucky"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_5"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/ma_iv_win"
+                    style="@style/bloc_title"
+                    android:layout_gravity="right"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/win"/>
+
+                <TextView
+                    android:id="@+id/ma_tv_playing_time"
+                    style="@style/ma_tv_value"/>
+
+                <TextView
+                    android:id="@+id/ma_tv_reel_playing_time"
+                    style="@style/ma_tv_value"
+                    />
+
+                <TextView
+                    android:id="@+id/ma_tv_score"
+                    style="@style/ma_tv_value"
+                    android:textSize="@dimen/font_15"/>
+
+                <TextView
+                    android:id="@+id/stat_tv_lucky"
+                    style="@style/ma_tv_value"
+                    android:ellipsize="end"/>
+
+                <TextView
+                    android:id="@+id/stat_tv_unlucky"
+                    style="@style/ma_tv_value"
+                    android:ellipsize="end"/>
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_5"
+        android:layout_marginRight="@dimen/margin_5"
+        android:layout_marginTop="@dimen/margin_10">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/st_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?color_application_bg"
+            tools:listitem="@layout/row_select_team"/>
+
+        <TextView
+            android:id="@+id/st_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?color_application_bg"
+            android:gravity="center"
+            android:text="@string/lp_no_point"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="@dimen/font_20"
+            />
+    </RelativeLayout>
+
+
+</LinearLayout>

@@ -11,7 +11,7 @@ public class MyDaoGenerator {
     //https://www.gliffy.com/go/html5/8011489?app=1b5094b0-6042-11e2-bcfd-0800200c9a66
     public static void main(String args[]) throws Exception {
 
-        final int DAO_VERSION = 9;
+        final int DAO_VERSION = 10;
 
         Schema schema = new Schema(DAO_VERSION, "greendao");
 
@@ -33,6 +33,7 @@ public class MyDaoGenerator {
         playerBean.addStringProperty("name").notNull();
         playerBean.addStringProperty("role").notNull();
         playerBean.addBooleanProperty("sexe").notNull();
+        playerBean.addIntProperty("number").notNull();
 
         /* ---------------------------------
         // Table Equipe - Joueur

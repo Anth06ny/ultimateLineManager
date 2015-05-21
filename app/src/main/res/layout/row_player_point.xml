@@ -81,7 +81,8 @@
                 android:text="Bobator"
                 android:textColor="?attr/color_text_main"
                 android:textSize="@dimen/font_12"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:lines="1"/>
 
             <LinearLayout
 
