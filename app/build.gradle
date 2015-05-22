@@ -1,4 +1,19 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 
 android {
     compileSdkVersion Integer.parseInt(project.COMPILE_SDK_VERSION)
@@ -34,8 +49,8 @@ dependencies {
     compile project(':FormationUtils')
     compile 'com.android.support:appcompat-v7:22.+'
     //Recycleview
-    compile 'com.android.support:recyclerview-v7:21.+'
-    compile 'com.android.support:cardview-v7:21.+'
+    compile 'com.android.support:recyclerview-v7:22.+'
+    compile 'com.android.support:cardview-v7:22.+'
 
     //greenDao https://github.com/greenrobot/greenDAO
     compile 'de.greenrobot:greendao:1.3.+'
@@ -45,5 +60,8 @@ dependencies {
 
     //Otto
     compile 'com.squareup:otto:1.3.6'
+    compile('com.crashlytics.sdk.android:crashlytics:2.2.4@aar') {
+        transitive = true;
+    }
 
 }

@@ -3,6 +3,7 @@ package com.ultimatelinemanager;
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.crashlytics.android.Crashlytics;
 import com.squareup.otto.Bus;
 import com.ultimatelinemanager.dao.MyOpenHelper;
 import com.ultimatelinemanager.dao.TeamDaoManager;
@@ -17,6 +18,7 @@ import greendao.DaoSession;
 import greendao.MatchBean;
 import greendao.PointBean;
 import greendao.TeamBean;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by amonteiro on 13/02/2015.
@@ -55,6 +57,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
 
         //On declare les constantes static
         new Constante();

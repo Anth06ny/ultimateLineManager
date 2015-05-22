@@ -38,8 +38,7 @@ public class LogUtils {
     public static void logMessage(String TAG, String message) {
         if (SET_BLUETOOTH_INFORMATION.equals(TAG)) {
             Log.w(TAG, message);
-        }
-        else {
+        } else {
             Log.d(TAG, message);
         }
 
