@@ -1,8 +1,10 @@
 package com.formation.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaScannerConnection;
 import android.os.Environment;
+import android.text.Html;
 import android.util.TypedValue;
 import android.widget.Toast;
 
@@ -83,6 +85,24 @@ public class Utils {
         seconde = seconde % 60;
 
         return minute + "m" + (seconde < 10 ? ("0" + seconde) : ("" + seconde));
+    }
+
+    /**
+     * Permet de lancer l'application mail avec des éléments prérempli
+     */
+    public static void sendMail(Context context, String subject, String text) {
+
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("message/rfc822");
+        i.putExtra(Intent.EXTRA_SUBJECT, subject);
+        i.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(text));
+
+        try {
+            context.startActivity(Intent.createChooser(i, "Send mail..."));
+        }
+        catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(context, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

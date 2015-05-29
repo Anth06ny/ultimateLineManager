@@ -57,6 +57,10 @@
                     android:text="@string/stat_unlucky"
                     />
 
+                <TextView
+                    style="@style/ma_tv_title"
+                    />
+
             </LinearLayout>
 
             <LinearLayout
@@ -95,6 +99,13 @@
                     android:id="@+id/stat_tv_unlucky"
                     style="@style/ma_tv_value"
                     android:ellipsize="end"/>
+
+                <TextView
+                    android:id="@+id/stat_tv_mail"
+                    style="@style/button_textview_material_design"
+                    android:text="@string/stat_send_mail"
+                    android:visibility="visible"
+                    />
 
             </LinearLayout>
         </LinearLayout>

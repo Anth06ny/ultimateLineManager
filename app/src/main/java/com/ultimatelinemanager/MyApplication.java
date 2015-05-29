@@ -25,15 +25,15 @@ import io.fabric.sdk.android.Fabric;
  */
 public class MyApplication extends Application {
 
+    //Statistique
+    //TODO Continuer ajout du mail d'envoie des statistiques
+
     //Point
 
     //Live point
     //TODO Ajout du bouton pour changer offense / defense pendant le point
     //TODO bug reprise de point
     //TODO temps du match global
-
-    //Statistique
-    //TODO ajout du mail d'envoie des statistiques
 
     //Match
     //TODO Ajout de la roue sur un point pour changer but pour / contre et attaque defense

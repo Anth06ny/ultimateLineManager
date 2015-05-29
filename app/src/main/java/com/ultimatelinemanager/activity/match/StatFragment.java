@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.formation.utils.DateUtils;
 import com.formation.utils.LogUtils;
 import com.formation.utils.Utils;
 import com.ultimatelinemanager.Constante;
@@ -22,13 +23,16 @@ import com.ultimatelinemanager.dao.PlayerDaoManager;
 import com.ultimatelinemanager.dao.match.PointDaoManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import greendao.MatchBean;
 import greendao.PlayerBean;
+import greendao.PlayerPoint;
 import greendao.PointBean;
 
-public class StatFragment extends MainFragment {
+public class StatFragment extends MainFragment implements View.OnClickListener {
 
     private static final String TAG = LogUtils.getLogTag(StatFragment.class);
 
@@ -38,6 +42,7 @@ public class StatFragment extends MainFragment {
     private TextView ma_tv_reel_playing_time;
     private TextView ma_tv_score;
     private TextView st_empty, stat_tv_lucky, stat_tv_unlucky;
+    private TextView stat_tv_mail;
 
     //RecycleView
     private RecyclerView st_rv;
@@ -47,7 +52,6 @@ public class StatFragment extends MainFragment {
     //Data
     private MatchBean matchBean;
     private List<PlayerStatBean> playerStatBeanList;
-
 
     @Nullable
     @Override
@@ -69,7 +73,9 @@ public class StatFragment extends MainFragment {
         st_empty = (TextView) view.findViewById(R.id.st_empty);
         stat_tv_lucky = (TextView) view.findViewById(R.id.stat_tv_lucky);
         stat_tv_unlucky = (TextView) view.findViewById(R.id.stat_tv_unlucky);
+        stat_tv_mail = (TextView) view.findViewById(R.id.stat_tv_mail);
 
+        stat_tv_mail.setOnClickListener(this);
 
         ma_iv_win.setColorFilter(getResources().getColor(R.color.yellow));
 
@@ -87,35 +93,41 @@ public class StatFragment extends MainFragment {
         return view;
     }
 
-
     /* ---------------------------------
     // Menu
     // -------------------------------- */
 
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        inflater.inflate(R.menu.menu_match, menu);
-//        menu.findItem(R.id.mm_end_game).setVisible(matchBean.getStart() != null && matchBean.getEnd() == null);
-//
-//        super.onCreateOptionsMenu(menu, inflater);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//
-//        switch (item.getItemId()) {
-//            case R.id.mm_state_player:
-//                return true;
-//
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//
-//    }
+    //    @Override
+    //    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    //        // Inflate the menu; this adds items to the action bar if it is present.
+    //        inflater.inflate(R.menu.menu_match, menu);
+    //        menu.findItem(R.id.mm_end_game).setVisible(matchBean.getStart() != null && matchBean.getEnd() == null);
+    //
+    //        super.onCreateOptionsMenu(menu, inflater);
+    //    }
+    //
+    //    @Override
+    //    public boolean onOptionsItemSelected(MenuItem item) {
+    //
+    //        switch (item.getItemId()) {
+    //            case R.id.mm_state_player:
+    //                return true;
+    //
+    //            default:
+    //                return super.onOptionsItemSelected(item);
+    //        }
+    //
+    //    }
 
-
-
+    /* ---------------------------------
+    // Clic
+    // -------------------------------- */
+    @Override
+    public void onClick(View v) {
+        if (v == stat_tv_mail) {
+            Utils.sendMail(getActivity(), "sujet", "text");
+        }
+    }
 
     /* ---------------------------------
     // private
@@ -125,7 +137,6 @@ public class StatFragment extends MainFragment {
 
         //titre
         generiqueActivity.setTitle(getString(R.string.stat_title));
-
 
         long reelTime = 0;
         int team = 0, opponent = 0;
@@ -163,7 +174,6 @@ public class StatFragment extends MainFragment {
             st_rv.setVisibility(View.VISIBLE);
         }
 
-
     }
 
     private void createList() {
@@ -198,14 +208,12 @@ public class StatFragment extends MainFragment {
                 }
 
                 playerStatBean.setNumberPoint(playerStatBean.getNumberPoint() + 1);
-                playerStatBean.setPlayingTime(playerStatBean.getPlayingTime() + (pointBean.getLength() / Constante
-                        .PLAYING_TIME_DIVISE));
+                playerStatBean.setPlayingTime(playerStatBean.getPlayingTime() + (pointBean.getLength() / Constante.PLAYING_TIME_DIVISE));
             }
 
-
             if (playerStatBean.getNumberPoint() > 0) {
-                float playerReussite = ((playerStatBean.getGoalAttaqueSuccess() + playerStatBean
-                        .getGoalDefenseSuccess()) * 100) / playerStatBean.getNumberPoint();
+                float playerReussite = ((playerStatBean.getGoalAttaqueSuccess() + playerStatBean.getGoalDefenseSuccess()) * 100)
+                        / playerStatBean.getNumberPoint();
 
                 //Porte bohneur
                 if (playerReussite > porteBohneurNumberStat) {
@@ -247,6 +255,77 @@ public class StatFragment extends MainFragment {
 
     }
 
+    private String createMailText() {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        String titleOpen = "<h3><u><b>";
+        String titleClose = "</u></b></h3>\n\n";
+        String subTitleOpen = "<h4><u><b>";
+        String subTitleClose = "</u></b></h4>\n";
+
+        //--------------------
+        //Team 3 - 2 Opponent
+        //--------------------
+        stringBuilder.append(titleOpen).append(matchBean.getTeamBean().getName()).append(" ").append(ma_tv_score.getText()).append(" ")
+                .append(matchBean.getName()).append(titleClose);
+
+        //date
+        stringBuilder.append(getString(R.string.ma_date))
+                .append(DateUtils.dateToString(matchBean.getStart(), DateUtils.getFormat(getActivity(), DateUtils.DATE_FORMAT.ddMMyyyy_HHmm)))
+                .append("\n");
+        //PlayingTime
+        stringBuilder.append(getString(R.string.ma_playing_time)).append(ma_tv_playing_time.getText()).append("\n");
+        //ReelPlayingTime
+        stringBuilder.append(getString(R.string.ma_reel_playing_time)).append(ma_tv_reel_playing_time.getText())
+                .append("\n\n\n");
+
+        //--------------------
+        //Point
+        //--------------------
+        stringBuilder.append(titleOpen).append("Points").append(titleClose);
+
+        //On parcourt tous les points du match trier par numéro
+        Collections.sort(matchBean.getPointBeanList(), new Comparator<PointBean>() {
+            @Override
+            public int compare(PointBean lhs, PointBean rhs) {
+                return lhs.getNumber() - rhs.getNumber();
+            }
+        });
+        for (PointBean pointBean : matchBean.getPointBeanList()) {
+            //Que les points joués
+            if (pointBean.getStop() != null) {
+                //Point 3 : Defense Win
+                stringBuilder.append(subTitleOpen).append("Point ").append(pointBean.getNumber()).append(" (");
+                stringBuilder.append(Utils.timeToMMSS(pointBean.getLength())).append(") ");
+
+                if (pointBean.getTeamOffense() != null && pointBean.getTeamOffense()) {
+                    stringBuilder.append(getString(R.string.stat_offense_word));
+                } else {
+                    stringBuilder.append(getString(R.string.stat_defense_word));
+                }
+                stringBuilder.append(" ");
+                if (pointBean.getTeamGoal() != null && pointBean.getTeamOffense()) {
+                    stringBuilder.append(getString(R.string.stat_win_word));
+                }
+                stringBuilder.append(subTitleClose).append("\n");
+
+
+                //Les joueurs du points
+                for (PlayerPoint pp : pointBean.getPlayerPointList()) {
+                    stringBuilder.append("  -").append(pp.getPlayerBean().getName()).append("\n");
+                }
+
+                stringBuilder.append("\n");
+            }
+        }
+
+        //--------------------
+        //Players
+        //--------------------
+
+
+        return stringBuilder.toString().replace("\n", "<br />");
+    }
 
     /* ---------------------------------
     // Getter Setter
@@ -254,4 +333,5 @@ public class StatFragment extends MainFragment {
     public void setMatchBean(MatchBean matchBean) {
         this.matchBean = matchBean;
     }
+
 }
