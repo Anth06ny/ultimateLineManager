@@ -11,26 +11,19 @@ public class PlayerPointBean {
     private Role roleInPoint;
     private Long playingTime; //En milliseconde
     private Long restTime;//En milliseconde
-    private Integer stateIndicator;
+    private int nbrPoint;
 
     public PlayerPointBean(PlayerBean playerBean) {
         this.playerBean = playerBean;
         roleInPoint = null;
         playingTime = restTime = (long) 0;
-        stateIndicator = 0;
+        nbrPoint = 0;
     }
 
     /* ---------------------------------
     // getter / setter
     // -------------------------------- */
 
-    public Integer getStateIndicator() {
-        return stateIndicator;
-    }
-
-    public void setStateIndicator(Integer stateIndicator) {
-        this.stateIndicator = stateIndicator;
-    }
 
     public PlayerBean getPlayerBean() {
         return playerBean;
@@ -62,5 +55,13 @@ public class PlayerPointBean {
 
     public void setRestTime(Long restTime) {
         this.restTime = restTime;
+    }
+
+    public int getNbrPoint() {
+        return nbrPoint;
+    }
+
+    public void setNbrPoint(int nbrPoint) {
+        this.nbrPoint = nbrPoint;
     }
 }

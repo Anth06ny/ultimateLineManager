@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.formation.utils.Utils;
 import com.ultimatelinemanager.Constante;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.bean.PlayerPointBean;
@@ -97,16 +98,16 @@ public class PlayerPointAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         //Couleur de l'image
         if (playerPointBean.getPlayerBean().getSexe()) {
             holder.rpr_iv_role.setColorFilter(boyColor);
-        } else {
+        }
+        else {
             holder.rpr_iv_role.setColorFilter(girlColor);
         }
 
         //Nom
-        String number = playerPointBean.getPlayerBean().getNumber() > 0 ? (playerPointBean.getPlayerBean().getNumber
-                () + " - ") : "";
+        String number = playerPointBean.getPlayerBean().getNumber() > 0 ? (playerPointBean.getPlayerBean().getNumber() + " - ") : "";
         holder.rpr_tv_name.setText(number + playerPointBean.getPlayerBean().getName());
         //playingTime
-        holder.rpr_tv_run.setText(playerPointBean.getPlayingTime() / Constante.PLAYING_TIME_DIVISE + "min");
+        holder.rpr_tv_run.setText(playerPointBean.getNbrPoint() + "pt(" + Utils.timeToMMSS(playerPointBean.getPlayingTime()) + ")");
         //sleep
         holder.rpr_tv_sleep.setText(playerPointBean.getRestTime() / Constante.PLAYING_TIME_DIVISE + "min");
         //indicateur fatigue
@@ -142,10 +143,12 @@ public class PlayerPointAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             if (sortOrder == SortOrder.AZ && playerPointBean.getPlayerBean().getName().compareTo(daoList.get(i).getPlayerBean().getName()) < 0) {
                 value = i;
                 break;
-            } else if (sortOrder == SortOrder.PLAYING_TIME && playerPointBean.getPlayingTime().compareTo(daoList.get(i).getPlayingTime()) < 0) {
+            }
+            else if (sortOrder == SortOrder.PLAYING_TIME && playerPointBean.getPlayingTime().compareTo(daoList.get(i).getPlayingTime()) < 0) {
                 value = i;
                 break;
-            } else if (sortOrder == SortOrder.SLEEP_TIME && playerPointBean.getPlayingTime().compareTo(daoList.get(i).getPlayingTime()) > 0) {
+            }
+            else if (sortOrder == SortOrder.SLEEP_TIME && playerPointBean.getPlayingTime().compareTo(daoList.get(i).getPlayingTime()) > 0) {
                 value = i;
                 break;
             }
@@ -160,10 +163,12 @@ public class PlayerPointAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 if (sortOrder == SortOrder.AZ && playerPointBean.getPlayerBean().getName().compareTo(filterList.get(i).getPlayerBean().getName()) < 0) {
                     value = i;
                     break;
-                } else if (sortOrder == SortOrder.PLAYING_TIME && playerPointBean.getPlayingTime().compareTo(filterList.get(i).getPlayingTime()) < 0) {
+                }
+                else if (sortOrder == SortOrder.PLAYING_TIME && playerPointBean.getPlayingTime().compareTo(filterList.get(i).getPlayingTime()) < 0) {
                     value = i;
                     break;
-                } else if (sortOrder == SortOrder.SLEEP_TIME && playerPointBean.getPlayingTime().compareTo(filterList.get(i).getPlayingTime()) > 0) {
+                }
+                else if (sortOrder == SortOrder.SLEEP_TIME && playerPointBean.getPlayingTime().compareTo(filterList.get(i).getPlayingTime()) > 0) {
                     value = i;
                     break;
                 }

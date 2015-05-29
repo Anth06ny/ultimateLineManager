@@ -77,5 +77,12 @@ public class Utils {
         return hour + "h" + (minute < 10 ? ("0" + minute) : ("" + minute));
     }
 
+    public static String timeToMMSS(long time) {
+        long seconde = time / 1000;
+        long minute = seconde / 60;
+        seconde = seconde % 60;
+
+        return minute + "m" + (seconde < 10 ? ("0" + seconde) : ("" + seconde));
+    }
 
 }

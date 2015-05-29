@@ -102,9 +102,9 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
             }
 
             //playing time
-            //s'il y a deja du temps on met le temps sinon on met le temps écoulé deplus le début du point
+            //s'il y a deja du temps on met le temps sinon on met le temps écoulé depuis le début du point
             long playingTime = pointBean.getLength() != 0 ? pointBean.getLength() : (new Date().getTime() - pointBean.getStart().getTime());
-            holder.ma_tv_playing_time.setText(Utils.timeToHHMM(playingTime));
+            holder.ma_tv_playing_time.setText(Utils.timeToMMSS(playingTime));
         }
 
         //win

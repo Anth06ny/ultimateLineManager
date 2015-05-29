@@ -25,16 +25,27 @@ import io.fabric.sdk.android.Fabric;
  */
 public class MyApplication extends Application {
 
-    //TODO un click sur le logo defense/offense d'un point, change son statut
-    //TODO Mï¿½me chose pour point pour et contre
-    //TODO Ajouter numÃ©ro du joueur
-    //TODO Editer un joueur
+    //Point
 
-    //TODO Faire confirmation suppression point
+    //Live point
+    //TODO Ajout du bouton pour changer offense / defense pendant le point
+    //TODO bug reprise de point
+    //TODO temps du match global
 
-    //TODO Ajouter fleche sur les boutons de tri
+    //Statistique
+    //TODO ajout du mail d'envoie des statistiques
+
+    //Match
+    //TODO Ajout de la roue sur un point pour changer but pour / contre et attaque defense
+    //TODO passer le temps de jeu du point en min seconde
+
+    //Team
     //TODO selection multiplayer
     //TODO importer joueur autre equipe
+
+    //Plus tard
+    //TODO Ajouter option de match : mixte ou non
+    //TODO Joueur blessé
 
     private static MyApplication instance;
     private DaoSession daoSession;
@@ -114,7 +125,8 @@ public class MyApplication extends Application {
     public PointBean getLivePoint() throws TechnicalException {
         if (liveMatch != null && !liveMatch.getPointBeanList().isEmpty()) {
             return PointDaoManager.getPointNumber(liveMatch.getPointBeanList(), getLiveMatch().getCurrentPoint());
-        } else {
+        }
+        else {
             return null;
         }
     }

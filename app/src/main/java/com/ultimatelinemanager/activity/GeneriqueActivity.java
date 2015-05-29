@@ -106,8 +106,8 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
         lp_bt_open.setOnClickListener(this);
         lp_iv_play.setOnClickListener(this);
 
-        //par defaut on n'affiche pas l'extension
-        lp_ll_extension.setVisibility(View.GONE);
+        //par defaut on affiche l'extension
+        lp_ll_extension.setVisibility(View.VISIBLE);
 
         goTo(new TeamFragment());
 
@@ -542,9 +542,6 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
             //On met le point en pause, et on ajoute le temps joue depuis la derniere pause
             livePoint.setPause(true);
             livePoint.setLength(livePoint.getLength() + (new Date().getTime() - livePoint.getPauseTime().getTime()));
-            //ON sauvegarde le point
-            PointDaoManager.getPointBeanDao().update(livePoint);
-
         }
 
         //ON sauvegarde le point

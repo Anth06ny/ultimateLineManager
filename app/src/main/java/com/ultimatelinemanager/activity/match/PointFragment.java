@@ -71,7 +71,6 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
     private PlayerPointAdapter noPlayingAdapter;
     private PlayerPointWithHeaderAdapter playerInPointAdapter;
 
-
     //data
     private MatchBean matchBean;
     private PointBean pointBean;
@@ -94,7 +93,8 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
             LogUtils.logMessage(TAG, "PointBean à nulle");
             getFragmentManager().popBackStack();
             return null;
-        } else if (matchBean == null) {
+        }
+        else if (matchBean == null) {
             LogUtils.logMessage(TAG, "matchBean à nulle");
             getFragmentManager().popBackStack();
             return null;
@@ -135,9 +135,7 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
         pa_iv_number.setColorFilter(Color.BLACK);
 
         //On utilise le titre du match et non celui en selection dans le cas ou est en visite sur un autre match
-        getActivity().setTitle(
-                getString(R.string.pa_title, matchBean.getTeamBean().getName(), matchBean.getName(),
-                        pointBean.getNumber()));
+        getActivity().setTitle(getString(R.string.pa_title, matchBean.getTeamBean().getName(), matchBean.getName(), pointBean.getNumber()));
 
         switchFiltreImageViewColor(pa_iv_alpha, true);
 
@@ -217,7 +215,8 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
         if (pointBean.getNumber() == matchBean.getPointBeanList().size()) {
             menu.findItem(R.id.mp_next).setVisible(false);
             menu.findItem(R.id.mp_add).setVisible(true);
-        } else {
+        }
+        else {
             menu.findItem(R.id.mp_next).setVisible(true);
             menu.findItem(R.id.mp_add).setVisible(false);
         }
@@ -225,7 +224,8 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
         //si c'est le premier du match
         if (pointBean.getNumber() == 1) {
             menu.findItem(R.id.mp_previous).setVisible(false);
-        } else {
+        }
+        else {
             menu.findItem(R.id.mp_previous).setVisible(true);
         }
 
@@ -290,7 +290,8 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
                 pointBean.getPlayerPointList().clear();
                 pointBean.getPlayerPointList().add(new PlayerPoint((long) 0));
             }
-        } else {
+        }
+        else {
             //Le joueur joue on le replace dans la liste des joueurs qui ne joue pas
             playerInPointAdapter.removeItem(playerPointBean.getPlayerBean().getId());
             noPlayingAdapter.addItem(playerPointBean);
@@ -314,36 +315,43 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
             switchFiltreImageViewColor(pa_iv_middle, false);
             if (pa_iv_handler.isSelected()) {
                 noPlayingAdapter.setFilterRole(Role.Handler);
-            } else {
+            }
+            else {
                 noPlayingAdapter.setFilterRole(Role.Both);
             }
             noPlayingAdapter.refreshFilterList();
-        } else if (v == pa_iv_middle) {
+        }
+        else if (v == pa_iv_middle) {
             switchFiltreImageViewColor(pa_iv_middle, !pa_iv_middle.isSelected());
             switchFiltreImageViewColor(pa_iv_handler, false);
             if (pa_iv_middle.isSelected()) {
                 noPlayingAdapter.setFilterRole(Role.Middle);
-            } else {
+            }
+            else {
                 noPlayingAdapter.setFilterRole(Role.Both);
             }
             noPlayingAdapter.refreshFilterList();
 
-        } else if (v == pa_iv_girl) {
+        }
+        else if (v == pa_iv_girl) {
             if (pa_iv_girl.isSelected()) {
                 switchFiltreImageViewColor(pa_iv_girl, false);
                 noPlayingAdapter.setFilterSexe(PlayerPointAdapter.FilterSexe.BOTH);
-            } else {
+            }
+            else {
                 pa_iv_girl.setSelected(true);
                 noPlayingAdapter.setFilterSexe(PlayerPointAdapter.FilterSexe.GIRL);
                 pa_iv_girl.setColorFilter(getResources().getColor(R.color.girl_color));
             }
             switchFiltreImageViewColor(pa_iv_boy, false);
             noPlayingAdapter.refreshFilterList();
-        } else if (v == pa_iv_boy) {
+        }
+        else if (v == pa_iv_boy) {
             if (pa_iv_boy.isSelected()) {
                 switchFiltreImageViewColor(pa_iv_boy, false);
                 noPlayingAdapter.setFilterSexe(PlayerPointAdapter.FilterSexe.BOTH);
-            } else {
+            }
+            else {
                 pa_iv_boy.setSelected(true);
                 noPlayingAdapter.setFilterSexe(PlayerPointAdapter.FilterSexe.BOY);
                 pa_iv_boy.setColorFilter(getResources().getColor(R.color.boy_color));
@@ -351,7 +359,8 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
             switchFiltreImageViewColor(pa_iv_girl, false);
             noPlayingAdapter.refreshFilterList();
 
-        } else if (v == pa_iv_alpha) {
+        }
+        else if (v == pa_iv_alpha) {
             if (!pa_iv_alpha.isSelected()) {
                 switchFiltreImageViewColor(pa_iv_alpha, true);
                 switchFiltreImageViewColor(pa_iv_time, false);
@@ -359,12 +368,14 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
                 switchFiltreImageViewColor(pa_iv_number, false);
                 noPlayingAdapter.setSortOrder(PlayerPointAdapter.SortOrder.AZ);
                 noPlayingAdapter.refreshFilterList();
-            } else {
+            }
+            else {
                 noPlayingAdapter.setSortOrder(PlayerPointAdapter.SortOrder.NUMBER);
                 noPlayingAdapter.refreshFilterList();
             }
 
-        } else if (v == pa_iv_number) {
+        }
+        else if (v == pa_iv_number) {
             if (!pa_iv_number.isSelected()) {
                 switchFiltreImageViewColor(pa_iv_alpha, false);
                 switchFiltreImageViewColor(pa_iv_time, false);
@@ -374,7 +385,8 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
                 noPlayingAdapter.refreshFilterList();
             }
 
-        } else if (v == pa_iv_time) {
+        }
+        else if (v == pa_iv_time) {
             if (!pa_iv_time.isSelected()) {
                 switchFiltreImageViewColor(pa_iv_time, true);
                 switchFiltreImageViewColor(pa_iv_alpha, false);
@@ -384,7 +396,8 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
                 noPlayingAdapter.refreshFilterList();
             }
 
-        } else if (v == pa_iv_sleep) {
+        }
+        else if (v == pa_iv_sleep) {
             if (!pa_iv_sleep.isSelected()) {
                 switchFiltreImageViewColor(pa_iv_sleep, !pa_iv_sleep.isSelected());
                 switchFiltreImageViewColor(pa_iv_time, false);
@@ -395,8 +408,6 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
             }
         }
     }
-
-
 
     /* ---------------------------------
     // OTTO
@@ -433,7 +444,8 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
                 for (PlayerPointBean playerPointBean : playerInPointAdapter.getDaoList()) {
                     if (playerPointBean.getPlayerBean().getSexe()) {
                         nbBoy++;
-                    } else {
+                    }
+                    else {
                         nbGirl++;
                     }
                 }
@@ -445,10 +457,12 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
                 try {
                     if (MyApplication.getInstance().getLivePoint() != null && MyApplication.getInstance().getLivePoint().getId() == pointBean.getId()) {
                         root.setBackgroundColor(getResources().getColor(R.color.bg_point_in_progress));
-                    } else {
+                    }
+                    else {
                         root.setBackgroundColor(Color.WHITE);
                     }
-                } catch (TechnicalException e) {
+                }
+                catch (TechnicalException e) {
                     showError(e, true);
                 }
 
@@ -485,7 +499,8 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
             //Il ne joue pas
             if (temp == null) {
                 noPlayingAdapter.getDaoList().add(playerPointBean);
-            } else {
+            }
+            else {
                 //Il joue
                 playerPointBean.setRoleInPoint(Role.valueOf(temp.getRole()));
                 playerInPointAdapter.getDaoList().add(playerPointBean);
@@ -520,7 +535,8 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
         if (selected) {
             iv.setSelected(true);
             iv.setColorFilter(filtreSelectedColor);
-        } else {
+        }
+        else {
             iv.setSelected(false);
             iv.setColorFilter(Color.BLACK);
         }
@@ -531,10 +547,9 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
 
         if (pointBean.getNumber() + 1 <= matchBean.getPointBeanList().size()) {
             try {
-                generiqueActivity.gotoPoint(matchBean, PointDaoManager.getPointNumber(matchBean
-                        .getPointBeanList
-                                (), pointBean.getNumber() + 1));
-            } catch (TechnicalException e) {
+                generiqueActivity.gotoPoint(matchBean, PointDaoManager.getPointNumber(matchBean.getPointBeanList(), pointBean.getNumber() + 1));
+            }
+            catch (TechnicalException e) {
                 showError(e, true);
             }
         }
@@ -546,7 +561,8 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
         if (pointBean.getNumber() > 1) {
             try {
                 generiqueActivity.gotoPoint(matchBean, PointDaoManager.getPointNumber(matchBean.getPointBeanList(), pointBean.getNumber() - 1));
-            } catch (TechnicalException e) {
+            }
+            catch (TechnicalException e) {
                 showError(e, true);
             }
         }
@@ -554,9 +570,8 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
 
     private void refreshStatePlayer() {
 
-//Si le match est terminé innutile de prendre le temps courant
-        long lastTime = matchBean.getEnd() != null ? Math.min(new Date().getTime(), matchBean.getEnd().getTime()) :
-                new Date().getTime();
+        //Si le match est terminé innutile de prendre le temps courant
+        long lastTime = matchBean.getEnd() != null ? Math.min(new Date().getTime(), matchBean.getEnd().getTime()) : new Date().getTime();
 
         List<PlayerPointBean> list = new ArrayList<>();
         list.addAll(noPlayingAdapter.getDaoList());
@@ -571,18 +586,21 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
             }
 
             //Les points qu'a fait le joueur dans l'ordre
-            for (PointBean bean : PointDaoManager.getPointPlayerOfMatch(matchBean, playerPointBean.getPlayerBean().getId())) {
+            List<PointBean> pointBeanList = PointDaoManager.getPointPlayerOfMatch(matchBean, playerPointBean.getPlayerBean().getId());
+            for (PointBean bean : pointBeanList) {
                 playerPointBean.setPlayingTime(playerPointBean.getPlayingTime() + bean.getLength());
 
                 //Temps depuis que le joueur n'a pas joué
                 if (bean.getStart() != null && bean.getStop() == null) {
                     //Si le joueur joue un point en cours on met le restTime à 0
                     playerPointBean.setRestTime((long) 0);
-                } else if (bean.getStop() != null) {
+                }
+                else if (bean.getStop() != null) {
                     //Point terminée
                     playerPointBean.setRestTime(lastTime - bean.getStop().getTime());
                 }
             }
+            playerPointBean.setNbrPoint(pointBeanList.size());
         }
 
     }
