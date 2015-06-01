@@ -125,7 +125,7 @@ public class StatFragment extends MainFragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v == stat_tv_mail) {
-            Utils.sendMail(getActivity(), "sujet", "text");
+            Utils.sendMail(getActivity(), "sujet", createMailText());
         }
     }
 
@@ -147,7 +147,8 @@ public class StatFragment extends MainFragment implements View.OnClickListener {
             if (pointBean.getTeamGoal() != null) {
                 if (pointBean.getTeamGoal()) {
                     team++;
-                } else {
+                }
+                else {
                     opponent++;
                 }
             }
@@ -169,7 +170,8 @@ public class StatFragment extends MainFragment implements View.OnClickListener {
         if (matchBean.getPointBeanList().isEmpty()) {
             st_empty.setVisibility(View.VISIBLE);
             st_rv.setVisibility(View.INVISIBLE);
-        } else {
+        }
+        else {
             st_empty.setVisibility(View.INVISIBLE);
             st_rv.setVisibility(View.VISIBLE);
         }
@@ -198,7 +200,8 @@ public class StatFragment extends MainFragment implements View.OnClickListener {
                         if (pointBean.getTeamGoal()) {
                             playerStatBean.setGoalAttaqueSuccess(playerStatBean.getGoalAttaqueSuccess() + 1);
                         }
-                    } else {
+                    }
+                    else {
                         //Les points de défense
                         playerStatBean.setGoalDefense(playerStatBean.getGoalDefense() + 1);
                         if (pointBean.getTeamGoal()) {
@@ -220,7 +223,8 @@ public class StatFragment extends MainFragment implements View.OnClickListener {
                     porteBohneur.clear();
                     porteBohneur.add(playerBean);
                     porteBohneurNumberStat = playerReussite;
-                } else if (playerReussite == porteBohneurNumberStat) {
+                }
+                else if (playerReussite == porteBohneurNumberStat) {
                     porteBohneur.add(playerBean);
                 }
 
@@ -229,7 +233,8 @@ public class StatFragment extends MainFragment implements View.OnClickListener {
                     porteMalheur.clear();
                     porteMalheur.add(playerBean);
                     portemalheurStat = playerReussite;
-                } else if (playerReussite == portemalheurStat) {
+                }
+                else if (playerReussite == portemalheurStat) {
                     porteMalheur.add(playerBean);
                 }
             }
@@ -276,8 +281,7 @@ public class StatFragment extends MainFragment implements View.OnClickListener {
         //PlayingTime
         stringBuilder.append(getString(R.string.ma_playing_time)).append(ma_tv_playing_time.getText()).append("\n");
         //ReelPlayingTime
-        stringBuilder.append(getString(R.string.ma_reel_playing_time)).append(ma_tv_reel_playing_time.getText())
-                .append("\n\n\n");
+        stringBuilder.append(getString(R.string.ma_reel_playing_time)).append(ma_tv_reel_playing_time.getText()).append("\n\n\n");
 
         //--------------------
         //Point
@@ -300,7 +304,8 @@ public class StatFragment extends MainFragment implements View.OnClickListener {
 
                 if (pointBean.getTeamOffense() != null && pointBean.getTeamOffense()) {
                     stringBuilder.append(getString(R.string.stat_offense_word));
-                } else {
+                }
+                else {
                     stringBuilder.append(getString(R.string.stat_defense_word));
                 }
                 stringBuilder.append(" ");
@@ -308,7 +313,6 @@ public class StatFragment extends MainFragment implements View.OnClickListener {
                     stringBuilder.append(getString(R.string.stat_win_word));
                 }
                 stringBuilder.append(subTitleClose).append("\n");
-
 
                 //Les joueurs du points
                 for (PlayerPoint pp : pointBean.getPlayerPointList()) {
@@ -318,11 +322,29 @@ public class StatFragment extends MainFragment implements View.OnClickListener {
                 stringBuilder.append("\n");
             }
         }
+        stringBuilder.append("\n\n");
 
         //--------------------
         //Players
         //--------------------
+        stringBuilder.append(titleOpen).append("Players").append(titleClose);
 
+        for (PlayerStatBean playerStatBean : playerStatBeanList) {
+            //nom
+            stringBuilder.append(subTitleOpen).append(playerStatBean.getPlayerBean().getName()).append("\n");
+            //temps de jeu 1min/1pts
+            stringBuilder.append(getString(R.string.stat_playing_time)).append(" : ")
+                    .append(getString(R.string.stat_playing_time_value, playerStatBean.getPlayingTime(), playerStatBean.getNumberPoint()))
+                    .append("\n");
+            //Attaque (success) 0/3
+            stringBuilder.append(getString(R.string.stat_goal_attaque)).append(" : ")
+                    .append(getString(R.string.stat_goal_attaque_value, playerStatBean.getGoalAttaqueSuccess(), playerStatBean.getGoalAttaque()))
+                    .append("\n");
+            //Defense 0/2
+            stringBuilder.append(getString(R.string.stat_goal_defense)).append(" : ")
+                    .append(getString(R.string.stat_goal_defense_value, playerStatBean.getGoalDefenseSuccess(), playerStatBean.getGoalDefense()))
+                    .append("\n\n");
+        }
 
         return stringBuilder.toString().replace("\n", "<br />");
     }
