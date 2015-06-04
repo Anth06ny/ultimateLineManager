@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.formation.utils.ToastUtils;
 import com.formation.utils.Utils;
+import com.squareup.otto.Subscribe;
 import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.activity.list_players.PickerPlayerFragment;
@@ -46,7 +47,7 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
     //Live Point
     private LinearLayout lp_ll_point_live, lp_ll_bar;
     private TextView lp_tv_title;
-    private Chronometer lp_time;
+    private Chronometer lp_time, lp_match_time;
     private ImageView lp_bt_open;
     private LinearLayout lp_ll_extension;
     private Button lp_bt_defense;
@@ -79,6 +80,7 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
         lp_ll_point_live = (LinearLayout) findViewById(R.id.lp_ll_point_live);
         lp_tv_title = (TextView) findViewById(R.id.lp_tv_title);
         lp_time = (Chronometer) findViewById(R.id.lp_time);
+        lp_match_time = (Chronometer) findViewById(R.id.lp_match_time);
         lp_bt_open = (ImageView) findViewById(R.id.lp_bt_open);
         lp_ll_extension = (LinearLayout) findViewById(R.id.lp_ll_extension);
         lp_bt_defense = (Button) findViewById(R.id.lp_bt_defense);
@@ -113,12 +115,12 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
 
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
 
         refreshLivePoint();
+        MyApplication.getInstance().getBus().register(this);
 
     }
 
@@ -126,8 +128,11 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
     protected void onPause() {
         super.onPause();
 
+        MyApplication.getInstance().getBus().unregister(this);
+
         //Sinon probleme de memoire
         lp_time.stop();
+        lp_match_time.stop();
     }
 
     @Override
@@ -144,7 +149,8 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
         //1 car sinon le 1er revient vers un ecran blanc
         if (getFragmentManager().getBackStackEntryCount() > 1) {
             getFragmentManager().popBackStack();
-        } else {
+        }
+        else {
             super.onBackPressed();
         }
     }
@@ -159,25 +165,31 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
             //si le pint est demare but pour l'equipe adverse
             if (livePoint.getStart() != null) {
                 stopPoint(false);
-            } else {
+            }
+            else {
                 //debut du point en defense
                 startPoint(false);
             }
 
-        } else if (v == lp_bt_offense) {
+        }
+        else if (v == lp_bt_offense) {
             //si le point est demare but pour l'equipe
             if (livePoint.getStart() != null) {
                 stopPoint(true);
-            } else {
+            }
+            else {
                 //debut du point en attaque
                 startPoint(true);
             }
-        } else if (v == lp_tv_manage_player) {
+        }
+        else if (v == lp_tv_manage_player) {
             gotoLivePoint();
-        } else if (v == lp_bt_open) {
+        }
+        else if (v == lp_bt_open) {
             //Ouvre / ferme l'extension
             openLivePoint(lp_ll_extension.getVisibility() != View.VISIBLE, true);
-        } else if (v == lp_tv_previous_point) {
+        }
+        else if (v == lp_tv_previous_point) {
 
             //LE point 1 est le 1er point on ne revient pas avant
             if (getLiveMatch().getCurrentPoint() > 1) {
@@ -187,7 +199,8 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
 
                 MyApplication.getInstance().getBus().post(OttoRefreshEvent.CHANGE_POINT);
             }
-        } else if (v == lp_tv_next_point) {
+        }
+        else if (v == lp_tv_next_point) {
 
             //On passe au point suivant  s'il y en a plus on l'ajoute
             if (getLiveMatch().getCurrentPoint() == getLiveMatch().getPointBeanList().size()) {
@@ -206,15 +219,16 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
             //On decale de 1 le current point
             getLiveMatch().setCurrentPoint(getLiveMatch().getCurrentPoint() + 1);
 
-
             refreshLivePoint();
 
             MyApplication.getInstance().getBus().post(OttoRefreshEvent.CHANGE_POINT);
-        } else if (v == lp_iv_play) {
+        }
+        else if (v == lp_iv_play) {
             if (livePoint.getPause()) {
                 //ne sera pas comptabilise car point deja demarre
                 startPoint(true);
-            } else {
+            }
+            else {
                 pausePoint();
             }
 
@@ -237,6 +251,18 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
                 return super.onOptionsItemSelected(item);
         }
 
+    }
+
+    /* ---------------------------------
+    // Otto
+    // -------------------------------- */
+    @Subscribe
+    public void ottoEvent(OttoRefreshEvent ottoRefreshEvent) {
+        switch (ottoRefreshEvent) {
+            case MATCH_END:
+                refreshLivePoint();
+                break;
+        }
     }
 
     /* ---------------------------------
@@ -279,7 +305,8 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
         //Si c'est le match en cours on utilise le bean du match pour le maintenir a jour.
         if (getLiveMatch() != null && getLiveMatch().getId() == matchBean.getId()) {
             matchFragment.setMatchBean(getLiveMatch());
-        } else {
+        }
+        else {
             matchFragment.setMatchBean(matchBean);
         }
 
@@ -295,7 +322,6 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
         gotoPoint(getLiveMatch(), livePoint);
     }
 
-
     public void gotoPoint(MatchBean matchBean, PointBean pointBean) {
 
         getFragmentManager().popBackStack(MatchFragment.class.getName(), 0);
@@ -305,7 +331,8 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
         if (livePoint != null && livePoint.getId() == pointBean.getId()) {
             pointFragment.setPointBean(livePoint);
             pointFragment.setMatchBean(getLiveMatch());
-        } else {
+        }
+        else {
             pointFragment.setPointBean(pointBean);
             pointFragment.setMatchBean(matchBean);
         }
@@ -336,16 +363,18 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
 
     }
 
-
     /* ---------------------------------
     // LIVE POINT
     // -------------------------------- */
 
     public void refreshLivePoint() {
+
+        long now = new Date().getTime();
         //On met a jour le livePoint
         try {
             livePoint = MyApplication.getInstance().getLivePoint();
-        } catch (TechnicalException e) {
+        }
+        catch (TechnicalException e) {
             DialogUtils.getOkDialog(this, R.drawable.ic_launcher, R.string.erreur_generique,
                     "Erreur sur le LivePoint" + " : " + e.getMessageTechnique());
         }
@@ -362,8 +391,7 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
                 //Si le point est en cours on met la duree du point + le temps depuis la derniere reprise de pause
                 else {
 
-                    lp_time.setBase(SystemClock.elapsedRealtime() - (new Date().getTime() - livePoint.getPauseTime().getTime())
-                            + livePoint.getLength());
+                    lp_time.setBase(SystemClock.elapsedRealtime() - (now - livePoint.getPauseTime().getTime()) + livePoint.getLength());
                     lp_time.start();
                 }
             }
@@ -372,6 +400,25 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
                 lp_time.setBase(SystemClock.elapsedRealtime());
                 lp_time.stop();
             }
+        }
+
+        //init chrono match
+        if (getLiveMatch() != null && getLiveMatch().getStart() != null) {
+
+            //Si le match est fini
+            if (getLiveMatch().getEnd() != null) {
+                lp_match_time.setBase(SystemClock.elapsedRealtime() - (getLiveMatch().getEnd().getTime() - getLiveMatch().getStart().getTime()));
+                lp_match_time.stop();
+            }
+            else {
+                lp_match_time.setBase(SystemClock.elapsedRealtime() - (now - getLiveMatch().getStart().getTime()));
+                lp_match_time.start();
+            }
+
+        }
+        else {
+            lp_match_time.setBase(SystemClock.elapsedRealtime());
+            lp_match_time.stop();
         }
 
         //On met a jour l'UI du point
@@ -384,7 +431,8 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
         if (withAntimation) {
             Animation animation = AnimationUtils.loadAnimation(this, open ? R.anim.rotate_left : R.anim.rotate_right);
             lp_bt_open.startAnimation(animation);
-        } else if (open) {
+        }
+        else if (open) {
             Animation animation = AnimationUtils.loadAnimation(this, open ? R.anim.rotate_left : R.anim.rotate_right);
             animation.setDuration(0);
             lp_bt_open.startAnimation(animation);
@@ -414,7 +462,8 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
             if (pointBean.getTeamGoal() != null) {
                 if (pointBean.getTeamGoal()) {
                     teamScore++;
-                } else {
+                }
+                else {
                     opponentScore++;
                 }
             }
@@ -440,7 +489,6 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
                 lp_bt_defense.setTextColor(Utils.getColorFromTheme(GeneriqueActivity.this, R.attr.color_text_main));
                 lp_bt_offense.setTextColor(lp_bt_defense.getCurrentTextColor());
 
-
                 //Bouton 1 defense ou but contre
                 //bouton 2 offense ou but pour
 
@@ -453,7 +501,8 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
                     //Si on n'est pas en pause on affiche le bouton de pause
                     if (!livePoint.getPause()) {
                         lp_iv_play.setImageResource(R.drawable.pause);
-                    } else {
+                    }
+                    else {
                         //Bouton de lecture
                         lp_iv_play.setImageResource(R.drawable.play);
                     }
@@ -463,12 +512,14 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
                         //On indique en selectionne le bouton choisi
                         if (livePoint.getTeamGoal()) {
                             lp_bt_offense.setTextColor(getResources().getColor(R.color.see_green));
-                        } else {
+                        }
+                        else {
                             lp_bt_defense.setTextColor(getResources().getColor(R.color.see_green));
                         }
                         lp_tv_next_point.setVisibility(View.VISIBLE);
                     }
-                } else {
+                }
+                else {
                     lp_bt_defense.setText(getString(R.string.lp_defense));
                     lp_bt_offense.setText(getString(R.string.lp_offense));
                     lp_iv_play.setVisibility(View.GONE);
@@ -499,11 +550,13 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
                 livePoint.setPause(false);
                 livePoint.setStop(null); //si jamais on reprend un point arrete
                 livePoint.setTeamGoal(null);
-            } else {
+            }
+            else {
                 //s'il est deja en cours on ne fait rien
                 ToastUtils.showToastOnUIThread(this, "Point already in progress...");
             }
-        } else {
+        }
+        else {
             //Si le point n'est pas demarre on le demarre
             Date date = new Date();
             livePoint.setStart(date);
@@ -512,14 +565,21 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
             livePoint.setTeamOffense(withOffense);
 
             //Si le match n'est pas demarre on demarre le match
-            if (livePoint.getMatchBean().getStart() == null) {
-                livePoint.getMatchBean().setStart(date);
+            if (getLiveMatch().getStart() == null) {
+                getLiveMatch().setStart(date);
 
                 //On sauvegarde le match
-                MatchDaoManager.getMatchBeanDao().update(livePoint.getMatchBean());
+                MatchDaoManager.getMatchBeanDao().update(getLiveMatch());
 
                 //On propage l'evenement que le match démarre
                 MyApplication.getInstance().getBus().post(OttoRefreshEvent.MATCH_START);
+
+                //Si le match n'est pas terminée on relance le timer
+                if (getLiveMatch().getEnd() == null) {
+                    //On lance le chrono du match
+                    lp_match_time.setBase(SystemClock.elapsedRealtime());
+                    lp_match_time.start();
+                }
             }
         }
 
@@ -561,7 +621,6 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
         }
         livePoint.setTeamGoal(goalUs);
         pausePoint();
-
 
         //On indique l'evenement que le score a changé
         MyApplication.getInstance().getBus().post(OttoRefreshEvent.SCORE_CHANGE);

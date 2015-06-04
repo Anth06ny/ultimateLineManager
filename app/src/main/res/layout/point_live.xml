@@ -25,11 +25,28 @@
 
         <Chronometer
             android:id="@+id/lp_time"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-
-            android:layout_marginRight="@dimen/margin_10"
             android:layout_weight="1"
+            android:gravity="center_vertical|right"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_13"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/margin_5"
+            android:layout_marginRight="@dimen/margin_5"
+            android:gravity="center"
+            android:text="/"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/white"/>
+
+        <Chronometer
+            android:id="@+id/lp_match_time"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/margin_10"
             android:gravity="center_vertical|right"
             android:textColor="@color/white"
             android:textSize="@dimen/font_13"/>
