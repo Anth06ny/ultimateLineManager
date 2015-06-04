@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -239,12 +240,26 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
     // Menu
     // -------------------------------- */
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_application, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
     public boolean onOptionsItemSelected(MenuItem item) {
 
         //On surcharge la fleche de retour pour eviter de perdre les objet en intent
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                return true;
+
+            case R.id.menu_setting:
+                ToastUtils.showNotImplementedToast(this);
+                return true;
+
+            case R.id.menu_about:
+                ToastUtils.showNotImplementedToast(this);
                 return true;
 
             default:
