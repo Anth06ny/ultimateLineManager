@@ -457,6 +457,8 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
         //On calcule le score
         int teamScore = 0;
         int opponentScore = 0;
+        int numberPoint = 0; //Permet d'avoir le score du dernier point (le plus élévé)
+        Boolean lastTeamScore = null; //Aucune equipe, false pour les adversaires, true pour l'equipe
         for (PointBean pointBean : getLiveMatch().getPointBeanList()) {
             //Uniquement les points joues
             if (pointBean.getTeamGoal() != null) {
@@ -466,8 +468,13 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
                 else {
                     opponentScore++;
                 }
+                if (pointBean.getNumber() > numberPoint) {
+                    lastTeamScore = pointBean.getTeamGoal();
+                    numberPoint = pointBean.getNumber();
+                }
             }
         }
+        final Boolean finalLastTeamScore = lastTeamScore;
 
         final String liveTitle = "(P" + livePoint.getNumber() + ") " + getTeamBean().getName() + " " + teamScore + " - " + opponentScore + " "
                 + getLiveMatch().getName();
@@ -522,6 +529,15 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
                 else {
                     lp_bt_defense.setText(getString(R.string.lp_defense));
                     lp_bt_offense.setText(getString(R.string.lp_offense));
+
+                    //On change la couleur en fonction du dernier point
+                    if (finalLastTeamScore != null && finalLastTeamScore) {
+                        lp_bt_defense.setTextColor(getResources().getColor(R.color.see_green));
+                    }
+                    else if (finalLastTeamScore != null && !finalLastTeamScore) {
+                        lp_bt_offense.setTextColor(getResources().getColor(R.color.see_green));
+                    }
+
                     lp_iv_play.setVisibility(View.GONE);
                     //Tant que le point n'a pas démare on peut revenir a celui d'avant s'il y en a
                     if (getLiveMatch().getCurrentPoint() > 1) {

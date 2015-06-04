@@ -36,7 +36,6 @@ public class MyApplication extends Application {
     //Live point
     //TODO Ajout du bouton pour changer offense / defense pendant le point
     //TODO bug reprise de point
-    //TODO temps du match global
     //TODO changement de couleur pour joueur qui n'a pas jouer depuis longtemps
     //TODO precolorer start offense ou defense
 
