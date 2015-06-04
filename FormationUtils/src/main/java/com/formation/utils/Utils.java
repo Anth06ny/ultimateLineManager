@@ -3,6 +3,7 @@ package com.formation.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Environment;
 import android.text.Html;
 import android.util.TypedValue;
@@ -92,17 +93,13 @@ public class Utils {
      */
     public static void sendMail(Context context, String subject, String text) {
 
-        Intent i = new Intent(Intent.ACTION_SEND);
-        i.setType("message/rfc822");
-        i.putExtra(Intent.EXTRA_SUBJECT, subject);
-        i.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(text));
-
-        try {
-            context.startActivity(Intent.createChooser(i, "Send mail..."));
-        }
-        catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(context, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
-        }
+        Intent intent = new Intent(Intent.ACTION_SENDTO); // it's not ACTION_SEND
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(text));
+        intent.setData(Uri.parse("mailto:")); // or just "mailto:" for blank
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // this will make such that when user returns to your app, your app is displayed, instead of the email app.
+        context.startActivity(intent);
     }
 
 }
