@@ -333,7 +333,7 @@ public class StatFragment extends MainFragment implements View.OnClickListener {
                     offense = false;
                 }
                 pointBuilder.append(" ");
-                if (pointBean.getTeamGoal() != null && pointBean.getTeamOffense()) {
+                if (pointBean.getTeamGoal() != null && pointBean.getTeamGoal()) {
                     pointBuilder.append(getString(R.string.stat_win_word));
                     if (offense) {
                         attaqueSuccessNumber++;
@@ -342,6 +342,7 @@ public class StatFragment extends MainFragment implements View.OnClickListener {
                         defenseSuccesnumber++;
                     }
                 }
+
                 pointBuilder.append(subTitleClose);
 
                 //Les joueurs du points
