@@ -134,13 +134,13 @@
     <!-- ****************** -->
     <string name="stat_title">Statistics</string>
     <string name="stat_playing_time">Playing time : </string>
-    <string name="stat_playing_time_value">%1$smin / %2$s point(s)</string>
+    <string name="stat_playing_time_value">%2$s point(s) / %1$smin</string>
     <string name="stat_goal_attaque">Attaque (goal/number) : </string>
     <string name="stat_goal_attaque_value">%1$s / %2$s</string>
     <string name="stat_goal_defense">Defense (goal/number)  : </string>
     <string name="stat_goal_defense_value">%1$s / %2$s</string>
-    <string name="stat_lucky">Lucky player : </string>
-    <string name="stat_unlucky">Unlucky player : </string>
+    <string name="stat_lucky">Lucky player (best success point ratio) : </string>
+    <string name="stat_unlucky">Unlucky player (bad success point ratio) : </string>
     <string name="stat_send_mail">Send by mail</string>
     <string name="stat_defense_word">Defense</string>
     <string name="stat_offense_word">Offense</string>

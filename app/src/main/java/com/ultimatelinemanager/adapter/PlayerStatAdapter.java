@@ -19,11 +19,14 @@ public class PlayerStatAdapter extends RecyclerView.Adapter<PlayerStatAdapter.Vi
 
     private List<PlayerStatBean> daoList;
     private Context context;
-
+    private int girlColor, boyColor;
 
     public PlayerStatAdapter(Context context, List<PlayerStatBean> daoList) {
         this.daoList = daoList;
         this.context = context;
+
+        girlColor = context.getResources().getColor(R.color.girl_color);
+        boyColor = context.getResources().getColor(R.color.boy_color);
     }
 
     /* ---------------------------------
@@ -45,18 +48,24 @@ public class PlayerStatAdapter extends RecyclerView.Adapter<PlayerStatAdapter.Vi
 
         //titre
         holder.rps_name.setText(playerStatBean.getPlayerBean().getName());
+        if (playerStatBean.getPlayerBean().getSexe()) {
+            holder.rps_name.setTextColor(boyColor);
+        }
+        else {
+            holder.rps_name.setTextColor(girlColor);
+        }
 
         //PlayingTime
-        holder.stat_tv_playing_time_value.setText(context.getResources().getString(R.string.stat_playing_time_value
-                , playerStatBean.getPlayingTime(), playerStatBean.getNumberPoint()));
+        holder.stat_tv_playing_time_value.setText(context.getResources().getString(R.string.stat_playing_time_value, playerStatBean.getPlayingTime(),
+                playerStatBean.getNumberPoint()));
 
         //Goal Attaque
-        holder.stat_goal_attaque_value.setText(context.getResources().getString(R.string.stat_goal_attaque_value
-                , playerStatBean.getGoalAttaqueSuccess(), playerStatBean.getGoalAttaque()));
+        holder.stat_goal_attaque_value.setText(context.getResources().getString(R.string.stat_goal_attaque_value,
+                playerStatBean.getGoalAttaqueSuccess(), playerStatBean.getGoalAttaque()));
 
         //Goal Defense
-        holder.stat_goal_defense_value.setText(context.getResources().getString(R.string.stat_goal_defense_value
-                , playerStatBean.getGoalDefenseSuccess(), playerStatBean.getGoalDefense()));
+        holder.stat_goal_defense_value.setText(context.getResources().getString(R.string.stat_goal_defense_value,
+                playerStatBean.getGoalDefenseSuccess(), playerStatBean.getGoalDefense()));
 
     }
 
@@ -76,7 +85,6 @@ public class PlayerStatAdapter extends RecyclerView.Adapter<PlayerStatAdapter.Vi
         public final TextView stat_goal_attaque_value;
         public final TextView stat_goal_defense_value;
 
-
         public ViewHolder(View itemView) {
             super(itemView);
             rps_name = (TextView) itemView.findViewById(R.id.rps_name);
@@ -85,8 +93,6 @@ public class PlayerStatAdapter extends RecyclerView.Adapter<PlayerStatAdapter.Vi
             stat_goal_defense_value = (TextView) itemView.findViewById(R.id.stat_goal_defense_value);
         }
 
-
     }
-
 
 }

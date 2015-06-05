@@ -243,6 +243,28 @@ public class StatFragment extends MainFragment implements View.OnClickListener {
 
         }
 
+        //on trie les joueurs par sexe puis par temps de jeu
+        Collections.sort(playerStatBeanList, new Comparator<PlayerStatBean>() {
+            @Override
+            public int compare(PlayerStatBean lhs, PlayerStatBean rhs) {
+                //on trie d'abord par le sexe
+                if (lhs.getPlayerBean().getSexe() && !rhs.getPlayerBean().getSexe()) {
+                    return -1;
+                }
+                else if (!lhs.getPlayerBean().getSexe() && rhs.getPlayerBean().getSexe()) {
+                    return 1;
+                }
+                //si le temps de jeu est identique on trie par le nom
+                else if (lhs.getPlayingTime() == rhs.getPlayingTime()) {
+                    return lhs.getPlayerBean().getName().compareTo(rhs.getPlayerBean().getName());
+                }
+                else {
+                    //Si du même sexe par temps de jeu
+                    return (int) (rhs.getPlayingTime() - lhs.getPlayingTime());
+                }
+            }
+        });
+
         adapter.notifyDataSetChanged();
 
         //ON affiche nos joueurs chanceux et malchanceux
@@ -262,13 +284,108 @@ public class StatFragment extends MainFragment implements View.OnClickListener {
 
     private String createMailText() {
 
-        StringBuilder stringBuilder = new StringBuilder();
-        String titleOpen = "<big><big><font color='#106783' size='16'><u><b>";
+        //on passe par une liste intermediaire pour ne pas changer l'ordre
+        List<PointBean> temp = new ArrayList<>();
+        temp.addAll(matchBean.getPointBeanList());
+
+        //On parcourt tous les points du match trier par numéro
+        Collections.sort(temp, new Comparator<PointBean>() {
+            @Override
+            public int compare(PointBean lhs, PointBean rhs) {
+                return lhs.getNumber() - rhs.getNumber();
+            }
+        });
+        String girlColor = "#FF358B";
+        String boyColor = "#01B0F0";
+        String titleOpen = "<big><big><font color='#106783'><u><b>";
         String titleClose = "</u></b></font></big></big>\n";
-        String subTitleOpen = "<big><font color='#018bba' size='13' ><b>";
+        String subTitleOpen = "<big><font color='#018bba'><b>";
+        String boySubTitle = "<big><font color='" + boyColor + "'><b>";
+        String girlSubTitle = "<big><font color='" + girlColor + "'><b>";
         String subTitleClose = "</b></font></big>\n";
         String label = "<font color='#00B9F1'>";
         String labelClose = "</font>";
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        //--------------------
+        //Point
+        //--------------------
+        int attaqueNumber = 0, attaqueSuccessNumber = 0, defenseNumber = 0, defenseSuccesnumber = 0;
+        StringBuilder pointBuilder = new StringBuilder();
+
+        for (PointBean pointBean : temp) {
+            //Que les points joués
+            if (pointBean.getStop() != null) {
+                //Point 3 : Defense Win
+                pointBuilder.append(subTitleOpen).append("Point ").append(pointBean.getNumber()).append(" (");
+                pointBuilder.append(Utils.timeToMMSS(pointBean.getLength())).append(") ");
+                boolean offense;
+
+                if (pointBean.getTeamOffense() != null && pointBean.getTeamOffense()) {
+                    pointBuilder.append(getString(R.string.stat_offense_word));
+                    attaqueNumber++;
+                    offense = true;
+                }
+                else {
+                    pointBuilder.append(getString(R.string.stat_defense_word));
+                    defenseNumber++;
+                    offense = false;
+                }
+                pointBuilder.append(" ");
+                if (pointBean.getTeamGoal() != null && pointBean.getTeamOffense()) {
+                    pointBuilder.append(getString(R.string.stat_win_word));
+                    if (offense) {
+                        attaqueSuccessNumber++;
+                    }
+                    else {
+                        defenseSuccesnumber++;
+                    }
+                }
+                pointBuilder.append(subTitleClose);
+
+                //Les joueurs du points
+                for (PlayerPoint pp : pointBean.getPlayerPointList()) {
+                    pointBuilder.append("  -").append("<font color='").append(pp.getPlayerBean().getSexe() ? boyColor : girlColor).append("'>")
+                            .append(pp.getPlayerBean().getName()).append("</font>\n");
+                }
+
+                pointBuilder.append("\n");
+            }
+        }
+        pointBuilder.append("\n\n");
+
+        //--------------------
+        //Players
+        //--------------------
+        StringBuilder playerBuilder = new StringBuilder();
+        playerBuilder.append(titleOpen).append("Players").append(titleClose);
+
+        playerBuilder.append(label).append(getString(R.string.stat_lucky)).append(" ").append(labelClose).append(stat_tv_lucky.getText())
+                .append("\n");
+
+        playerBuilder.append(label).append(getString(R.string.stat_unlucky)).append(" ").append(labelClose).append(stat_tv_unlucky.getText())
+                .append("\n\n");
+
+        for (PlayerStatBean playerStatBean : playerStatBeanList) {
+            //nom
+            playerBuilder.append(playerStatBean.getPlayerBean().getSexe() ? boySubTitle : girlSubTitle)
+                    .append(playerStatBean.getPlayerBean().getName()).append(subTitleClose);
+            //temps de jeu 1min/1pts
+            playerBuilder.append(label).append(getString(R.string.stat_playing_time)).append(" ").append(labelClose)
+                    .append(getString(R.string.stat_playing_time_value, playerStatBean.getPlayingTime(), playerStatBean.getNumberPoint()))
+                    .append("\n");
+            //Attaque (success) 0/3
+            playerBuilder.append(label).append(getString(R.string.stat_goal_attaque)).append(" ").append(labelClose)
+                    .append(getString(R.string.stat_goal_attaque_value, playerStatBean.getGoalAttaqueSuccess(), playerStatBean.getGoalAttaque()))
+                    .append("\n");
+            //Defense 0/2
+            playerBuilder.append(label).append(getString(R.string.stat_goal_defense)).append(" ").append(labelClose)
+                    .append(getString(R.string.stat_goal_defense_value, playerStatBean.getGoalDefenseSuccess(), playerStatBean.getGoalDefense()))
+                    .append("\n\n");
+        }
+
+        playerBuilder.append("\n\n");
 
         //--------------------
         //Team 3 - 2 Opponent
@@ -285,75 +402,20 @@ public class StatFragment extends MainFragment implements View.OnClickListener {
                 .append("\n");
         //ReelPlayingTime
         stringBuilder.append(label).append(getString(R.string.ma_reel_playing_time)).append(labelClose).append(ma_tv_reel_playing_time.getText())
-                .append("\n\n\n");
-
-        //--------------------
-        //Point
-        //--------------------
-
-        //On parcourt tous les points du match trier par numéro
-        Collections.sort(matchBean.getPointBeanList(), new Comparator<PointBean>() {
-            @Override
-            public int compare(PointBean lhs, PointBean rhs) {
-                return lhs.getNumber() - rhs.getNumber();
-            }
-        });
-        for (PointBean pointBean : matchBean.getPointBeanList()) {
-            //Que les points joués
-            if (pointBean.getStop() != null) {
-                //Point 3 : Defense Win
-                stringBuilder.append(subTitleOpen).append("Point ").append(pointBean.getNumber()).append(" (");
-                stringBuilder.append(Utils.timeToMMSS(pointBean.getLength())).append(") ");
-
-                if (pointBean.getTeamOffense() != null && pointBean.getTeamOffense()) {
-                    stringBuilder.append(getString(R.string.stat_offense_word));
-                }
-                else {
-                    stringBuilder.append(getString(R.string.stat_defense_word));
-                }
-                stringBuilder.append(" ");
-                if (pointBean.getTeamGoal() != null && pointBean.getTeamOffense()) {
-                    stringBuilder.append(getString(R.string.stat_win_word));
-                }
-                stringBuilder.append(subTitleClose);
-
-                //Les joueurs du points
-                for (PlayerPoint pp : pointBean.getPlayerPointList()) {
-                    stringBuilder.append("  -").append(pp.getPlayerBean().getName()).append("\n");
-                }
-
-                stringBuilder.append("\n");
-            }
-        }
-        stringBuilder.append("\n\n");
-
-        //--------------------
-        //Players
-        //--------------------
-        stringBuilder.append(titleOpen).append("Players").append(titleClose);
-
-        stringBuilder.append(label).append(getString(R.string.stat_lucky)).append(" ").append(labelClose).append(stat_tv_lucky.getText())
                 .append("\n");
 
-        stringBuilder.append(label).append(getString(R.string.stat_unlucky)).append(" ").append(labelClose).append(stat_tv_unlucky.getText())
-                .append("\n\n");
+        //Point attaque équipe
+        stringBuilder.append(label).append(getString(R.string.stat_goal_attaque)).append(labelClose)
+                .append(getString(R.string.stat_goal_attaque_value, attaqueSuccessNumber, attaqueNumber)).append("\n");
+        //Point defense équipe
+        stringBuilder.append(label).append(getString(R.string.stat_goal_defense)).append(labelClose)
+                .append(getString(R.string.stat_goal_defense_value, defenseSuccesnumber, defenseNumber)).append("\n\n\n");
 
-        for (PlayerStatBean playerStatBean : playerStatBeanList) {
-            //nom
-            stringBuilder.append(subTitleOpen).append(playerStatBean.getPlayerBean().getName()).append(subTitleClose);
-            //temps de jeu 1min/1pts
-            stringBuilder.append(label).append(getString(R.string.stat_playing_time)).append(" ").append(labelClose)
-                    .append(getString(R.string.stat_playing_time_value, playerStatBean.getPlayingTime(), playerStatBean.getNumberPoint()))
-                    .append("\n");
-            //Attaque (success) 0/3
-            stringBuilder.append(label).append(getString(R.string.stat_goal_attaque)).append(" ").append(labelClose)
-                    .append(getString(R.string.stat_goal_attaque_value, playerStatBean.getGoalAttaqueSuccess(), playerStatBean.getGoalAttaque()))
-                    .append("\n");
-            //Defense 0/2
-            stringBuilder.append(label).append(getString(R.string.stat_goal_defense)).append(" ").append(labelClose)
-                    .append(getString(R.string.stat_goal_defense_value, playerStatBean.getGoalDefenseSuccess(), playerStatBean.getGoalDefense()))
-                    .append("\n\n");
-        }
+        //player
+        stringBuilder.append(playerBuilder);
+        stringBuilder.append("\n----------------------------------------------\n\n");
+        //point
+        stringBuilder.append(pointBuilder);
 
         return stringBuilder.toString().replace("\n", "<br />");
     }
