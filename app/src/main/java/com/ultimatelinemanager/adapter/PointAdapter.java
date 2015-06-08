@@ -2,6 +2,7 @@ package com.ultimatelinemanager.adapter;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,7 +80,7 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
             holder.rp_iv_offense.setVisibility(View.INVISIBLE);
 
             //Statut
-            holder.cv.setBackgroundColor(notStartHexaColor);
+            holder.cv.setCardBackgroundColor(notStartHexaColor);
 
             //playingTime
             holder.ma_tv_playing_time.setText(Constante.EMPTY);
@@ -94,11 +95,11 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
             //Statut
             if (pointBean.getTeamGoal() == null) {
                 //Point en cours
-                holder.cv.setBackgroundColor(inProgressHexaColor);
+                holder.cv.setCardBackgroundColor(inProgressHexaColor);
             }
             else {
                 //point terminé
-                holder.cv.setBackgroundColor(finishedHexaColor);
+                holder.cv.setCardBackgroundColor(finishedHexaColor);
             }
 
             //playing time
@@ -161,7 +162,8 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
         public LinearLayout rp_ll_players;
         public TextView tv_show_players;
         public TextView tv_delete_point;
-        public View root, cv;
+        public CardView cv;
+        public View root;
 
         //Data
         public PointBean pointBean;
@@ -174,7 +176,7 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
                 List<PointBean> pointBeanList, PointAdapterCB pointAdapterCB) {
             super(itemView);
             root = itemView.findViewById(R.id.root);
-            cv = itemView.findViewById(R.id.cv);
+            cv = (CardView) itemView.findViewById(R.id.cv);
             rp_iv_result = (ImageView) itemView.findViewById(R.id.rp_iv_result);
             rp_iv_offense = (ImageView) itemView.findViewById(R.id.rp_iv_offense);
             rp_title = (TextView) itemView.findViewById(R.id.rp_title);

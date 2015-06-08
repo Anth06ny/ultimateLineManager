@@ -2,6 +2,7 @@ package com.ultimatelinemanager.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -110,7 +111,8 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
                 //Couleur de l'image
                 if (playerBean.getSexe()) {
                     holder.iv_main.setColorFilter(boyColor);
-                } else {
+                }
+                else {
                     holder.iv_main.setColorFilter(girlColor);
                 }
 
@@ -132,7 +134,8 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
                     if (matchBean.getEnd() == null) {
                         hexColor = inProgressHexaColor;
                         statut = context.getString(R.string.tm_list_statut_in_progress);
-                    } else {
+                    }
+                    else {
                         hexColor = finishedHexaColor;
                         statut = context.getString(R.string.tm_list_statut_finish);
                     }
@@ -149,9 +152,10 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
 
                 //Si c'est le match en cours
                 if (MyApplication.getInstance().getLiveMatch() != null && MyApplication.getInstance().getLiveMatch().getId() == matchBean.getId()) {
-                    holder.cv.setBackgroundColor(selectedColor);
-                } else {
-                    holder.cv.setBackgroundColor(Color.WHITE);
+                    holder.cv.setCardBackgroundColor(selectedColor);
+                }
+                else {
+                    holder.cv.setCardBackgroundColor(Color.WHITE);
                 }
 
                 break;
@@ -170,7 +174,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
 
     protected static class ViewHolder<T> extends RecyclerView.ViewHolder implements View.OnClickListener {
         //Composant graphique
-        public View cv;
+        public CardView cv;
         public final TextView row_tv1;
         public final TextView row_tv2;
         public TextView row_tv3;
@@ -182,7 +186,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
 
         public ViewHolder(View itemView, TYPE type1, SelectAdapterI callBack) {
             super(itemView);
-            cv = itemView.findViewById(R.id.cv);
+            cv = (CardView) itemView.findViewById(R.id.cv);
             row_tv1 = (TextView) itemView.findViewById(R.id.row_tv1);
             row_tv2 = (TextView) itemView.findViewById(R.id.row_tv2);
             root = itemView.findViewById(R.id.root);
@@ -222,7 +226,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
     // -------------------------------- */
 
     public interface SelectAdapterI<T> {
-         void selectAdapter_onClick(T bean);
+        void selectAdapter_onClick(T bean);
     }
 
 }
