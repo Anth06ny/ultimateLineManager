@@ -27,7 +27,12 @@ public class MyApplication extends Application {
 
     //Appli
     //TODO ecran about
-    //TODO ecran reglage appli : Email
+
+    //TODO dans la création d'une équipe donner le nom de la compétition
+
+    //Parametre
+    //TODO ecran reglage appli : Email, choix des filtres, matche mixte
+    //TODO ecran parametre : temps alerte joueur pas jouer.
 
     //Statistique
 
@@ -39,7 +44,7 @@ public class MyApplication extends Application {
 
     //Match
     //TODO Ajout de la roue sur un point pour changer but pour / contre et attaque defense
-    //TODO ecran parametre : temps alerte joueur pas jouer. Mixte
+
 
     //Team
     //TODO selection multiplayer
