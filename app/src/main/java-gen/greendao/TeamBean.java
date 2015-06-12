@@ -13,6 +13,7 @@ public class TeamBean implements java.io.Serializable {
     private Long id;
     /** Not-null value. */
     private String name;
+    private String tournament;
     /** Not-null value. */
     private java.util.Date creation;
 
@@ -32,9 +33,10 @@ public class TeamBean implements java.io.Serializable {
         this.id = id;
     }
 
-    public TeamBean(Long id, String name, java.util.Date creation) {
+    public TeamBean(Long id, String name, String tournament, java.util.Date creation) {
         this.id = id;
         this.name = name;
+        this.tournament = tournament;
         this.creation = creation;
     }
 
@@ -60,6 +62,14 @@ public class TeamBean implements java.io.Serializable {
     /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getTournament() {
+        return tournament;
+    }
+
+    public void setTournament(String tournament) {
+        this.tournament = tournament;
     }
 
     /** Not-null value. */

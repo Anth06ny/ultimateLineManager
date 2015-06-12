@@ -25,7 +25,8 @@ public class TeamBeanDao extends AbstractDao<TeamBean, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Name = new Property(1, String.class, "name", false, "NAME");
-        public final static Property Creation = new Property(2, java.util.Date.class, "creation", false, "CREATION");
+        public final static Property Tournament = new Property(2, String.class, "tournament", false, "TOURNAMENT");
+        public final static Property Creation = new Property(3, java.util.Date.class, "creation", false, "CREATION");
     };
 
     private DaoSession daoSession;
@@ -46,7 +47,8 @@ public class TeamBeanDao extends AbstractDao<TeamBean, Long> {
         db.execSQL("CREATE TABLE " + constraint + "'TEAM_BEAN' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
                 "'NAME' TEXT NOT NULL ," + // 1: name
-                "'CREATION' INTEGER NOT NULL );"); // 2: creation
+                "'TOURNAMENT' TEXT," + // 2: tournament
+                "'CREATION' INTEGER NOT NULL );"); // 3: creation
     }
 
     /** Drops the underlying database table. */
@@ -65,7 +67,12 @@ public class TeamBeanDao extends AbstractDao<TeamBean, Long> {
             stmt.bindLong(1, id);
         }
         stmt.bindString(2, entity.getName());
-        stmt.bindLong(3, entity.getCreation().getTime());
+ 
+        String tournament = entity.getTournament();
+        if (tournament != null) {
+            stmt.bindString(3, tournament);
+        }
+        stmt.bindLong(4, entity.getCreation().getTime());
     }
 
     @Override
@@ -86,7 +93,8 @@ public class TeamBeanDao extends AbstractDao<TeamBean, Long> {
         TeamBean entity = new TeamBean( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.getString(offset + 1), // name
-            new java.util.Date(cursor.getLong(offset + 2)) // creation
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // tournament
+            new java.util.Date(cursor.getLong(offset + 3)) // creation
         );
         return entity;
     }
@@ -96,7 +104,8 @@ public class TeamBeanDao extends AbstractDao<TeamBean, Long> {
     public void readEntity(Cursor cursor, TeamBean entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setName(cursor.getString(offset + 1));
-        entity.setCreation(new java.util.Date(cursor.getLong(offset + 2)));
+        entity.setTournament(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setCreation(new java.util.Date(cursor.getLong(offset + 3)));
      }
     
     /** @inheritdoc */

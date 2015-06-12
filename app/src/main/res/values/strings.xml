@@ -7,6 +7,7 @@
     <string name="app_name">UltimateLineManager</string>
     <string name="add">Add</string>
     <string name="save">Save</string>
+    <string name="create">Create</string>
     <string name="delete">Delete</string>
     <string name="rename">Rename</string>
     <string name="handler">Handler</string>
@@ -32,7 +33,10 @@
     <!-- ################ -->
     <string name="st_title">Select team</string>
     <string name="st_menu_add">New Team</string>
-    <string name="st_ask_team_name">Team Name : </string>
+    <string name="st_ask_team_name">Team name* : </string>
+    <string name="st_ask_competition_name">Tournament name : </string>
+    <string name="st_same_player_than">Start with same players than as the tournament\n(You can add or remove
+        player after) : </string>
     <string name="st_team_not_add">Team hasn\'t been added</string>
     <string name="st_no_team">No team registered</string>
 

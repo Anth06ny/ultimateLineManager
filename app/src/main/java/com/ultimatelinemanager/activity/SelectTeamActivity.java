@@ -72,7 +72,7 @@ public class SelectTeamActivity extends AppCompatActivity implements SelectAdapt
         super.onStart();
         //On met à jour la liste
         teamBeanList.clear();
-        teamBeanList.addAll(TeamDaoManager.getLast50Team());
+        teamBeanList.addAll(TeamDaoManager.getLast30Team());
 
         adapter.notifyDataSetChanged();
 

@@ -21,10 +21,15 @@ import com.formation.utils.Utils;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.bean.Role;
 import com.ultimatelinemanager.dao.PlayerDaoManager;
+import com.ultimatelinemanager.dao.TeamDaoManager;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Date;
+import java.util.List;
+
 import greendao.PlayerBean;
+import greendao.TeamBean;
 
 /**
  * Created by amonteiro on 13/02/2015.
@@ -127,9 +132,7 @@ public class DialogUtils {
      * @param callBack
      * @return
      */
-    public static MaterialDialog getNewPlayerDialog(final Context context, final PlayerBean existingPlayer, int titleId,
-                                                    int
-                                                            positiveTextId,
+    public static MaterialDialog getNewPlayerDialog(final Context context, final PlayerBean existingPlayer, int titleId, int positiveTextId,
                                                     final NewPlayerPromptDialogCB callBack) {
 
         Drawable d = context.getResources().getDrawable(R.drawable.ic_action_user_add);
@@ -140,7 +143,6 @@ public class DialogUtils {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         if (callBack != null) {
-
 
                             PlayerBean playerBean = existingPlayer != null ? existingPlayer : new PlayerBean();
 
@@ -168,7 +170,6 @@ public class DialogUtils {
                             NumberPicker np_np_unite = (NumberPicker) dialog.findViewById(R.id.np_np_unite);
 
                             playerBean.setNumber(np_np_dizaine.getValue() * 10 + np_np_unite.getValue());
-
 
                             try {
                                 //Modification
@@ -274,6 +275,94 @@ public class DialogUtils {
     }
 
     /**
+     * Permet de créer un joueur
+     *
+     * @param context
+     * @return
+     */
+    public static MaterialDialog getNewTeamDialog(final Context context, final NewTeamPromptDialogCB callBack) {
+
+        Drawable d = context.getResources().getDrawable(R.drawable.ic_action_add_group);
+        d.setColorFilter(Utils.getColorFromTheme(context, com.formation.utils.R.attr.color_composant_main), PorterDuff.Mode.MULTIPLY);
+
+        final List<TeamBean> allTeam = TeamDaoManager.getLast30Team();
+
+        MaterialDialog dialog = new MaterialDialog.Builder(context).title(R.string.st_menu_add).icon(d).customView(R.layout.dialog_new_player, false)
+                .positiveText(R.string.create).autoDismiss(false).negativeText(android.R.string.cancel).callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        if (callBack != null) {
+
+                            TeamBean teamBean = new TeamBean();
+                            teamBean.setCreation(new Date());
+
+                            //Nom
+                            EditText nt_name = (EditText) dialog.getCustomView().findViewById(R.id.nt_name);
+                            teamBean.setName(nt_name.getText().toString());
+
+                            //Competition
+                            EditText nt_competition_name = (EditText) dialog.getCustomView().findViewById(R.id.nt_competition_name);
+                            teamBean.setTournament(nt_competition_name.getText().toString());
+
+                            //Team dont on copie les joueurs
+                            NumberPicker nt_team_picker = (NumberPicker) dialog.getCustomView().findViewById(R.id.nt_team_picker);
+                            TeamBean copyTeamPlayer = null;
+                            if (nt_team_picker.getValue() > 0) {
+                                copyTeamPlayer = allTeam.get(nt_team_picker.getValue() - 1);
+                            }
+
+                            callBack.newTeampromptDialogCB_onPositiveClick(teamBean, copyTeamPlayer);
+                            dialog.dismiss();
+                        }
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        dialog.dismiss();
+                    }
+                }).build();
+
+        //On desactive le button tant que la valeur entrée est vide
+        final View positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
+        positiveAction.setEnabled(false);
+
+        final EditText np_name = (EditText) dialog.getCustomView().findViewById(R.id.np_name);
+        //l'edit text
+        np_name.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                positiveAction.setEnabled(StringUtils.isBlank(np_name.getText()));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        NumberPicker nt_team_picker = (NumberPicker) dialog.getCustomView().findViewById(R.id.nt_team_picker);
+        nt_team_picker.setMinValue(0);
+        nt_team_picker.setMaxValue(2);
+        String[] teamName = new String[allTeam.size() + 1];
+        teamName[0] = "";
+        for (int i = 0; i < teamName.length; i++) {
+            TeamBean teamBean = allTeam.get(i);
+            if (StringUtils.isNotBlank(teamBean.getTournament())) {
+                teamName[i + 1] = teamBean.getTournament() + " - " + teamBean.getName();
+            } else {
+                teamName[i + 1] = teamBean.getName();
+            }
+        }
+        nt_team_picker.setDisplayedValues(teamName);
+
+
+        return dialog;
+    }
+
+    /**
      * affiche ou non le bouton valider
      *
      * @param name
@@ -302,16 +391,19 @@ public class DialogUtils {
 
     }
 
-    public interface NewPlayerPromptDialogCB {
-        public void newPlayerpromptDialogCB_onPositiveClick(PlayerBean playerBean);
-    }
-
     /* ---------------------------------
     // interface
     // -------------------------------- */
+    public interface NewPlayerPromptDialogCB {
+        void newPlayerpromptDialogCB_onPositiveClick(PlayerBean playerBean);
+    }
+
+    public interface NewTeamPromptDialogCB {
+        void newTeampromptDialogCB_onPositiveClick(TeamBean teamBean, TeamBean teamBeanToCopyPlayers);
+    }
 
     public interface PromptDialogCB {
-        public void promptDialogCB_onPositiveClick(String promptText);
+        void promptDialogCB_onPositiveClick(String promptText);
 
     }
 }

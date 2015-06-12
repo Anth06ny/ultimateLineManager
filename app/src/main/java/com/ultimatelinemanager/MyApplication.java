@@ -26,8 +26,9 @@ import io.fabric.sdk.android.Fabric;
 public class MyApplication extends Application {
 
     //Appli
+    //TODO tester la creation d'equipe avec le nom de la competition et ajouter le nom de la competition aux
+    // differents endroit
     //TODO ecran about
-
     //TODO dans la création d'une équipe donner le nom de la compétition
 
     //Parametre
@@ -44,7 +45,6 @@ public class MyApplication extends Application {
 
     //Match
     //TODO Ajout de la roue sur un point pour changer but pour / contre et attaque defense
-
 
     //Team
     //TODO selection multiplayer
@@ -113,7 +113,7 @@ public class MyApplication extends Application {
         DaoMaster daoMaster = new DaoMaster(db);
         daoSession = daoMaster.newSession();
 
-        if (TeamDaoManager.getLast50Team().isEmpty()) {
+        if (TeamDaoManager.getLast30Team().isEmpty()) {
             helper.fillBDD();
         }
 

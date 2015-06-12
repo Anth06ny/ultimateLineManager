@@ -22,8 +22,8 @@ public class TeamDaoManager {
      * retourne les 50 dernier trié par date
      * @return
      */
-    public static List<TeamBean> getLast50Team() {
-        return getTeamDAO().queryBuilder().orderDesc(TeamBeanDao.Properties.Creation).limit(50).list();
+    public static List<TeamBean> getLast30Team() {
+        return getTeamDAO().queryBuilder().orderDesc(TeamBeanDao.Properties.Creation).limit(30).list();
     }
 
     public static void deleteTeam(TeamBean teamBean) {

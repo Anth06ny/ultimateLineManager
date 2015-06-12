@@ -22,6 +22,7 @@ public class MyDaoGenerator {
         teamBean.addIdProperty().getProperty();
         teamBean.implementsSerializable();
         teamBean.addStringProperty("name").notNull();
+        teamBean.addStringProperty("tournament");
         teamBean.addDateProperty("creation").notNull();
 
         /* ---------------------------------
@@ -104,7 +105,6 @@ public class MyDaoGenerator {
         pointBean.addToMany(playerPoint, pointId);
         //Relation PlayerPoint 1 Point
         playerPoint.addToOne(pointBean, pointId);
-
 
         new DaoGenerator().generateAll(schema, args[0]);
     }
