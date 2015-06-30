@@ -51,7 +51,7 @@ public class DialogUtils {
      * @return
      */
     public static MaterialDialog getPromptDialog(Context context, int iconId, int titleId, int positiveTextId, String editTextValue,
-                                                 final PromptDialogCB callBack) {
+            final PromptDialogCB callBack) {
 
         EditText dp_et;
         final View positiveAction;
@@ -133,7 +133,7 @@ public class DialogUtils {
      * @return
      */
     public static MaterialDialog getNewPlayerDialog(final Context context, final PlayerBean existingPlayer, int titleId, int positiveTextId,
-                                                    final NewPlayerPromptDialogCB callBack) {
+            final NewPlayerPromptDialogCB callBack) {
 
         Drawable d = context.getResources().getDrawable(R.drawable.ic_action_user_add);
         d.setColorFilter(Utils.getColorFromTheme(context, com.formation.utils.R.attr.color_composant_main), PorterDuff.Mode.MULTIPLY);
@@ -173,6 +173,10 @@ public class DialogUtils {
 
                             playerBean.setNumber(np_np_dizaine.getValue() * 10 + np_np_unite.getValue());
 
+                            //Injured
+                            CheckBox np_cb_injured = (CheckBox) dialog.getCustomView().findViewById(R.id.np_cb_injured);
+                            playerBean.setInjured(np_cb_injured.isChecked());
+
                             try {
                                 //Modification
                                 if (existingPlayer != null) {
@@ -209,6 +213,7 @@ public class DialogUtils {
         final EditText np_name = (EditText) dialog.getCustomView().findViewById(R.id.np_name);
         final CheckBox np_cb_handler = (CheckBox) dialog.getCustomView().findViewById(R.id.np_cb_handler);
         final CheckBox np_cb_middle = (CheckBox) dialog.getCustomView().findViewById(R.id.np_cb_middle);
+        final CheckBox np_cb_injured = (CheckBox) dialog.getCustomView().findViewById(R.id.np_cb_injured);
         final RadioGroup np_rg_sexe = (RadioGroup) dialog.getCustomView().findViewById(R.id.np_rg_sexe);
 
         NumberPicker np_np_dizaine = (NumberPicker) dialog.findViewById(R.id.np_np_dizaine);
@@ -273,6 +278,8 @@ public class DialogUtils {
             }
             np_np_dizaine.setValue(existingPlayer.getNumber() / 10);
             np_np_unite.setValue(existingPlayer.getNumber() % 10);
+
+            np_cb_injured.setChecked(existingPlayer.getInjured());
 
         }
 

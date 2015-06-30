@@ -26,7 +26,8 @@ import java.util.List;
 public class PlayerPointAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public enum FilterSexe {
-        BOY, GIRL, BOTH}
+        BOY, GIRL, BOTH
+    }
 
     public enum SortOrder {
         AZ, PLAYING_TIME, SLEEP_TIME, NUMBER
@@ -43,6 +44,8 @@ public class PlayerPointAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private Role filterRole;
     private SortOrder sortOrder;
 
+    private static int REST_TIME_ALERTE = 60000 * 15; //15min
+
     /**
      * @param context
      * @param selectAdapterI
@@ -55,7 +58,6 @@ public class PlayerPointAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         girlColor = context.getResources().getColor(R.color.girl_color);
         boyColor = context.getResources().getColor(R.color.boy_color);
-        iceColor = context.getResources().getColor(R.color.ice_color);
 
         //Par defaut pas de filtre
         filterSexe = FilterSexe.BOTH;
@@ -110,10 +112,13 @@ public class PlayerPointAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         //sleep
         holder.rpr_tv_sleep.setText(playerPointBean.getRestTime() / Constante.PLAYING_TIME_DIVISE + "min");
         //indicateur fatigue
-        holder.rpr_iv_indicator.setImageResource(R.drawable.cold);
-        holder.rpr_iv_indicator.setColorFilter(iceColor);
-        holder.rpr_iv_indicator.setVisibility(View.VISIBLE);
-        holder.rpr_tv_indicator.setText("");
+        if (playerPointBean.getRestTime() > REST_TIME_ALERTE) {
+            holder.rpr_iv_indicator.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.rpr_iv_indicator.setVisibility(View.INVISIBLE);
+        }
+
     }
 
     public PlayerPointBean getItem(int position) {
@@ -229,7 +234,8 @@ public class PlayerPointAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         });
 
         filterList.clear();
-        //Ensuite on la parcourt et on ajoute uniquement les joueurs qui correspondent au filtre
+        //Ensuite on la parcourt et on ajoute uniquement les joueurs qui correspondent au filtre et qui ne sont pas
+        // blessé
         for (PlayerPointBean playerPointBean : daoList) {
             if (isFilterOk(playerPointBean)) {
                 filterList.add(playerPointBean);
@@ -244,6 +250,12 @@ public class PlayerPointAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     // -------------------------------- */
 
     private boolean isFilterOk(PlayerPointBean playerPointBean) {
+
+        //On n'ajoute pas les joueurs blessés
+        if (playerPointBean.getPlayerBean().getInjured()) {
+            return false;
+        }
+
         switch (filterSexe) {
             case BOY:
                 //Si ce n'est pas un garcon
@@ -309,6 +321,11 @@ public class PlayerPointAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             rpr_iv_run.setColorFilter(Color.BLACK);
             rpr_iv_sleep.setColorFilter(Color.BLACK);
+
+            rpr_iv_indicator.setImageResource(R.drawable.cold);
+            rpr_iv_indicator.setColorFilter(itemView.getResources().getColor(R.color.ice_color));
+            rpr_iv_indicator.setVisibility(View.INVISIBLE);
+            rpr_tv_indicator.setText("");
 
             root.setOnClickListener(this);
 

@@ -127,6 +127,8 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
                     holder.row_iv_delete.setColorFilter(boyColor);
                 }
 
+                holder.row_iv_injured.setVisibility(playerBean.getInjured() ? View.VISIBLE : View.INVISIBLE);
+
                 break;
 
             case MATCH:
@@ -189,7 +191,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
         public final TextView row_tv1;
         public final TextView row_tv2;
         public TextView row_tv3;
-        public ImageView iv_main, row_iv_delete;
+        public ImageView iv_main, row_iv_delete, row_iv_injured;
         public View root; //Pour le onclick
         //Data
         public T bean;
@@ -209,6 +211,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
 
                     iv_main = (ImageView) itemView.findViewById(R.id.iv_main);
                     row_iv_delete = (ImageView) itemView.findViewById(R.id.row_iv_delete);
+                    row_iv_injured = (ImageView) itemView.findViewById(R.id.row_iv_injured);
                     row_iv_delete.setOnClickListener(this);
 
                     break;

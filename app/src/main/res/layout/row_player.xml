@@ -20,7 +20,6 @@
         android:orientation="horizontal"
         android:paddingBottom="@dimen/margin_5"
         android:paddingLeft="@dimen/margin_10"
-        android:paddingRight="@dimen/margin_10"
         android:paddingTop="@dimen/margin_5">
 
 
@@ -67,8 +66,20 @@
             android:layout_marginLeft="@dimen/margin_5"
             android:adjustViewBounds="true"
             android:background="?material_bt_bg"
-            android:padding="@dimen/margin_10"
-            android:src="@drawable/ic_action_delete"/>
+            android:src="@drawable/ic_action_delete"
+            android:paddingLeft="@dimen/margin_10"
+            android:paddingTop="@dimen/margin_10"
+            android:paddingBottom="@dimen/margin_10"/>
+
+        <ImageView
+            android:id="@+id/row_iv_injured"
+            android:layout_width="@dimen/margin_20"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_5"
+            android:layout_marginRight="@dimen/margin_5"
+            android:adjustViewBounds="true"
+            android:src="@drawable/red_cross"
+            android:visibility="invisible"/>
 
     </LinearLayout>
 

@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ultimatelinemanager.R;
@@ -67,6 +68,9 @@ public class PlayerStatAdapter extends RecyclerView.Adapter<PlayerStatAdapter.Vi
         holder.stat_goal_defense_value.setText(context.getResources().getString(R.string.stat_goal_defense_value,
                 playerStatBean.getGoalDefenseSuccess(), playerStatBean.getGoalDefense()));
 
+        //injured
+        holder.rps_iv_injured.setVisibility(playerStatBean.getPlayerBean().getInjured() ? View.VISIBLE : View.INVISIBLE);
+
     }
 
     @Override
@@ -84,6 +88,7 @@ public class PlayerStatAdapter extends RecyclerView.Adapter<PlayerStatAdapter.Vi
         public final TextView stat_tv_playing_time_value;
         public final TextView stat_goal_attaque_value;
         public final TextView stat_goal_defense_value;
+        public final ImageView rps_iv_injured;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -91,6 +96,7 @@ public class PlayerStatAdapter extends RecyclerView.Adapter<PlayerStatAdapter.Vi
             stat_tv_playing_time_value = (TextView) itemView.findViewById(R.id.stat_tv_playing_time_value);
             stat_goal_attaque_value = (TextView) itemView.findViewById(R.id.stat_goal_attaque_value);
             stat_goal_defense_value = (TextView) itemView.findViewById(R.id.stat_goal_defense_value);
+            rps_iv_injured = (ImageView) itemView.findViewById(R.id.rps_iv_injured);
         }
 
     }

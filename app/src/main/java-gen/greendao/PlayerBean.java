@@ -16,6 +16,7 @@ public class PlayerBean implements java.io.Serializable {
     /** Not-null value. */
     private String role;
     private boolean sexe;
+    private boolean injured;
     private int number;
 
     /** Used to resolve relations */
@@ -33,11 +34,12 @@ public class PlayerBean implements java.io.Serializable {
         this.id = id;
     }
 
-    public PlayerBean(Long id, String name, String role, boolean sexe, int number) {
+    public PlayerBean(Long id, String name, String role, boolean sexe, boolean injured, int number) {
         this.id = id;
         this.name = name;
         this.role = role;
         this.sexe = sexe;
+        this.injured = injured;
         this.number = number;
     }
 
@@ -81,6 +83,14 @@ public class PlayerBean implements java.io.Serializable {
 
     public void setSexe(boolean sexe) {
         this.sexe = sexe;
+    }
+
+    public boolean getInjured() {
+        return injured;
+    }
+
+    public void setInjured(boolean injured) {
+        this.injured = injured;
     }
 
     public int getNumber() {

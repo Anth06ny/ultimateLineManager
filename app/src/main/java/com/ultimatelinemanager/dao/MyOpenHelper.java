@@ -47,35 +47,37 @@ public class MyOpenHelper extends DaoMaster.DevOpenHelper {
         PlayerBean[] list = new PlayerBean[] {
                 //Homme
                 //Handler
-                new PlayerBean(null, "Alex", Role.Handler.name(), true, 4),
-                new PlayerBean(null, "Junior", Role.Handler.name(), true, 10),
-                new PlayerBean(null, "KhoaVu N'Guyen", Role.Handler.name(), true, 24),
-                new PlayerBean(null, "Rut", Role.Handler.name(), true, 82),
+                new PlayerBean(null, "Alex", Role.Handler.name(), true, false, 4),
+                new PlayerBean(null, "Junior", Role.Handler.name(), true, false, 10),
+                new PlayerBean(null, "KhoaVu N'Guyen", Role.Handler.name(), true, false, 24),
+                new PlayerBean(null, "Rut", Role.Handler.name(), true, false, 82),
 
                 //Middle
-                new PlayerBean(null, "Jo", Role.Middle.name(), true, 38),
-                new PlayerBean(null, "Oliv", Role.Middle.name(), true, 23),
-                new PlayerBean(null, "Vyns", Role.Middle.name(), true, 69),
+                new PlayerBean(null, "Jo", Role.Middle.name(), true, false, 38),
+                new PlayerBean(null, "Oliv", Role.Middle.name(), true, false, 23),
+                new PlayerBean(null, "Vyns", Role.Middle.name(), true, false, 69),
 
                 //Polyvalent
-                new PlayerBean(null, "Paulo", Role.Both.name(), true, 27),
-                new PlayerBean(null, "Gael Ancelin", Role.Both.name(), true, 77),
-                new PlayerBean(null, "Ben", Role.Both.name(), true, 88),
-                new PlayerBean(null, "PA", Role.Both.name(), true, 6),
+                new PlayerBean(null, "Paulo", Role.Both.name(), true, false, 27),
+                new PlayerBean(null, "Gael Ancelin", Role.Both.name(), true, false, 77),
+                new PlayerBean(null, "Ben", Role.Both.name(), true, false, 88),
+                new PlayerBean(null, "PA", Role.Both.name(), true, false, 6),
 
                 //Fille
                 //Handleuse
-                new PlayerBean(null, "Haude Hermand", Role.Handler.name(), false, 11),
-                new PlayerBean(null, "Marta Suarez Barcena", Role.Handler.name(), false, 79),
+                new PlayerBean(null, "Haude Hermand", Role.Handler.name(), false, false, 11),
+                new PlayerBean(null, "Marta Suarez Barcena", Role.Handler.name(), false, false, 79),
 
                 //Middle
-                new PlayerBean(null, "Jenny Vallet", Role.Middle.name(), false, 32),
-                new PlayerBean(null, "Celine Antoine", Role.Middle.name(), false, 8), new PlayerBean(null, "Moks", Role.Middle.name(), false, 16),
-                new PlayerBean(null, "Cam", Role.Middle.name(), false, 14), new PlayerBean(null, "Mazette", Role.Middle.name(), false, 12),
-                new PlayerBean(null, "Pauline Rigollier", Role.Middle.name(), false, 7),
+                new PlayerBean(null, "Jenny Vallet", Role.Middle.name(), false, false, 32),
+                new PlayerBean(null, "Celine Antoine", Role.Middle.name(), false, false, 8),
+                new PlayerBean(null, "Moks", Role.Middle.name(), false, false, 16),
+                new PlayerBean(null, "Cam", Role.Middle.name(), false, false, 14),
+                new PlayerBean(null, "Mazette", Role.Middle.name(), false, false, 12),
+                new PlayerBean(null, "Pauline Rigollier", Role.Middle.name(), false, false, 7),
 
                 //polyvalent
-                new PlayerBean(null, "Aurelie Bertin", Role.Both.name(), false, 2),
+                new PlayerBean(null, "Aurelie Bertin", Role.Both.name(), false, false, 2),
 
         };
 

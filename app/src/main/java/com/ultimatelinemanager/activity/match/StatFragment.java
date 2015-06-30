@@ -214,28 +214,31 @@ public class StatFragment extends MainFragment implements View.OnClickListener {
                 playerStatBean.setPlayingTime(playerStatBean.getPlayingTime() + (pointBean.getLength() / Constante.PLAYING_TIME_DIVISE));
             }
 
-            if (playerStatBean.getNumberPoint() > 0) {
-                float playerReussite = ((playerStatBean.getGoalAttaqueSuccess() + playerStatBean.getGoalDefenseSuccess()) * 100)
-                        / playerStatBean.getNumberPoint();
+            //on ne compte pas les joueurs blessés dans le luncky et unlucky
+            if (!playerBean.getInjured()) {
+                if (playerStatBean.getNumberPoint() > 0) {
+                    float playerReussite = ((playerStatBean.getGoalAttaqueSuccess() + playerStatBean.getGoalDefenseSuccess()) * 100)
+                            / playerStatBean.getNumberPoint();
 
-                //Porte bohneur
-                if (playerReussite > porteBohneurNumberStat) {
-                    porteBohneur.clear();
-                    porteBohneur.add(playerBean);
-                    porteBohneurNumberStat = playerReussite;
-                }
-                else if (playerReussite == porteBohneurNumberStat) {
-                    porteBohneur.add(playerBean);
-                }
+                    //Porte bohneur
+                    if (playerReussite > porteBohneurNumberStat) {
+                        porteBohneur.clear();
+                        porteBohneur.add(playerBean);
+                        porteBohneurNumberStat = playerReussite;
+                    }
+                    else if (playerReussite == porteBohneurNumberStat) {
+                        porteBohneur.add(playerBean);
+                    }
 
-                //Porte malheur
-                if (playerReussite < portemalheurStat) {
-                    porteMalheur.clear();
-                    porteMalheur.add(playerBean);
-                    portemalheurStat = playerReussite;
-                }
-                else if (playerReussite == portemalheurStat) {
-                    porteMalheur.add(playerBean);
+                    //Porte malheur
+                    if (playerReussite < portemalheurStat) {
+                        porteMalheur.clear();
+                        porteMalheur.add(playerBean);
+                        portemalheurStat = playerReussite;
+                    }
+                    else if (playerReussite == portemalheurStat) {
+                        porteMalheur.add(playerBean);
+                    }
                 }
             }
 
@@ -370,8 +373,13 @@ public class StatFragment extends MainFragment implements View.OnClickListener {
 
         for (PlayerStatBean playerStatBean : playerStatBeanList) {
             //nom
-            playerBuilder.append(playerStatBean.getPlayerBean().getSexe() ? boySubTitle : girlSubTitle)
-                    .append(playerStatBean.getPlayerBean().getName()).append(subTitleClose);
+            playerBuilder.append(playerStatBean.getPlayerBean().getSexe() ? boySubTitle : girlSubTitle).append(
+                    playerStatBean.getPlayerBean().getName());
+            //injured
+            if (playerStatBean.getPlayerBean().getInjured()) {
+                playerBuilder.append(" (").append(getString(R.string.injured)).append(")");
+            }
+            playerBuilder.append(subTitleClose);
             //temps de jeu 1min/1pts
             playerBuilder.append(label).append(getString(R.string.stat_playing_time)).append(" ").append(labelClose)
                     .append(getString(R.string.stat_playing_time_value, playerStatBean.getPlayingTime(), playerStatBean.getNumberPoint()))

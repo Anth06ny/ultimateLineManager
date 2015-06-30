@@ -29,6 +29,18 @@
             style="@style/bloc_title"
             android:text="@string/lp_bloc_tittle"/>
 
+        <ImageView
+            android:id="@+id/rps_iv_injured"
+            android:layout_width="@dimen/margin_20"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_5"
+            android:layout_marginRight="@dimen/margin_5"
+            android:adjustViewBounds="true"
+            android:src="@drawable/red_cross"
+            android:visibility="invisible"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/margin_5"/>
+
         <TableLayout
             android:id="@+id/rp_tl"
             android:layout_width="fill_parent"
