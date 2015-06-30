@@ -17,12 +17,10 @@ import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.adapter.SelectAdapter;
 import com.ultimatelinemanager.dao.TeamDaoManager;
+import com.ultimatelinemanager.dao.TeamPlayerManager;
 import com.ultimatelinemanager.metier.DialogUtils;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.ArrayList;
-import java.util.Date;
 
 import greendao.TeamBean;
 
@@ -116,15 +114,15 @@ public class SelectTeamActivity extends AppCompatActivity implements SelectAdapt
 
         switch (item.getItemId()) {
             case R.id.menu_add:
-                dialog = DialogUtils.getPromptDialog(this, R.drawable.ic_action_add_group, R.string.st_ask_team_name, R.string.add, "",
-                        new DialogUtils.PromptDialogCB() {
-                            @Override
-                            public void promptDialogCB_onPositiveClick(String promptText) {
-                                //On ajoute l'equipe
-                                addTeam(StringUtils.capitalize(promptText));
-                            }
-                        });
+                dialog = DialogUtils.getNewTeamDialog(this, new DialogUtils.NewTeamPromptDialogCB() {
+                    @Override
+                    public void newTeampromptDialogCB_onPositiveClick(TeamBean teamBean, TeamBean teamBeanToCopyPlayers) {
+                        //On ajoute l'équipe
+                        addTeam(teamBean, teamBeanToCopyPlayers);
+                    }
+                });
                 dialog.show();
+
                 return true;
 
             default:
@@ -153,17 +151,23 @@ public class SelectTeamActivity extends AppCompatActivity implements SelectAdapt
         }
     }
 
-    private void addTeam(String teamName) {
-        if (StringUtils.isBlank(teamName)) {
+    /**
+     * Ajoute l'equipe choisie en base
+     * @param teamBean
+     * @param teamBeanToCopyPlayers
+     */
+    private void addTeam(TeamBean teamBean, TeamBean teamBeanToCopyPlayers) {
+        if (teamBean == null) {
             return;
         }
 
-        TeamBean teamBean = new TeamBean();
-        teamBean.setCreation(new Date());
-        teamBean.setName(teamName);
-
+        //On ajoute l'équipe en base
         teamBean.setId(TeamDaoManager.getTeamDAO().insert(teamBean));
-
+        //On copie les joueurs de l'équipe qu'on duplique
+        if (teamBeanToCopyPlayers != null) {
+            TeamPlayerManager.copyPlayerFromTeam(teamBeanToCopyPlayers, teamBean);
+        }
+        //on met à jour l'interface graphique
         if (teamBean.getId() > 0) {
             //On met à jour la liste
             teamBeanList.add(0, teamBean);

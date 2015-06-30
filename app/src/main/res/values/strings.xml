@@ -35,7 +35,7 @@
     <string name="st_menu_add">New Team</string>
     <string name="st_ask_team_name">Team name* : </string>
     <string name="st_ask_competition_name">Tournament name : </string>
-    <string name="st_same_player_than">Start with same players than as the tournament\n(You can add or remove
+    <string name="st_same_player_than">Start with same players than a other tournament\n(You can add or remove
         player after) : </string>
     <string name="st_team_not_add">Team hasn\'t been added</string>
     <string name="st_no_team">No team registered</string>

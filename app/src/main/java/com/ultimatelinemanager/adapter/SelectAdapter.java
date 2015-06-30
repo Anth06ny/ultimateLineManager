@@ -15,6 +15,8 @@ import com.formation.utils.DateUtils;
 import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.R;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
 
 import greendao.MatchBean;
@@ -97,7 +99,13 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
             case TEAM:
                 TeamBean teamBean = (TeamBean) daoList.get(position);
                 holder.bean = teamBean;
-                holder.row_tv1.setText(teamBean.getName());
+                if (StringUtils.isNotBlank(teamBean.getTournament())) {
+                    holder.row_tv1.setText(teamBean.getName() + " - " + teamBean.getTournament());
+                }
+                else {
+                    holder.row_tv1.setText(teamBean.getName());
+                }
+
                 holder.row_tv2.setText(DateUtils.dateToString(teamBean.getCreation(), dateFormat));
                 break;
 

@@ -4,6 +4,7 @@ import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.metier.exception.LogicException;
 
+import greendao.TeamBean;
 import greendao.TeamPlayer;
 import greendao.TeamPlayerDao;
 
@@ -18,6 +19,7 @@ public class TeamPlayerManager {
 
     /**
      * Pour gerer la liaison joueur equipe
+     *
      * @return
      */
     public static TeamPlayerDao getTeamPlayerDAO() {
@@ -35,6 +37,7 @@ public class TeamPlayerManager {
 
     /**
      * Supprime toute les relations de joueur de l'equipe
+     *
      * @param teamId
      */
     public static void deleteTeamPlayer(long teamId, boolean clearSession) {
@@ -50,7 +53,31 @@ public class TeamPlayerManager {
     // -------------------------------- */
 
     /**
+     * Assigne à une equipe les mêmes joueurs qu'une autre équipe
+     *
+     * @param src
+     * @param dest
+     */
+    public static void copyPlayerFromTeam(TeamBean src, TeamBean dest) {
+        TeamPlayer tp;
+
+        if (src != null && dest != null) {
+            for (TeamPlayer teamPlayer : src.getTeamPlayerList()) {
+                //Est ce qu'il n'existe pas déja
+                tp = getTeamPlayer(dest.getId(), teamPlayer.getPlayerId());
+                if (tp == null) {
+                    tp = new TeamPlayer();
+                    tp.setTeamId(dest.getId());
+                    tp.setPlayerId(teamPlayer.getPlayerId());
+                    getTeamPlayerDAO().insert(tp);
+                }
+            }
+        }
+    }
+
+    /**
      * Ajoute un joueur dans une équipe
+     *
      * @param teamId
      * @param playerId
      */

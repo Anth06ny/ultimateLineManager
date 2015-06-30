@@ -27,6 +27,9 @@ public class MyApplication extends Application {
 
     //Appli
     //TODO tester la creation d'equipe avec le nom de la competition et ajouter le nom de la competition aux
+    //TODO Indiquer la mi temps.
+    //TODO Sauvegarde du tri
+
     // differents endroit
     //TODO ecran about
     //TODO dans la création d'une équipe donner le nom de la compétition

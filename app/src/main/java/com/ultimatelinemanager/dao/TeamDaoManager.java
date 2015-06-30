@@ -26,6 +26,8 @@ public class TeamDaoManager {
         return getTeamDAO().queryBuilder().orderDesc(TeamBeanDao.Properties.Creation).limit(30).list();
     }
 
+
+
     public static void deleteTeam(TeamBean teamBean) {
         //On supprime tous les TeamPlayer
         TeamPlayerManager.deleteTeamPlayer(teamBean.getId(), false);

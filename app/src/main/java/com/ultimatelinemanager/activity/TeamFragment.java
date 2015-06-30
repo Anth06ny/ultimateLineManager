@@ -74,6 +74,7 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
         ta_empty_players = (TextView) view.findViewById(R.id.ta_empty_players);
         ta_rv_match = (RecyclerView) view.findViewById(R.id.ta_rv_match);
         ta_rv_players = (RecyclerView) view.findViewById(R.id.ta_rv_players);
+        TextView at_tv_tournament = (TextView) view.findViewById(R.id.at_tv_tournament);
 
         teamBean = MyApplication.getInstance().getTeamBean();
 
@@ -95,6 +96,14 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
 
         ta_rv_match.setAdapter(adapterMatch);
         ta_rv_players.setAdapter(adapterPlayer);
+
+        if (StringUtils.isNotBlank(teamBean.getTournament())) {
+            at_tv_tournament.setText(teamBean.getTournament());
+            at_tv_tournament.setVisibility(View.VISIBLE);
+        }
+        else {
+            at_tv_tournament.setVisibility(View.GONE);
+        }
 
         refreshTitle();
 
@@ -188,13 +197,13 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
         if (bean instanceof MatchBean) {
             //on redirige sur le match
             generiqueActivity.gotoMatch((MatchBean) bean);
-        } else if (bean instanceof PlayerBean) {
+        }
+        else if (bean instanceof PlayerBean) {
 
             //On affiche la fenetre de modification du joueur
             //On affiche la page de séléction des joueurs enregistré dans le téléphone
-            DialogUtils.getNewPlayerDialog(getActivity(), (PlayerBean) bean, R.string.ta_edit_player, R.string.save, new
-                    DialogUtils
-                            .NewPlayerPromptDialogCB() {
+            DialogUtils.getNewPlayerDialog(getActivity(), (PlayerBean) bean, R.string.ta_edit_player, R.string.save,
+                    new DialogUtils.NewPlayerPromptDialogCB() {
                         @Override
                         public void newPlayerpromptDialogCB_onPositiveClick(PlayerBean playerBean) {
                             //on ajoute le nouveau joueur
@@ -213,7 +222,8 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
             icon_tab_match.setColorFilter(color_composant_main);
             icon_tab_players.setColorFilter(Color.BLACK);
 
-        } else if (tabId.equals(TAG_PLAYERS)) {
+        }
+        else if (tabId.equals(TAG_PLAYERS)) {
             icon_tab_match.setColorFilter(Color.BLACK);
             icon_tab_players.setColorFilter(color_composant_main);
         }
@@ -237,9 +247,11 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
 
                 if (lhs.getStart() == null) {
                     return -1;
-                } else if (rhs.getStart() == null) {
+                }
+                else if (rhs.getStart() == null) {
                     return 1;
-                } else {
+                }
+                else {
                     return (int) (rhs.getStart().getTime() - lhs.getStart().getTime());
                 }
             }
@@ -324,7 +336,8 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
                 if (playerBeanList.size() > 0) {
                     ta_empty_players.setVisibility(View.INVISIBLE);
                     ta_rv_players.setVisibility(View.VISIBLE);
-                } else {
+                }
+                else {
                     ta_empty_players.setVisibility(View.VISIBLE);
                     ta_rv_players.setVisibility(View.INVISIBLE);
                 }
@@ -332,7 +345,8 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
                 if (matchBeansList.size() > 0) {
                     ta_empty_match.setVisibility(View.INVISIBLE);
                     ta_rv_match.setVisibility(View.VISIBLE);
-                } else {
+                }
+                else {
                     ta_empty_match.setVisibility(View.VISIBLE);
                     ta_rv_match.setVisibility(View.INVISIBLE);
                 }
@@ -362,7 +376,6 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
         }
 
     }
-
 
     private void deleteTeam() {
         //on suprime le TeamBean

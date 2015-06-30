@@ -156,9 +156,11 @@ public class DialogUtils {
 
                             if (np_cb_handler.isChecked() && np_cb_middle.isChecked()) {
                                 playerBean.setRole(Role.Both.name());
-                            } else if (np_cb_handler.isChecked()) {
+                            }
+                            else if (np_cb_handler.isChecked()) {
                                 playerBean.setRole(Role.Handler.name());
-                            } else if (np_cb_middle.isChecked()) {
+                            }
+                            else if (np_cb_middle.isChecked()) {
                                 playerBean.setRole(Role.Middle.name());
                             }
 
@@ -181,11 +183,13 @@ public class DialogUtils {
                                 else if (!PlayerDaoManager.existPlayer(playerBean.getName())) {
                                     callBack.newPlayerpromptDialogCB_onPositiveClick(playerBean);
                                     dialog.dismiss();
-                                } else {
+                                }
+                                else {
                                     //Si le nom existe déjà pour un création
                                     ToastUtils.showToastOnUIThread(context, R.string.lpt_player_exist);
                                 }
-                            } catch (Throwable e) {
+                            }
+                            catch (Throwable e) {
                                 LogUtils.logException(getClass(), e, true);
                                 ToastUtils.showToastOnUIThread(context, R.string.erreur_generique);
                             }
@@ -263,7 +267,8 @@ public class DialogUtils {
             }
             if (existingPlayer.getSexe()) {
                 ((RadioButton) dialog.getCustomView().findViewById(R.id.np_rb_boy)).setChecked(true);
-            } else {
+            }
+            else {
                 ((RadioButton) dialog.getCustomView().findViewById(R.id.np_rb_girl)).setChecked(true);
             }
             np_np_dizaine.setValue(existingPlayer.getNumber() / 10);
@@ -287,7 +292,7 @@ public class DialogUtils {
 
         final List<TeamBean> allTeam = TeamDaoManager.getLast30Team();
 
-        MaterialDialog dialog = new MaterialDialog.Builder(context).title(R.string.st_menu_add).icon(d).customView(R.layout.dialog_new_player, false)
+        MaterialDialog dialog = new MaterialDialog.Builder(context).title(R.string.st_menu_add).icon(d).customView(R.layout.dialog_new_team, false)
                 .positiveText(R.string.create).autoDismiss(false).negativeText(android.R.string.cancel).callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
@@ -326,16 +331,16 @@ public class DialogUtils {
         final View positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
         positiveAction.setEnabled(false);
 
-        final EditText np_name = (EditText) dialog.getCustomView().findViewById(R.id.np_name);
+        final EditText nt_name = (EditText) dialog.getCustomView().findViewById(R.id.nt_name);
         //l'edit text
-        np_name.addTextChangedListener(new TextWatcher() {
+        nt_name.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                positiveAction.setEnabled(StringUtils.isBlank(np_name.getText()));
+                positiveAction.setEnabled(StringUtils.isNotBlank(nt_name.getText()));
             }
 
             @Override
@@ -347,17 +352,17 @@ public class DialogUtils {
         nt_team_picker.setMinValue(0);
         nt_team_picker.setMaxValue(2);
         String[] teamName = new String[allTeam.size() + 1];
-        teamName[0] = "";
-        for (int i = 0; i < teamName.length; i++) {
+        teamName[0] = "None";
+        for (int i = 0; i < allTeam.size(); i++) {
             TeamBean teamBean = allTeam.get(i);
             if (StringUtils.isNotBlank(teamBean.getTournament())) {
                 teamName[i + 1] = teamBean.getTournament() + " - " + teamBean.getName();
-            } else {
+            }
+            else {
                 teamName[i + 1] = teamBean.getName();
             }
         }
         nt_team_picker.setDisplayedValues(teamName);
-
 
         return dialog;
     }

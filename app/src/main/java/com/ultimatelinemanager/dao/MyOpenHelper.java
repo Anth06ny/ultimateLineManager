@@ -39,11 +39,12 @@ public class MyOpenHelper extends DaoMaster.DevOpenHelper {
         //Une équipe
         TeamBean teamBean = new TeamBean();
         teamBean.setName("France");
+        teamBean.setTournament("Talampaya");
         teamBean.setCreation(new Date());
         teamBean.setId(TeamDaoManager.getTeamDAO().insert(teamBean));
 
         //Joueur Talampaya
-        PlayerBean[] list = new PlayerBean[]{
+        PlayerBean[] list = new PlayerBean[] {
                 //Homme
                 //Handler
                 new PlayerBean(null, "Alex", Role.Handler.name(), true, 4),
@@ -69,10 +70,8 @@ public class MyOpenHelper extends DaoMaster.DevOpenHelper {
 
                 //Middle
                 new PlayerBean(null, "Jenny Vallet", Role.Middle.name(), false, 32),
-                new PlayerBean(null, "Celine Antoine", Role.Middle.name(), false, 8),
-                new PlayerBean(null, "Moks", Role.Middle.name(), false, 16),
-                new PlayerBean(null, "Cam", Role.Middle.name(), false, 14),
-                new PlayerBean(null, "Mazette", Role.Middle.name(), false, 12),
+                new PlayerBean(null, "Celine Antoine", Role.Middle.name(), false, 8), new PlayerBean(null, "Moks", Role.Middle.name(), false, 16),
+                new PlayerBean(null, "Cam", Role.Middle.name(), false, 14), new PlayerBean(null, "Mazette", Role.Middle.name(), false, 12),
                 new PlayerBean(null, "Pauline Rigollier", Role.Middle.name(), false, 7),
 
                 //polyvalent
@@ -84,18 +83,19 @@ public class MyOpenHelper extends DaoMaster.DevOpenHelper {
             playerBean.setId(PlayerDaoManager.getPlayerDAO().insert(playerBean));
             try {
                 TeamPlayerManager.addPlayerToTeam(teamBean.getId(), playerBean.getId());
-            } catch (LogicException e) {
+            }
+            catch (LogicException e) {
                 e.printStackTrace();
             }
         }
 
-//
-//        //Match à l'quipe
-//        MatchBean matchBean = new MatchBean();
-//        matchBean.setName("Espagne");
-//        matchBean.setCurrentPoint(1);
-//        matchBean.setTeamBean(teamBean);
-//        matchBean.setId(MatchDaoManager.getMatchBeanDao().insert(matchBean));
+        //
+        //        //Match à l'quipe
+        //        MatchBean matchBean = new MatchBean();
+        //        matchBean.setName("Espagne");
+        //        matchBean.setCurrentPoint(1);
+        //        matchBean.setTeamBean(teamBean);
+        //        matchBean.setId(MatchDaoManager.getMatchBeanDao().insert(matchBean));
 
     }
 
