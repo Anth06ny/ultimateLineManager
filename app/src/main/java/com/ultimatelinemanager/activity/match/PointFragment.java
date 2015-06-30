@@ -29,6 +29,7 @@ import com.ultimatelinemanager.bean.PlayerPointBean;
 import com.ultimatelinemanager.bean.Role;
 import com.ultimatelinemanager.dao.PlayerDaoManager;
 import com.ultimatelinemanager.dao.match.PointDaoManager;
+import com.ultimatelinemanager.metier.GestionSharedPreference;
 import com.ultimatelinemanager.metier.composant.OnSwipeTouchListener;
 import com.ultimatelinemanager.metier.exception.TechnicalException;
 
@@ -194,6 +195,12 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
 
         //On enregistre les modifications en base
         PointDaoManager.savePlayerPointList(pointBean, playerInPointAdapter.getDaoList());
+
+        //On sauvegarde les filtres utilisés
+        GestionSharedPreference.setLastFiltreRole(noPlayingAdapter.getFilterRole());
+        GestionSharedPreference.setLastFiltreSexe(noPlayingAdapter.getFilterSexe());
+        GestionSharedPreference.setLastSort(noPlayingAdapter.getSortOrder());
+
     }
 
     @Override
@@ -311,101 +318,70 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
     public void onClick(View v) {
 
         if (v == pa_iv_handler) {
-            switchFiltreImageViewColor(pa_iv_handler, !pa_iv_handler.isSelected());
-            switchFiltreImageViewColor(pa_iv_middle, false);
-            if (pa_iv_handler.isSelected()) {
+            if (noPlayingAdapter.getFilterRole() != Role.Handler) {
                 noPlayingAdapter.setFilterRole(Role.Handler);
             }
             else {
                 noPlayingAdapter.setFilterRole(Role.Both);
             }
             noPlayingAdapter.refreshFilterList();
+            refreshView();
         }
         else if (v == pa_iv_middle) {
-            switchFiltreImageViewColor(pa_iv_middle, !pa_iv_middle.isSelected());
-            switchFiltreImageViewColor(pa_iv_handler, false);
-            if (pa_iv_middle.isSelected()) {
+            if (noPlayingAdapter.getFilterRole() != Role.Middle) {
                 noPlayingAdapter.setFilterRole(Role.Middle);
             }
             else {
                 noPlayingAdapter.setFilterRole(Role.Both);
             }
             noPlayingAdapter.refreshFilterList();
-
+            refreshView();
         }
         else if (v == pa_iv_girl) {
-            if (pa_iv_girl.isSelected()) {
-                switchFiltreImageViewColor(pa_iv_girl, false);
-                noPlayingAdapter.setFilterSexe(PlayerPointAdapter.FilterSexe.BOTH);
+
+            if (noPlayingAdapter.getFilterSexe() != PlayerPointAdapter.FilterSexe.GIRL) {
+                noPlayingAdapter.setFilterSexe(PlayerPointAdapter.FilterSexe.GIRL);
             }
             else {
-                pa_iv_girl.setSelected(true);
-                noPlayingAdapter.setFilterSexe(PlayerPointAdapter.FilterSexe.GIRL);
-                pa_iv_girl.setColorFilter(getResources().getColor(R.color.girl_color));
+                noPlayingAdapter.setFilterSexe(PlayerPointAdapter.FilterSexe.BOTH);
             }
-            switchFiltreImageViewColor(pa_iv_boy, false);
+
             noPlayingAdapter.refreshFilterList();
+            refreshView();
         }
         else if (v == pa_iv_boy) {
-            if (pa_iv_boy.isSelected()) {
-                switchFiltreImageViewColor(pa_iv_boy, false);
-                noPlayingAdapter.setFilterSexe(PlayerPointAdapter.FilterSexe.BOTH);
+            if (noPlayingAdapter.getFilterSexe() != PlayerPointAdapter.FilterSexe.BOY) {
+                noPlayingAdapter.setFilterSexe(PlayerPointAdapter.FilterSexe.BOY);
             }
             else {
-                pa_iv_boy.setSelected(true);
-                noPlayingAdapter.setFilterSexe(PlayerPointAdapter.FilterSexe.BOY);
-                pa_iv_boy.setColorFilter(getResources().getColor(R.color.boy_color));
+                noPlayingAdapter.setFilterSexe(PlayerPointAdapter.FilterSexe.BOTH);
             }
-            switchFiltreImageViewColor(pa_iv_girl, false);
+
             noPlayingAdapter.refreshFilterList();
+            refreshView();
 
         }
         else if (v == pa_iv_alpha) {
-            if (!pa_iv_alpha.isSelected()) {
-                switchFiltreImageViewColor(pa_iv_alpha, true);
-                switchFiltreImageViewColor(pa_iv_time, false);
-                switchFiltreImageViewColor(pa_iv_sleep, false);
-                switchFiltreImageViewColor(pa_iv_number, false);
-                noPlayingAdapter.setSortOrder(PlayerPointAdapter.SortOrder.AZ);
-                noPlayingAdapter.refreshFilterList();
-            }
-            else {
-                noPlayingAdapter.setSortOrder(PlayerPointAdapter.SortOrder.NUMBER);
-                noPlayingAdapter.refreshFilterList();
-            }
-
+            noPlayingAdapter.setSortOrder(PlayerPointAdapter.SortOrder.AZ);
+            noPlayingAdapter.refreshFilterList();
+            refreshView();
         }
         else if (v == pa_iv_number) {
-            if (!pa_iv_number.isSelected()) {
-                switchFiltreImageViewColor(pa_iv_alpha, false);
-                switchFiltreImageViewColor(pa_iv_time, false);
-                switchFiltreImageViewColor(pa_iv_sleep, false);
-                switchFiltreImageViewColor(pa_iv_number, true);
-                noPlayingAdapter.setSortOrder(PlayerPointAdapter.SortOrder.NUMBER);
-                noPlayingAdapter.refreshFilterList();
-            }
+            noPlayingAdapter.setSortOrder(PlayerPointAdapter.SortOrder.NUMBER);
+            noPlayingAdapter.refreshFilterList();
+            refreshView();
 
         }
         else if (v == pa_iv_time) {
-            if (!pa_iv_time.isSelected()) {
-                switchFiltreImageViewColor(pa_iv_time, true);
-                switchFiltreImageViewColor(pa_iv_alpha, false);
-                switchFiltreImageViewColor(pa_iv_sleep, false);
-                switchFiltreImageViewColor(pa_iv_number, false);
-                noPlayingAdapter.setSortOrder(PlayerPointAdapter.SortOrder.PLAYING_TIME);
-                noPlayingAdapter.refreshFilterList();
-            }
+            noPlayingAdapter.setSortOrder(PlayerPointAdapter.SortOrder.PLAYING_TIME);
+            noPlayingAdapter.refreshFilterList();
+            refreshView();
 
         }
         else if (v == pa_iv_sleep) {
-            if (!pa_iv_sleep.isSelected()) {
-                switchFiltreImageViewColor(pa_iv_sleep, !pa_iv_sleep.isSelected());
-                switchFiltreImageViewColor(pa_iv_time, false);
-                switchFiltreImageViewColor(pa_iv_alpha, false);
-                switchFiltreImageViewColor(pa_iv_number, false);
-                noPlayingAdapter.setSortOrder(PlayerPointAdapter.SortOrder.SLEEP_TIME);
-                noPlayingAdapter.refreshFilterList();
-            }
+            noPlayingAdapter.setSortOrder(PlayerPointAdapter.SortOrder.SLEEP_TIME);
+            noPlayingAdapter.refreshFilterList();
+            refreshView();
         }
     }
 
@@ -440,6 +416,60 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+
+                //Mise à jour du filtres Handler /Middle
+                switchFiltreImageViewColor(pa_iv_middle, false);
+                switchFiltreImageViewColor(pa_iv_handler, false);
+                switch (noPlayingAdapter.getFilterRole()) {
+
+                    case Handler:
+                        switchFiltreImageViewColor(pa_iv_handler, true);
+                        break;
+                    case Middle:
+                        switchFiltreImageViewColor(pa_iv_middle, true);
+                        break;
+                    case Both:
+                        break;
+                }
+
+                //Mise a jour graphique du filtre Sexe
+                switchFiltreImageViewColor(pa_iv_girl, false);
+                switchFiltreImageViewColor(pa_iv_boy, false);
+                switch (noPlayingAdapter.getFilterSexe()) {
+                    case BOY:
+                        pa_iv_boy.setColorFilter(getResources().getColor(R.color.girl_color));
+
+                        break;
+                    case GIRL:
+                        pa_iv_girl.setColorFilter(getResources().getColor(R.color.girl_color));
+                        break;
+                    case BOTH:
+                        break;
+                }
+
+                //On remet tous à 0 et on ne selectionne que le selectionner
+                switchFiltreImageViewColor(pa_iv_alpha, false);
+                switchFiltreImageViewColor(pa_iv_time, false);
+                switchFiltreImageViewColor(pa_iv_sleep, false);
+                switchFiltreImageViewColor(pa_iv_number, false);
+
+                //Mise à jour du tri
+                switch (noPlayingAdapter.getSortOrder()) {
+
+                    case AZ:
+                        switchFiltreImageViewColor(pa_iv_alpha, true);
+                        break;
+                    case PLAYING_TIME:
+                        switchFiltreImageViewColor(pa_iv_time, true);
+                        break;
+                    case SLEEP_TIME:
+                        switchFiltreImageViewColor(pa_iv_sleep, true);
+                        break;
+                    case NUMBER:
+                        switchFiltreImageViewColor(pa_iv_number, true);
+                        break;
+                }
+
                 int nbBoy = 0, nbGirl = 0;
                 for (PlayerPointBean playerPointBean : playerInPointAdapter.getDaoList()) {
                     if (playerPointBean.getPlayerBean().getSexe()) {
@@ -527,6 +557,11 @@ public class PointFragment extends MainFragment implements PlayerPointAdapter.Pl
 
         paRvAll.setAdapter(noPlayingAdapter = new PlayerPointAdapter(getActivity(), this));
         pa_rv_playing.setAdapter(playerInPointAdapter = new PlayerPointWithHeaderAdapter(getActivity(), this));
+
+        //On positionne le filtre par defaut
+        noPlayingAdapter.setFilterSexe(GestionSharedPreference.getLastFiltreSexe());
+        noPlayingAdapter.setFilterRole(GestionSharedPreference.getLastFiltreRole());
+        noPlayingAdapter.setSortOrder(GestionSharedPreference.getLastSort());
 
     }
 

@@ -26,8 +26,7 @@ import java.util.List;
 public class PlayerPointAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public enum FilterSexe {
-        BOY, GIRL, BOTH
-    }
+        BOY, GIRL, BOTH}
 
     public enum SortOrder {
         AZ, PLAYING_TIME, SLEEP_TIME, NUMBER
@@ -348,6 +347,18 @@ public class PlayerPointAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public void setSortOrder(SortOrder sortOrder) {
         this.sortOrder = sortOrder;
+    }
+
+    public Role getFilterRole() {
+        return filterRole;
+    }
+
+    public FilterSexe getFilterSexe() {
+        return filterSexe;
+    }
+
+    public SortOrder getSortOrder() {
+        return sortOrder;
     }
 
     /* ---------------------------------
