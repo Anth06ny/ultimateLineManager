@@ -48,6 +48,21 @@ public class TeamPlayerManager {
         }
     }
 
+    /**
+     * Retire le joueur de l'équipe
+     * @param playerId
+     * @param teamId
+     * @param clearSession
+     */
+    public static void removePlayerFromTeam(long playerId, long teamId, boolean clearSession) {
+        getTeamPlayerDAO().queryBuilder().where(TeamPlayerDao.Properties.TeamId.eq(teamId), TeamPlayerDao.Properties.PlayerId.eq(playerId))
+                .buildDelete().executeDeleteWithoutDetachingEntities();
+        if (clearSession) {
+            //pour bien le supprimer de la session
+            MyApplication.getInstance().getDaoSession().clear();
+        }
+    }
+
     /* ---------------------------------
     // Autre
     // -------------------------------- */

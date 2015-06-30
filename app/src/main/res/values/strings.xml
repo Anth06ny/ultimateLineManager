@@ -52,6 +52,8 @@
     <string name="ta_no_match">No match registered</string>
     <string name="ta_delete_confirmation">Are you sure you want to delete this team?</string>
     <string name="ta_edit_player">Edit player</string>
+    <string name="ta_delete_player_text">Remove player from the team ?</string>
+    <string name="ta_delete_player_refused">You can\'t delete player who played at least one point.</string>
 
     <!-- ****************** -->
     <!-- ListPlayerTeam -->
@@ -64,6 +66,9 @@
     <string name="lpt_post">Post</string>
     <string name="lpt_number">Number</string>
     <string name="lpt_player_exist">Player already exist</string>
+    <string name="lpt_delete_player">Delete player</string>
+    <string name="lpt_delete_player_text">Delete player from the database?</string>
+    <string name="lpt_delete_player_refused">You can\'t delete a player who played in a team.\n%1$s</string>
 
     <!-- ****************** -->
     <!-- TeamMatchActivity -->

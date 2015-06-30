@@ -31,7 +31,7 @@ public abstract class ListPlayerFragment extends MainFragment implements SelectA
     protected TextView st_info;
 
     //Autre
-    private SelectAdapter adapter;
+    protected SelectAdapter adapter;
     protected ArrayList<PlayerBean> playerBeanList;
 
     /* ---------------------------------

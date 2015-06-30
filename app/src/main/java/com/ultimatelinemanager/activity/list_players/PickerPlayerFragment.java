@@ -6,7 +6,10 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.formation.utils.ToastUtils;
 import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.dao.PlayerDaoManager;
@@ -14,7 +17,10 @@ import com.ultimatelinemanager.dao.TeamPlayerManager;
 import com.ultimatelinemanager.metier.DialogUtils;
 import com.ultimatelinemanager.metier.exception.LogicException;
 
+import org.apache.commons.lang3.StringUtils;
+
 import greendao.PlayerBean;
+import greendao.TeamPlayer;
 
 /**
  * Created by Anthony on 11/04/2015.
@@ -45,8 +51,7 @@ public class PickerPlayerFragment extends ListPlayerFragment {
         switch (item.getItemId()) {
             case R.id.menu_add:
                 //On affiche la page de séléction des joueurs enregistré dans le téléphone
-                DialogUtils.getNewPlayerDialog(getActivity(),null, R.string.lpt_bt_new, R.string.add, new DialogUtils
-                        .NewPlayerPromptDialogCB() {
+                DialogUtils.getNewPlayerDialog(getActivity(), null, R.string.lpt_bt_new, R.string.add, new DialogUtils.NewPlayerPromptDialogCB() {
                     @Override
                     public void newPlayerpromptDialogCB_onPositiveClick(PlayerBean playerBean) {
                         //on ajoute le nouveau joueur
@@ -73,11 +78,41 @@ public class PickerPlayerFragment extends ListPlayerFragment {
             TeamPlayerManager.addPlayerToTeam(MyApplication.getInstance().getTeamBean().getId(), bean.getId());
             generiqueActivity.onBackPressed();
 
-        }
-        catch (LogicException e) {
+        } catch (LogicException e) {
             showError(e, true);
         }
 
+    }
+
+    @Override
+    public void selectAdapter_onDeleteClick(final PlayerBean playerBean) {
+        DialogUtils.getConfirmDialog(getActivity(), R.drawable.ic_action_delete, R.string.lpt_delete_player,
+                getString(R.string.lpt_delete_player_text), new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        super.onPositive(dialog);
+
+                        //On supprime le joueur de l'équipe
+                        if (playerBean.getTeamPlayerList().size() > 0) {
+                            String teamName = "";
+                            for (TeamPlayer teamPlayer : playerBean.getTeamPlayerList()) {
+                                teamName += " - " + teamPlayer.getTeamBean().getName() + StringUtils.stripToEmpty(teamPlayer.getTeamBean().getTournament()) + "\n";
+                            }
+
+                            ToastUtils.showToastOnUIThread(getActivity(), getString(R.string
+                                    .lpt_delete_player_refused, teamName), Toast.LENGTH_LONG);
+                        } else {
+                            //on peut supprimer le joueur
+                            PlayerDaoManager.getPlayerDAO().delete(playerBean);
+                            int index = playerBeanList.indexOf(playerBean);
+                            if (index >= 0) {
+                                playerBeanList.remove(index);
+                                adapter.notifyItemRemoved(index);
+                            }
+                        }
+
+                    }
+                }).show();
     }
 
     /* ---------------------------------

@@ -34,8 +34,9 @@
             android:visibility="visible"/>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="@dimen/standard_height"
+            android:layout_weight="1"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
@@ -58,6 +59,16 @@
                 android:textSize="@dimen/font_13"/>
 
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/row_iv_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/standard_height"
+            android:layout_marginLeft="@dimen/margin_5"
+            android:adjustViewBounds="true"
+            android:background="?material_bt_bg"
+            android:padding="@dimen/margin_10"
+            android:src="@drawable/ic_action_delete"/>
 
     </LinearLayout>
 

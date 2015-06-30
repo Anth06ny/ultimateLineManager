@@ -16,16 +16,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.formation.utils.LogUtils;
+import com.formation.utils.ToastUtils;
 import com.formation.utils.Utils;
 import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.adapter.SelectAdapter;
 import com.ultimatelinemanager.dao.PlayerDaoManager;
 import com.ultimatelinemanager.dao.TeamDaoManager;
+import com.ultimatelinemanager.dao.TeamPlayerManager;
 import com.ultimatelinemanager.dao.match.MatchDaoManager;
+import com.ultimatelinemanager.dao.match.PlayerPointDaoManager;
 import com.ultimatelinemanager.metier.DialogUtils;
 
 import org.apache.commons.lang3.StringUtils;
@@ -212,6 +216,44 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
                         }
                     }).show();
         }
+    }
+
+    @Override
+    public void selectAdapter_onDeleteClick(final Object bean) {
+        //On demande confirmation pour supprimer le joueur de l'équipe
+        if (bean instanceof PlayerBean) {
+            DialogUtils.getConfirmDialog(getActivity(), R.drawable.ic_action_delete, R.string.lpt_delete_player,
+                    getString(R.string.ta_delete_player_text), new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            super.onPositive(dialog);
+
+                            //On supprime le joueur de l'équipe
+                            PlayerBean playerBean = (PlayerBean) bean;
+                            if (!PlayerPointDaoManager.isPlayerPlayedAPointWithTeam(playerBean.getId(), teamBean.getId())) {
+                                //on supprime le joueur de l'équipe
+                                TeamPlayerManager.removePlayerFromTeam(playerBean.getId(), teamBean.getId(), true);
+
+                                //Suppression du joueur
+                                int index = playerBeanList.indexOf(playerBean);
+                                if (index >= 0) {
+                                    playerBeanList.remove(index);
+                                    adapterPlayer.notifyItemRemoved(index);
+                                }
+                                else {
+                                    playerBeanList.remove(playerBean);
+                                    adapterPlayer.notifyDataSetChanged();
+                                }
+
+                            }
+                            else {
+                                //On affiche un message
+                                ToastUtils.showToastOnUIThread(getActivity(), R.string.ta_delete_player_refused, Toast.LENGTH_LONG);
+                            }
+                        }
+                    }).show();
+        }
+
     }
 
     @Override

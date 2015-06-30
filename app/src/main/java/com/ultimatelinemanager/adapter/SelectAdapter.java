@@ -115,13 +115,16 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
                 String number = playerBean.getNumber() > 0 ? (playerBean.getNumber() + " - ") : "";
                 holder.row_tv1.setText(number + playerBean.getName());
                 holder.row_tv2.setText(playerBean.getRole());
+                holder.row_iv_delete.setVisibility(View.VISIBLE);
 
                 //Couleur de l'image
                 if (playerBean.getSexe()) {
                     holder.iv_main.setColorFilter(boyColor);
+                    holder.row_iv_delete.setColorFilter(boyColor);
                 }
                 else {
                     holder.iv_main.setColorFilter(girlColor);
+                    holder.row_iv_delete.setColorFilter(boyColor);
                 }
 
                 break;
@@ -186,7 +189,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
         public final TextView row_tv1;
         public final TextView row_tv2;
         public TextView row_tv3;
-        public ImageView iv_main;
+        public ImageView iv_main, row_iv_delete;
         public View root; //Pour le onclick
         //Data
         public T bean;
@@ -203,7 +206,11 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
                 case TEAM:
                     break;
                 case PLAYER:
+
                     iv_main = (ImageView) itemView.findViewById(R.id.iv_main);
+                    row_iv_delete = (ImageView) itemView.findViewById(R.id.row_iv_delete);
+                    row_iv_delete.setOnClickListener(this);
+
                     break;
                 case MATCH:
                     row_tv3 = (TextView) itemView.findViewById(R.id.row_tv3);
@@ -216,13 +223,18 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
         }
 
         @Override
-        public void onClick(View v) {
+        public void onClick(final View v) {
             if (callBack != null) {
                 //le postDelay permet de laisser finir l'effet du material design
                 v.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        callBack.selectAdapter_onClick(bean);
+                        if (v == root) {
+                            callBack.selectAdapter_onClick(bean);
+                        }
+                        else if (v == row_iv_delete) {
+                            callBack.selectAdapter_onDeleteClick(bean);
+                        }
                     }
                 }, 200);
             }
@@ -235,6 +247,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
 
     public interface SelectAdapterI<T> {
         void selectAdapter_onClick(T bean);
-    }
 
+        void selectAdapter_onDeleteClick(T bean);
+    }
 }

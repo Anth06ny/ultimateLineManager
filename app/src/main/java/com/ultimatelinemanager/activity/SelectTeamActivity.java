@@ -97,6 +97,11 @@ public class SelectTeamActivity extends AppCompatActivity implements SelectAdapt
         goToGeneriqueActivity();
     }
 
+    @Override
+    public void selectAdapter_onDeleteClick(TeamBean bean) {
+        //On ne gere pas la suppression d'equipe par l'affichage
+    }
+
     /* ---------------------------------
     // Menu
     // -------------------------------- */
