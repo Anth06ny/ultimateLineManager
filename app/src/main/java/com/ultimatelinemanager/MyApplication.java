@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.crashlytics.android.Crashlytics;
 import com.squareup.otto.Bus;
 import com.ultimatelinemanager.dao.MyOpenHelper;
+import com.ultimatelinemanager.dao.PlayerDaoManager;
 import com.ultimatelinemanager.dao.TeamDaoManager;
 import com.ultimatelinemanager.dao.match.MatchDaoManager;
 import com.ultimatelinemanager.dao.match.PointDaoManager;
@@ -26,9 +27,7 @@ import io.fabric.sdk.android.Fabric;
 public class MyApplication extends Application {
 
     //Appli
-    //TODO tester la creation d'equipe avec le nom de la competition et ajouter le nom de la competition aux
     //TODO Indiquer la mi temps.
-    //TODO Sauvegarde du tri
 
     // differents endroit
     //TODO ecran about
@@ -44,7 +43,6 @@ public class MyApplication extends Application {
 
     //Live point
     //TODO bug reprise de point
-    //TODO changement de couleur pour joueur qui n'a pas jouer depuis longtemps
 
     //Match
     //TODO Ajout de la roue sur un point pour changer but pour / contre et attaque defense
@@ -53,10 +51,10 @@ public class MyApplication extends Application {
     //TODO selection multiplayer
     //TODO importer joueur autre equipe
     //TODO menu joueur : modifier, desactiver joueur blessé, retirer
+    //TODO Filtre joueur
 
     //Plus tard
     //TODO Ajouter option de match : mixte ou non
-    //TODO Joueur blessé
 
     private static MyApplication instance;
     private DaoSession daoSession;
@@ -116,7 +114,7 @@ public class MyApplication extends Application {
         DaoMaster daoMaster = new DaoMaster(db);
         daoSession = daoMaster.newSession();
 
-        if (TeamDaoManager.getLast30Team().isEmpty()) {
+        if (PlayerDaoManager.getPlayerDAO().count() == 0) {
             helper.fillBDD();
         }
 

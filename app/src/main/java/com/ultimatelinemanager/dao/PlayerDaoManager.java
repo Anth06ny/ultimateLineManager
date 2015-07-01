@@ -49,7 +49,8 @@ public class PlayerDaoManager {
                 + PlayerBeanDao.Properties.Id.columnName;
 
         //On ne prend que ceux qui ne le sont pas
-        query += " WHERE TP." + TeamPlayerDao.Properties.PlayerId.columnName + " IS NULL";
+        query += " WHERE TP." + TeamPlayerDao.Properties.PlayerId.columnName + " IS NULL \n";
+        query += " ORDER BY " + PlayerBeanDao.Properties.Name.columnName;
 
         try {
             return getPlayerDAO().queryRawCreate(query, teamId).list();
