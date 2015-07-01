@@ -356,9 +356,9 @@ public class DialogUtils {
         });
 
         NumberPicker nt_team_picker = (NumberPicker) dialog.getCustomView().findViewById(R.id.nt_team_picker);
-        nt_team_picker.setMinValue(0);
-        nt_team_picker.setMaxValue(2);
         String[] teamName = new String[allTeam.size() + 1];
+        nt_team_picker.setMinValue(0);
+        nt_team_picker.setMaxValue(teamName.length - 1);
         teamName[0] = "None";
         for (int i = 0; i < allTeam.size(); i++) {
             TeamBean teamBean = allTeam.get(i);
