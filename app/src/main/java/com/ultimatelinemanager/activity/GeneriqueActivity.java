@@ -274,6 +274,10 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
     @Subscribe
     public void ottoEvent(OttoRefreshEvent ottoRefreshEvent) {
         switch (ottoRefreshEvent) {
+            case SCORE_CHANGE:
+                refreshLivePointUI();
+                break;
+
             case MATCH_END:
                 refreshLivePoint();
                 break;

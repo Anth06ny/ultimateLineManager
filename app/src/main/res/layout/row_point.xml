@@ -29,6 +29,7 @@
             android:layout_width="@dimen/margin_20"
             android:layout_height="@dimen/margin_20"
             android:layout_alignParentRight="true"
+            android:background="?android:attr/selectableItemBackground"
             android:src="@drawable/win"/>
 
         <ImageView
@@ -38,6 +39,7 @@
             android:layout_alignParentRight="false"
             android:layout_alignWithParentIfMissing="true"
             android:layout_toLeftOf="@+id/rp_iv_result"
+            android:background="?android:attr/selectableItemBackground"
             android:src="@drawable/offense"/>
 
         <TextView

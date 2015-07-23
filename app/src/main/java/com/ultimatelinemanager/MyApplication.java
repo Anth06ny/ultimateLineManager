@@ -31,7 +31,6 @@ public class MyApplication extends Application {
 
     // differents endroit
     //TODO ecran about
-    //TODO dans la création d'une équipe donner le nom de la compétition
 
     //Parametre
     //TODO ecran reglage appli : Email, choix des filtres, matche mixte
@@ -45,12 +44,8 @@ public class MyApplication extends Application {
     //TODO bug reprise de point
 
     //Match
-    //TODO Ajout de la roue sur un point pour changer but pour / contre et attaque defense
 
     //Team
-    //TODO selection multiplayer
-    //TODO importer joueur autre equipe
-    //TODO menu joueur : modifier, desactiver joueur blessé, retirer
     //TODO Filtre joueur
 
     //Plus tard

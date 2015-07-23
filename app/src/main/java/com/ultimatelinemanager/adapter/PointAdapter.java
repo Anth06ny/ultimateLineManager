@@ -1,6 +1,7 @@
 package com.ultimatelinemanager.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +15,10 @@ import android.widget.TextView;
 
 import com.formation.utils.Utils;
 import com.ultimatelinemanager.Constante;
+import com.ultimatelinemanager.MyApplication;
 import com.ultimatelinemanager.R;
+import com.ultimatelinemanager.bean.OttoRefreshEvent;
+import com.ultimatelinemanager.dao.match.PointDaoManager;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -84,6 +88,8 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
 
             //playingTime
             holder.ma_tv_playing_time.setText(Constante.EMPTY);
+
+            holder.rp_iv_result.setVisibility(View.INVISIBLE);
         }
         //point en cours
         else {
@@ -106,10 +112,12 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
             //s'il y a deja du temps on met le temps sinon on met le temps écoulé depuis le début du point
             long playingTime = pointBean.getLength() != 0 ? pointBean.getLength() : (new Date().getTime() - pointBean.getStart().getTime());
             holder.ma_tv_playing_time.setText(Utils.timeToMMSS(playingTime));
-        }
 
-        //win
-        holder.rp_iv_result.setVisibility(pointBean.getTeamGoal() != null && pointBean.getTeamGoal() ? View.VISIBLE : View.INVISIBLE);
+            //win
+            holder.rp_iv_result.setVisibility(View.VISIBLE);
+            holder.rp_iv_result.setColorFilter(pointBean.getTeamGoal() != null && pointBean.getTeamGoal() ? winColor : Color.BLACK,
+                    PorterDuff.Mode.SRC_IN);
+        }
 
         //On affiche les Joueurs
         if (showPlayerListId.contains(pointBean.getId())) {
@@ -189,9 +197,10 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
             root.setOnClickListener(this);
             tv_show_players.setOnClickListener(this);
             tv_delete_point.setOnClickListener(this);
+            rp_iv_result.setOnClickListener(this);
+            rp_iv_offense.setOnClickListener(this);
 
             rp_iv_offense.setColorFilter(offenseColor, PorterDuff.Mode.SRC_IN);
-            rp_iv_result.setColorFilter(winColor, PorterDuff.Mode.SRC_IN);
 
             this.pointAdapterCB = pointAdapterCB;
             this.showPlayerListId = showPlayerListId;
@@ -218,20 +227,63 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
                 }
 
                 //On previent que l'element à changé
-                int position = 0;
-                for (PointBean pointBean1 : pointBeanList) {
-                    if (pointBean1.getId().equals(pointBean.getId())) {
-                        adapter.notifyItemChanged(position);
-                        return;
-                    }
-                    else {
-                        position++;
-                    }
-                }
+                refreshCorrectPoint();
+
             }
             else if (v == root) {
                 if (pointAdapterCB != null) {
                     pointAdapterCB.pointAdapter_click(pointBean);
+                }
+            }
+            else if (v == rp_iv_result) {
+
+                if (pointBean.getTeamGoal() != null && pointBean.getTeamGoal()) {
+                    pointBean.setTeamGoal(false);
+                }
+                else {
+                    pointBean.setTeamGoal(true);
+                }
+
+                //On previent que l'element à changé
+                refreshCorrectPoint();
+
+                //On sauvegarde le changement en base
+                PointDaoManager.getPointBeanDao().update(pointBean);
+
+                //On previent que le score a changé
+                MyApplication.getInstance().getBus().post(OttoRefreshEvent.SCORE_CHANGE);
+
+            }
+            else if (v == rp_iv_offense) {
+                if (pointBean.getTeamOffense() != null && pointBean.getTeamOffense()) {
+                    pointBean.setTeamOffense(false);
+                }
+                else {
+                    pointBean.setTeamOffense(true);
+                }
+
+                //On previent que l'element à changé
+                refreshCorrectPoint();
+
+                //On sauvegarde le changement en base
+                PointDaoManager.getPointBeanDao().update(pointBean);
+
+                //On previent que le score a changé
+                MyApplication.getInstance().getBus().post(OttoRefreshEvent.SCORE_CHANGE);
+
+            }
+        }
+
+        private void refreshCorrectPoint() {
+            //On previent que l'element à changé
+            int position = 0;
+            for (PointBean pointBean1 : pointBeanList) {
+                if (pointBean1.getId().equals(pointBean.getId())) {
+                    adapter.notifyItemChanged(position);
+                    return;
+                }
+                else {
+                    position++;
                 }
             }
         }
@@ -245,5 +297,6 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ViewHolder> 
         void pointAdapter_click(PointBean bean);
 
         void pointAdapter_deletePoint(PointBean bean);
+
     }
 }

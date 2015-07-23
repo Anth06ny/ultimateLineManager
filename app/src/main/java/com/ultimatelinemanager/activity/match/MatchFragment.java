@@ -328,6 +328,7 @@ public class MatchFragment extends MainFragment implements View.OnClickListener,
 
     }
 
+
     /* ---------------------------------
     // OTTO
     // -------------------------------- */
