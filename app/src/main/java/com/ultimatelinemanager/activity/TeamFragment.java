@@ -1,5 +1,11 @@
 package com.ultimatelinemanager.activity;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
+import org.apache.commons.lang3.StringUtils;
+
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -7,6 +13,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,17 +40,11 @@ import com.ultimatelinemanager.dao.match.MatchDaoManager;
 import com.ultimatelinemanager.dao.match.PlayerPointDaoManager;
 import com.ultimatelinemanager.metier.DialogUtils;
 
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-
 import greendao.MatchBean;
 import greendao.PlayerBean;
 import greendao.TeamBean;
 
-public class TeamFragment extends MainFragment implements SelectAdapter.SelectAdapterI, TabHost.OnTabChangeListener {
+public class TeamFragment extends MainFragment implements SelectAdapter.SelectAdapterI, TabHost.OnTabChangeListener, SearchView.OnQueryTextListener {
 
     private static final String TAG = LogUtils.getLogTag(TeamFragment.class);
     private static final String TAB_TAG_KEY = "TAB_TAG_KEY";
@@ -52,6 +54,7 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
     private RecyclerView ta_rv_match, ta_rv_players;
     private TextView ta_empty_match, ta_empty_players;
     private ImageView icon_tab_match, icon_tab_players;
+    private SearchView ta_sv;
     private TabHost tabs;
     private String tabSelected = null;
 
@@ -79,6 +82,7 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
         ta_rv_match = (RecyclerView) view.findViewById(R.id.ta_rv_match);
         ta_rv_players = (RecyclerView) view.findViewById(R.id.ta_rv_players);
         TextView at_tv_tournament = (TextView) view.findViewById(R.id.at_tv_tournament);
+        ta_sv = (SearchView) view.findViewById(R.id.ta_sv);
 
         teamBean = MyApplication.getInstance().getTeamBean();
 
@@ -100,6 +104,20 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
 
         ta_rv_match.setAdapter(adapterMatch);
         ta_rv_players.setAdapter(adapterPlayer);
+
+        SearchView.SearchAutoComplete histo_search_text = (SearchView.SearchAutoComplete) ta_sv.findViewById(R.id.search_src_text);
+        histo_search_text.setTextColor(Utils.getColorFromTheme(view.getContext(), R.attr.color_text_third));
+        histo_search_text.setHintTextColor(Utils.getColorFromTheme(view.getContext(), R.attr.color_disable));
+        histo_search_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_12));
+        ta_sv.setOnQueryTextListener(this);
+
+        //pour activer la recherche sur un click dans toute la zone
+        ta_sv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ta_sv.onActionViewExpanded();
+            }
+        });
 
         if (StringUtils.isNotBlank(teamBean.getTournament())) {
             at_tv_tournament.setText(teamBean.getTournament());
@@ -269,6 +287,19 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
             icon_tab_match.setColorFilter(Color.BLACK);
             icon_tab_players.setColorFilter(color_composant_main);
         }
+    }
+
+    /* ---------------------------------
+    // CB SearchView
+    // -------------------------------- */
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
     }
 
     /* ---------------------------------
