@@ -19,11 +19,29 @@
         android:textColor="?attr/color_text_main"
         android:textSize="@dimen/font_14"/>
 
+    <RelativeLayout
+        android:id="@+id/st_rl_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/st_info"
+        android:background="@color/white"
+        >
+
+        <android.support.v7.widget.SearchView
+            android:id="@+id/st_sv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:iconifiedByDefault="true"/>
+    </RelativeLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/st_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/st_info"
+        android:layout_below="@+id/st_rl_search"
+        android:layout_marginTop="@dimen/margin_10"
         android:background="?color_application_bg"
         tools:listitem="@layout/row_select_team"/>
 

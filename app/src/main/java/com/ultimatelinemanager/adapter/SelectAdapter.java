@@ -8,6 +8,8 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,6 +19,8 @@ import com.ultimatelinemanager.R;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import greendao.MatchBean;
@@ -26,17 +30,20 @@ import greendao.TeamBean;
 /**
  * Created by amonteiro on 13/02/2015.
  */
-public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder> {
+public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder> implements Filterable {
 
     public enum TYPE {
         TEAM, PLAYER, MATCH
     }
 
-    private List<?> daoList;
+    private List daoList;
+    private List daoListFiltered;
     private String dateFormat;
     private SelectAdapterI selectAdapterI;
     private TYPE type;
     private Context context;
+    private Filter filter;
+    private boolean filterActive;
 
     //config
     private int girlColor, boyColor, selectedColor;
@@ -45,8 +52,10 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
     public SelectAdapter(Context context, List<?> daoList, TYPE type, SelectAdapterI selectAdapterI) {
         this.context = context;
         this.daoList = daoList;
+        daoListFiltered = new ArrayList<>();
         this.selectAdapterI = selectAdapterI;
         this.type = type;
+        filterActive = false;
         selectedColor = context.getResources().getColor(R.color.lily_white);
 
         switch (type) {
@@ -97,7 +106,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
         switch (type) {
 
             case TEAM:
-                TeamBean teamBean = (TeamBean) daoList.get(position);
+                TeamBean teamBean = (TeamBean) getItem(position);
                 holder.bean = teamBean;
                 if (StringUtils.isNotBlank(teamBean.getTournament())) {
                     holder.row_tv1.setText(teamBean.getName() + " - " + teamBean.getTournament());
@@ -110,7 +119,8 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
                 break;
 
             case PLAYER:
-                PlayerBean playerBean = (PlayerBean) daoList.get(position);
+
+                PlayerBean playerBean = (PlayerBean) getItem(position);
                 holder.bean = playerBean;
                 String number = playerBean.getNumber() > 0 ? (playerBean.getNumber() + " - ") : "";
                 holder.row_tv1.setText(number + playerBean.getName());
@@ -132,7 +142,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
                 break;
 
             case MATCH:
-                MatchBean matchBean = (MatchBean) daoList.get(position);
+                MatchBean matchBean = (MatchBean) getItem(position);
                 holder.bean = matchBean;
                 holder.row_tv1.setText(matchBean.getName());
 
@@ -178,12 +188,34 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return daoList.size();
+        if (filterActive) {
+            return daoListFiltered.size();
+        }
+        else {
+            return daoList.size();
+        }
+    }
+
+    @Override
+    public Filter getFilter() {
+        if (filter == null) {
+            filter = new PlayerFilter(this);
+        }
+        return filter;
+    }
+
+    private Object getItem(int position) {
+        if (filterActive) {
+            return daoListFiltered.get(position);
+        }
+        else {
+            return daoList.get(position);
+        }
     }
 
     /* ---------------------------------
-    // View Holder
-    // -------------------------------- */
+        // View Holder
+        // -------------------------------- */
 
     protected static class ViewHolder<T> extends RecyclerView.ViewHolder implements View.OnClickListener {
         //Composant graphique
@@ -245,6 +277,57 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
     }
 
     /* ---------------------------------
+    // Filter Class
+    // -------------------------------- */
+
+    private static class PlayerFilter extends Filter {
+
+        private SelectAdapter adapter;
+        private final List<PlayerBean> filteredList;
+
+        private PlayerFilter(SelectAdapter adapter) {
+            super();
+            this.filteredList = new ArrayList();
+            this.adapter = adapter;
+        }
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            filteredList.clear();
+
+            final FilterResults results = new FilterResults();
+            if (StringUtils.isBlank(constraint)) {
+                return null;
+            }
+            else {
+                for (final PlayerBean playerBean : (List<PlayerBean>) adapter.daoList) {
+                    if (StringUtils.containsIgnoreCase(playerBean.getName(), constraint.toString())) {
+                        filteredList.add(playerBean);
+                    }
+                }
+            }
+            results.values = filteredList;
+            results.count = filteredList.size();
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+
+            adapter.daoListFiltered.clear();
+
+            if (results == null) {
+                adapter.filterActive = false;
+            }
+            else {
+                adapter.filterActive = true;
+                adapter.daoListFiltered.addAll((Collection) results.values);
+            }
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    /* ---------------------------------
     // Interface
     // -------------------------------- */
 
@@ -253,4 +336,5 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.ViewHolder
 
         void selectAdapter_onDeleteClick(T bean);
     }
+
 }

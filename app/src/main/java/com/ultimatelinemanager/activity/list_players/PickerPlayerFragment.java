@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.formation.utils.ToastUtils;
+import com.formation.utils.Utils;
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.activity.MainFragment;
 import com.ultimatelinemanager.adapter.PlayerPickerAdapter;
@@ -35,12 +38,13 @@ import greendao.TeamPlayer;
 /**
  * Classe permetant d'afficher une liste de joueur
  */
-public class PickerPlayerFragment extends MainFragment implements PlayerPickerAdapter.PlayerPickerCB {
+public class PickerPlayerFragment extends MainFragment implements PlayerPickerAdapter.PlayerPickerCB, SearchView.OnQueryTextListener {
 
     //Composants graphiques
     private RecyclerView st_rv;
     private TextView st_empty;
     protected TextView st_info;
+    private SearchView st_sv;
 
     //Autre
     protected PlayerPickerAdapter adapter;
@@ -62,10 +66,26 @@ public class PickerPlayerFragment extends MainFragment implements PlayerPickerAd
         st_empty = (TextView) view.findViewById(R.id.st_empty);
         st_rv = (RecyclerView) view.findViewById(R.id.st_rv);
         st_info = (TextView) view.findViewById(R.id.st_info);
+        st_sv = (SearchView) view.findViewById(R.id.st_sv);
 
         st_rv.setHasFixedSize(false);
         st_rv.setLayoutManager(new LinearLayoutManager(getActivity()));
         st_rv.setItemAnimator(new DefaultItemAnimator());
+
+        //SearchView
+        SearchView.SearchAutoComplete histo_search_text = (SearchView.SearchAutoComplete) st_sv.findViewById(R.id.search_src_text);
+        histo_search_text.setTextColor(Utils.getColorFromTheme(view.getContext(), R.attr.color_text_third));
+        histo_search_text.setHintTextColor(Utils.getColorFromTheme(view.getContext(), R.attr.color_disable));
+        histo_search_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_12));
+        st_sv.setOnQueryTextListener(this);
+
+        //pour activer la recherche sur un click dans toute la zone
+        st_sv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                st_sv.onActionViewExpanded();
+            }
+        });
 
         //Utils.getColorFromTheme(this, R.attr.color_application_bg)
         adapter = new PlayerPickerAdapter(getActivity(), playerBeanList = new ArrayList<>(), this);
@@ -202,6 +222,20 @@ public class PickerPlayerFragment extends MainFragment implements PlayerPickerAd
         //            }
         //        }
         getActivity().invalidateOptionsMenu();
+    }
+
+    /* ---------------------------------
+    // CB SearchView
+    // -------------------------------- */
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        adapter.getFilter().filter(newText);
+        return false;
     }
 
     /* ---------------------------------

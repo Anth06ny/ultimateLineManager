@@ -27,7 +27,6 @@ import io.fabric.sdk.android.Fabric;
 public class MyApplication extends Application {
 
     //A continuer
-    //TODO Continuer la searchView dans l'écran joueur(de l'équipe) et l'ajouter dans le 2eme ecran joueur (de la base)
 
     //Appli
     //TODO Indiquer la mi temps.

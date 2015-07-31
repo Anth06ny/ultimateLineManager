@@ -225,7 +225,7 @@ public class GeneriqueActivity extends AppCompatActivity implements View.OnClick
             MyApplication.getInstance().getBus().post(OttoRefreshEvent.CHANGE_POINT);
         }
         else if (v == lp_iv_play) {
-            if (livePoint.getPause()) {
+            if (livePoint.getPause() != null && livePoint.getPause()) {
                 //ne sera pas comptabilise car point deja demarre
                 startPoint(true);
             }

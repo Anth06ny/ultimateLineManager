@@ -1,11 +1,5 @@
 package com.ultimatelinemanager.activity;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-
-import org.apache.commons.lang3.StringUtils;
-
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -39,6 +33,12 @@ import com.ultimatelinemanager.dao.TeamPlayerManager;
 import com.ultimatelinemanager.dao.match.MatchDaoManager;
 import com.ultimatelinemanager.dao.match.PlayerPointDaoManager;
 import com.ultimatelinemanager.metier.DialogUtils;
+
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import greendao.MatchBean;
 import greendao.PlayerBean;
@@ -105,6 +105,7 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
         ta_rv_match.setAdapter(adapterMatch);
         ta_rv_players.setAdapter(adapterPlayer);
 
+        //SearchView
         SearchView.SearchAutoComplete histo_search_text = (SearchView.SearchAutoComplete) ta_sv.findViewById(R.id.search_src_text);
         histo_search_text.setTextColor(Utils.getColorFromTheme(view.getContext(), R.attr.color_text_third));
         histo_search_text.setHintTextColor(Utils.getColorFromTheme(view.getContext(), R.attr.color_disable));
@@ -299,6 +300,7 @@ public class TeamFragment extends MainFragment implements SelectAdapter.SelectAd
 
     @Override
     public boolean onQueryTextChange(String newText) {
+        adapterPlayer.getFilter().filter(newText);
         return false;
     }
 

@@ -7,12 +7,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.bean.Pair;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import greendao.PlayerBean;
@@ -20,11 +26,14 @@ import greendao.PlayerBean;
 /**
  * Created by amonteiro on 13/02/2015.
  */
-public class PlayerPickerAdapter extends RecyclerView.Adapter<PlayerPickerAdapter.ViewHolder> {
+public class PlayerPickerAdapter extends RecyclerView.Adapter<PlayerPickerAdapter.ViewHolder> implements Filterable {
 
     private List<Pair<Boolean, PlayerBean>> daoList;
+    private List<Pair<Boolean, PlayerBean>> daoListFiltered;
     private PlayerPickerCB playerPickerCB;
     private Context context;
+    private boolean filterActive;
+    private Filter filter;
 
     //config
     private static int girlColor, boyColor, selectedColor;
@@ -32,7 +41,9 @@ public class PlayerPickerAdapter extends RecyclerView.Adapter<PlayerPickerAdapte
     public PlayerPickerAdapter(Context context, List<Pair<Boolean, PlayerBean>> listPlayer, PlayerPickerCB playerPickerCB) {
         this.context = context;
         this.playerPickerCB = playerPickerCB;
+        daoListFiltered = new ArrayList<>();
         daoList = listPlayer;
+        filterActive = false;
 
         selectedColor = context.getResources().getColor(R.color.aqua);
         girlColor = context.getResources().getColor(R.color.girl_color);
@@ -54,7 +65,7 @@ public class PlayerPickerAdapter extends RecyclerView.Adapter<PlayerPickerAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        holder.bean = daoList.get(position);
+        holder.bean = (Pair<Boolean, PlayerBean>) getItem(position);
         PlayerBean playerBean = holder.bean.second;
         String number = playerBean.getNumber() > 0 ? (playerBean.getNumber() + " - ") : "";
         holder.row_tv1.setText(number + playerBean.getName());
@@ -84,7 +95,29 @@ public class PlayerPickerAdapter extends RecyclerView.Adapter<PlayerPickerAdapte
 
     @Override
     public int getItemCount() {
-        return daoList.size();
+        if (filterActive) {
+            return daoListFiltered.size();
+        }
+        else {
+            return daoList.size();
+        }
+    }
+
+    @Override
+    public Filter getFilter() {
+        if (filter == null) {
+            filter = new PlayerFilter(this);
+        }
+        return filter;
+    }
+
+    private Object getItem(int position) {
+        if (filterActive) {
+            return daoListFiltered.get(position);
+        }
+        else {
+            return daoList.get(position);
+        }
     }
 
     /* ---------------------------------
@@ -143,6 +176,57 @@ public class PlayerPickerAdapter extends RecyclerView.Adapter<PlayerPickerAdapte
                     }
                 }, 200);
             }
+        }
+    }
+
+    /* ---------------------------------
+    // Filter Class
+    // -------------------------------- */
+
+    private static class PlayerFilter extends Filter {
+
+        private PlayerPickerAdapter adapter;
+        private final List<Pair<Boolean, PlayerBean>> filteredList;
+
+        private PlayerFilter(PlayerPickerAdapter adapter) {
+            super();
+            this.filteredList = new ArrayList();
+            this.adapter = adapter;
+        }
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            filteredList.clear();
+
+            final FilterResults results = new FilterResults();
+            if (StringUtils.isBlank(constraint)) {
+                return null;
+            }
+            else {
+                for (final Pair<Boolean, PlayerBean> playerBean : adapter.daoList) {
+                    if (StringUtils.containsIgnoreCase(playerBean.second.getName(), constraint.toString())) {
+                        filteredList.add(playerBean);
+                    }
+                }
+            }
+            results.values = filteredList;
+            results.count = filteredList.size();
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+
+            adapter.daoListFiltered.clear();
+
+            if (results == null) {
+                adapter.filterActive = false;
+            }
+            else {
+                adapter.filterActive = true;
+                adapter.daoListFiltered.addAll((Collection<? extends Pair<Boolean, PlayerBean>>) results.values);
+            }
+            adapter.notifyDataSetChanged();
         }
     }
 
