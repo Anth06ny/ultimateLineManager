@@ -1,9 +1,11 @@
 package com.ultimatelinemanager;
 
 import android.app.Application;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.crashlytics.android.Crashlytics;
+import com.flurry.android.FlurryAgent;
 import com.squareup.otto.Bus;
 import com.ultimatelinemanager.dao.MyOpenHelper;
 import com.ultimatelinemanager.dao.PlayerDaoManager;
@@ -27,31 +29,18 @@ import io.fabric.sdk.android.Fabric;
 public class MyApplication extends Application {
 
     //A continuer
+    //TODO ajouter tous les évenements de flurry dans le code
 
     //Appli
     //TODO Indiquer la mi temps.
 
     // differents endroit
     //TODO ecran about
+    //TODO ecran settings
 
     //Parametre
     //TODO ecran reglage appli : Email, choix des filtres, matche mixte
     //TODO ecran parametre : temps alerte joueur pas jouer.
-
-    //Statistique
-
-    //Point
-
-    //Live point
-    //TODO bug reprise de point
-
-    //Match
-
-    //Team
-    //TODO Filtre joueur
-
-    //Plus tard
-    //TODO Ajouter option de match : mixte ou non
 
     private static MyApplication instance;
     private DaoSession daoSession;
@@ -74,7 +63,8 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Fabric.with(this, new Crashlytics());
+
+        initAnalytics();
 
         //On declare les constantes static
         new Constante();
@@ -99,6 +89,22 @@ public class MyApplication extends Application {
         if (teamBean != null) {
             teamBean.resetTeamPlayerList();
         }
+
+    }
+
+    private void initAnalytics() {
+        //CrashLytics
+        Fabric.with(this, new Crashlytics());
+
+        // Flurry
+        try {
+            FlurryAgent.setVersionName(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+        }
+        catch (PackageManager.NameNotFoundException ignored) {
+        }
+
+        FlurryAgent.setCaptureUncaughtExceptions(false);
+        FlurryAgent.init(this, getString(R.string.flurry_id));
 
     }
 

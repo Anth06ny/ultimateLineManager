@@ -30,7 +30,7 @@ import com.ultimatelinemanager.adapter.PointAdapter;
 import com.ultimatelinemanager.bean.OttoRefreshEvent;
 import com.ultimatelinemanager.dao.match.MatchDaoManager;
 import com.ultimatelinemanager.dao.match.PointDaoManager;
-import com.ultimatelinemanager.metier.DialogUtils;
+import com.ultimatelinemanager.metier.utils.DialogUtils;
 import com.ultimatelinemanager.metier.IntentHelper;
 import com.ultimatelinemanager.metier.exception.TechnicalException;
 

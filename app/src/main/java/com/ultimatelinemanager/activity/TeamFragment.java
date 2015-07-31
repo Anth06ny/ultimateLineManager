@@ -32,7 +32,7 @@ import com.ultimatelinemanager.dao.TeamDaoManager;
 import com.ultimatelinemanager.dao.TeamPlayerManager;
 import com.ultimatelinemanager.dao.match.MatchDaoManager;
 import com.ultimatelinemanager.dao.match.PlayerPointDaoManager;
-import com.ultimatelinemanager.metier.DialogUtils;
+import com.ultimatelinemanager.metier.utils.DialogUtils;
 
 import org.apache.commons.lang3.StringUtils;
 

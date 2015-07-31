@@ -1,4 +1,4 @@
-package com.ultimatelinemanager.metier;
+package com.ultimatelinemanager.metier.utils;
 
 import android.content.Context;
 import android.graphics.PorterDuff;

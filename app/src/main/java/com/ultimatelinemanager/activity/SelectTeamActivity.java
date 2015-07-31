@@ -18,7 +18,7 @@ import com.ultimatelinemanager.R;
 import com.ultimatelinemanager.adapter.SelectAdapter;
 import com.ultimatelinemanager.dao.TeamDaoManager;
 import com.ultimatelinemanager.dao.TeamPlayerManager;
-import com.ultimatelinemanager.metier.DialogUtils;
+import com.ultimatelinemanager.metier.utils.DialogUtils;
 
 import java.util.ArrayList;
 

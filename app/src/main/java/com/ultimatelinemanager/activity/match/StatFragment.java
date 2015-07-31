@@ -155,7 +155,12 @@ public class StatFragment extends MainFragment implements View.OnClickListener {
         }
 
         //Playing time
-        ma_tv_playing_time.setText(Utils.timeToHHMM(matchBean.getEnd().getTime() - matchBean.getStart().getTime()));
+        if (matchBean.getEnd() != null && matchBean.getStart() != null) {
+            ma_tv_playing_time.setText(Utils.timeToHHMM(matchBean.getEnd().getTime() - matchBean.getStart().getTime()));
+        }
+        else {
+            ma_tv_playing_time.setText(" - ");
+        }
 
         //Win
         ma_iv_win.setVisibility(team > opponent ? View.VISIBLE : View.INVISIBLE);

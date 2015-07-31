@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.formation.utils.LogUtils;
 import com.formation.utils.ToastUtils;
 import com.ultimatelinemanager.metier.exception.ExceptionA;
+import com.ultimatelinemanager.metier.utils.AnalyticsUtils;
 
 /**
  * Created by amonteiro on 28/04/2015.
@@ -28,8 +29,11 @@ public class MainFragment extends Fragment {
         //Excepte pour TeamFragment on affiche le bouton de retour
         generiqueActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(!(this instanceof TeamFragment));
 
+        AnalyticsUtils.refreshAnalyticsData();
+
         return null;
     }
+
 
     /* ---------------------------------
     // Methodes

@@ -3,6 +3,14 @@
     package="com.ultimatelinemanager"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Flurry -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <!-- CrashLytics & Flurry -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -31,5 +39,5 @@
             android:value="a9cda0381b4a0047c04eb2cc01bacdf698ece33d" />
     </application>
 
-    <uses-permission android:name="android.permission.INTERNET" />
+
 </manifest>

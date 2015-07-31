@@ -25,7 +25,7 @@ import com.ultimatelinemanager.adapter.PlayerPickerAdapter;
 import com.ultimatelinemanager.bean.Pair;
 import com.ultimatelinemanager.dao.PlayerDaoManager;
 import com.ultimatelinemanager.dao.TeamPlayerManager;
-import com.ultimatelinemanager.metier.DialogUtils;
+import com.ultimatelinemanager.metier.utils.DialogUtils;
 import com.ultimatelinemanager.metier.exception.LogicException;
 
 import org.apache.commons.lang3.StringUtils;
